@@ -11,7 +11,7 @@ type Proc = *mut Void;
 #[link_args = "kernel32.lib"]
 extern "system" {
     fn OutputDebugStringA(output_string: *const u8);
-    fn ExitProcess(exit_code: u32);
+    fn ExitProcess(exit_code: u32) -> !;
 
     fn LoadLibraryA(file_name: *const u8) -> Module;
     fn FreeLibrary(module: Module);
@@ -25,7 +25,7 @@ pub fn output_debug_string_a(string: &[u8])
 }
 
 #[inline]
-pub fn exit_process(exit_code: u32)
+pub fn exit_process(exit_code: u32) -> !
 {
     unsafe { ExitProcess(exit_code); }
 }

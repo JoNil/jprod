@@ -41,5 +41,6 @@ pub extern fn eh_personality() {}
 pub extern fn rust_begin_panic(_msg: core::fmt::Arguments,
                                _file: &'static str,
                                _line: u32) -> ! {
-    loop {}
+
+    win32::exit_process(1);
 }
