@@ -68,7 +68,6 @@ impl Drop for User32 {
     fn drop(&mut self) {
         if self.module != ptr::null_mut() {
             free_library(self.module);
-            output_debug_string_a(b"Free\0");
             self.module = ptr::null_mut();
         }
     }
