@@ -12,16 +12,23 @@ extern crate rlibc;
 
 mod win32;
 
+fn main()
+{
+    let w32 = win32::Api::new();
+
+    win32::output_debug_string_a(b"hej\n\0");
+    win32::output_debug_string_a(b"hej\n\0");
+    win32::output_debug_string_a(b"hej\n\0");
+
+    w32.user32.message_box(b"Hi\0", b"there\0", 0);
+}
+
 #[no_mangle]
 #[allow(non_snake_case)]
 pub extern "system" fn WinMainCRTStartup()
 {
-    let test = b"hej\n\0";
-
-    win32::output_debug_string_a(test);
-    win32::output_debug_string_a(test);
-    win32::output_debug_string_a(test);
-
+    main();
+    
     win32::exit_process(0);
 }
 
