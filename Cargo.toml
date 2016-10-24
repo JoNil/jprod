@@ -4,3 +4,10 @@ version = "0.1.0"
 authors = ["Jonathan"]
 
 [dependencies]
+rlibc = "1.0"
+
+[profile.release]
+panic = "abort"
+
+[profile.dev]
+panic = "abort"
