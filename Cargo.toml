@@ -1,0 +1,6 @@
+[package]
+name = "jprod"
+version = "0.1.0"
+authors = ["Jonathan"]
+
+[dependencies]
