@@ -1,6 +1,5 @@
 #![feature(lang_items)]
 #![feature(link_args)]
-#![feature(start)]
 #![no_std]
 #![no_main]
 
