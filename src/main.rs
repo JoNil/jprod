@@ -12,6 +12,13 @@ extern crate rlibc;
 
 mod win32;
 
+use win32::WindowHandle;
+
+extern "system" fn window_proc(window: WindowHandle, message: u32, wparam: u64, lparam: u64)
+{
+    win32::output_debug_string_a(b"MESSAGE!\n\0");    
+}
+
 fn main()
 {
     let w32 = win32::Api::new();
@@ -19,6 +26,10 @@ fn main()
     win32::output_debug_string_a(b"hej\n\0");
     win32::output_debug_string_a(b"hej\n\0");
     win32::output_debug_string_a(b"hej\n\0");
+
+    if !w32.user32.register_class(b"JProdWindowClass\n\0", window_proc) {
+        panic!();
+    }
 
     w32.user32.message_box(b"Hi\0", b"there\0", 0);
 }
