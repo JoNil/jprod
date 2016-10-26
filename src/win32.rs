@@ -22,6 +22,7 @@ type GdiObjectHandle = *mut Void;
 type Handle = *mut Void;
 type IconHandle = *mut Void;
 type InstanceHandle = *mut Void;
+type MenuHandle = *mut Void;
 type ModuleHandle = *mut Void;
 type Proc = *mut Void;
 pub type WindowHandle = *mut Void;
@@ -94,6 +95,7 @@ pub struct User32 {
     MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32,
 
     RegisterClassA: unsafe extern "system" fn(windowClass: *const WindowClass) -> Atom,
+    CreateWindowExA: unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut Void) -> WindowHandle,
 
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: u64) -> CursorHandle,
 }
@@ -123,6 +125,11 @@ impl User32 {
 
         unsafe { (self.RegisterClassA)(&window_class) != 0 }
     }
+
+    pub fn create_window(&self)
+    {
+        
+    }
 }
 
 impl Drop for User32 {
@@ -151,6 +158,7 @@ impl Api {
                 module: user32_module,
                 MessageBoxA: load_proc!(user32_module,  b"MessageBoxA\0"),
                 RegisterClassA: load_proc!(user32_module, b"RegisterClassA\0"),
+                CreateWindowExA: load_proc!(user32_module, b"CreateWindowExA\0"),
                 LoadCursorA: load_proc!(user32_module, b"LoadCursorA\0"),
             }
         }

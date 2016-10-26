@@ -30,6 +30,8 @@ fn main()
         panic!();
     }
 
+    w32.user32.create_window();
+
     w32.user32.message_box(b"Hi\0", b"there\0", 0);
 }
 
