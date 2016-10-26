@@ -1,7 +1,8 @@
+#![feature(const_fn)]
 #![feature(lang_items)]
 #![feature(link_args)]
-#![no_std]
 #![no_main]
+#![no_std]
 
 
 #[link_args = "/SUBSYSTEM:WINDOWS"]
@@ -11,34 +12,64 @@ extern crate rlibc;
 
 mod win32;
 
+use core::ptr;
 use win32::WindowHandle;
 
-extern "system" fn window_proc(window: WindowHandle, message: u32, wparam: u64, lparam: u64)
-{
-    win32::output_debug_string_a(b"MESSAGE!\n\0");    
+static mut W32: *const win32::Api = ptr::null();
+
+extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: u64, lparam: u64) -> u64 {
+    
+    match msg {
+
+        win32::WM_SIZE => {
+            win32::output_debug_string_a(b"WM_SIZE\n\0");
+        }
+
+        win32::WM_CLOSE => {
+            win32::output_debug_string_a(b"WM_CLOSE\n\0");
+        }
+
+        win32::WM_ACTIVATEAPP => {
+            win32::output_debug_string_a(b"WM_ACTIVATEAPP\n\0");
+        }
+
+        win32::WM_DESTROY =>  {
+            win32::output_debug_string_a(b"WM_DESTROY\n\0");
+        }
+
+        _ => {
+            return unsafe { (*W32).def_window_proc(window, msg, wparam, lparam) };
+        }
+    }
+
+    return 0;
 }
 
-fn main()
-{
+fn main() {
     let w32 = win32::Api::new();
+    unsafe { W32 = &w32 };
 
-    win32::output_debug_string_a(b"hej\n\0");
-    win32::output_debug_string_a(b"hej\n\0");
-    win32::output_debug_string_a(b"hej\n\0");
-
-    if !w32.user32.register_class(b"JProdWindowClass\n\0", window_proc) {
+    if !w32.register_class(b"JProdWindowClass\n\0", window_proc) {
         panic!();
     }
 
-    w32.user32.create_window();
+    let window_handle = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
 
-    w32.user32.message_box(b"Hi\0", b"there\0", 0);
+    if window_handle != ptr::null_mut() {
+        loop {
+            if let Some(msg) = w32.get_message() {
+                w32.translate_and_dispatch_message(&msg);
+            }
+        }
+    }
+
+    w32.message_box(b"Hi\0", b"there\0", 0);
 }
 
-#[no_mangle]
 #[allow(non_snake_case)]
-pub extern "system" fn WinMainCRTStartup()
-{
+#[no_mangle]
+pub extern "system" fn WinMainCRTStartup() {
+
     main();
     
     win32::exit_process(0);
