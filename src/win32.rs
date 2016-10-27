@@ -16,7 +16,7 @@ macro_rules! load_proc {
 
 pub enum Void {}
 pub type WindowHandle = *mut Void;
-pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: u64, lparam: u64) -> u64;
+pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
 type Atom = u16;
 type BrushHandle = *mut Void;
 type CursorHandle = *mut Void;
@@ -37,9 +37,7 @@ const CS_HREDRAW: u32 = 0x0002;
 const CS_OWNDC: u32 = 0x0020;
 const CS_VREDRAW: u32 = 0x0001;
 const CW_USEDEFAULT: i32 = (0x80000000 as u32) as i32;
-const IDC_ARROW: u64 = 32512;
-
-const GWLP_USERDATA: i32 = -21;
+const IDC_ARROW: usize = 32512;
 
 const WS_CAPTION: u32 = 0x00C00000;
 const WS_MAXIMIZEBOX: u32 = 0x00010000;
@@ -115,8 +113,8 @@ pub struct Point {
 pub struct Msg {
     window_handle: WindowHandle,
     message: u32,
-    wparam: u64,
-    lparam: u64,
+    wparam: usize,
+    lparam: usize,
     time: u32,
     point: Point,
 }
@@ -133,12 +131,9 @@ pub struct Api {
     GetMessageA: unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: i32, msg_filter_max: i32) -> i32,
     TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DispatchMessageA: unsafe extern "system" fn(msg: *const Msg) -> i32,
-    DefWindowProcA: unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: u64, lparam: u64) -> u64,
-    
-    SetWindowLongPtrA: unsafe extern "system" fn(window: WindowHandle, index: i32, data: u64) -> u64,
-    GetWindowLongPtrA: unsafe extern "system" fn(window: WindowHandle, index: i32) -> u64,
+    DefWindowProcA: unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize,
 
-    LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: u64) -> CursorHandle,
+    LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
 }
 
 impl Api {
@@ -161,8 +156,6 @@ impl Api {
             TranslateMessage: load_proc!(user32, b"TranslateMessage\0"),
             DispatchMessageA: load_proc!(user32, b"DispatchMessageA\0"),
             DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
-            SetWindowLongPtrA: load_proc!(user32, b"SetWindowLongPtrA\0"),
-            GetWindowLongPtrA: load_proc!(user32, b"GetWindowLongPtrA\0"),
 
             LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
         }
@@ -234,23 +227,10 @@ impl Api {
     }
 
     #[inline]
-    pub fn def_window_proc(&self, window: WindowHandle, message: u32, wparam: u64, lparam: u64) -> u64 {
+    pub fn def_window_proc(&self, window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
         unsafe { (self.DefWindowProcA)(window, message, wparam, lparam) }
     }
-
-    #[inline]
-    pub fn set_window_user_data(&self, window: WindowHandle, data: u64) {
-
-        unsafe { (self.SetWindowLongPtrA)(window, GWLP_USERDATA, data) };
-    }
-
-    #[inline]
-    pub fn get_window_user_data(&self, window: WindowHandle) -> u64 {
-
-        unsafe { (self.GetWindowLongPtrA)(window, GWLP_USERDATA) }
-    }
-
 }
 
 impl Drop for Api {

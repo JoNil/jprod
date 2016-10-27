@@ -17,7 +17,7 @@ use win32::WindowHandle;
 
 static mut W32: *const win32::Api = ptr::null();
 
-extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: u64, lparam: u64) -> u64 {
+extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
     
     match msg {
 
@@ -55,10 +55,6 @@ fn main() {
     }
 
     let window = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
-
-
-    w32.set_window_user_data(window, 1);
-    w32.get_window_user_data(window);
 
     if window != ptr::null_mut() {
         loop {
