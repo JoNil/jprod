@@ -39,6 +39,8 @@ const CS_VREDRAW: u32 = 0x0001;
 const CW_USEDEFAULT: i32 = (0x80000000 as u32) as i32;
 const IDC_ARROW: u64 = 32512;
 
+const GWLP_USERDATA: i32 = -21;
+
 const WS_CAPTION: u32 = 0x00C00000;
 const WS_MAXIMIZEBOX: u32 = 0x00010000;
 const WS_MINIMIZEBOX: u32 = 0x00020000;
@@ -132,6 +134,9 @@ pub struct Api {
     TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DispatchMessageA: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DefWindowProcA: unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: u64, lparam: u64) -> u64,
+    
+    SetWindowLongPtrA: unsafe extern "system" fn(window: WindowHandle, index: i32, data: u64) -> u64,
+    GetWindowLongPtrA: unsafe extern "system" fn(window: WindowHandle, index: i32) -> u64,
 
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: u64) -> CursorHandle,
 }
@@ -156,6 +161,8 @@ impl Api {
             TranslateMessage: load_proc!(user32, b"TranslateMessage\0"),
             DispatchMessageA: load_proc!(user32, b"DispatchMessageA\0"),
             DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
+            SetWindowLongPtrA: load_proc!(user32, b"SetWindowLongPtrA\0"),
+            GetWindowLongPtrA: load_proc!(user32, b"GetWindowLongPtrA\0"),
 
             LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
         }
@@ -230,6 +237,18 @@ impl Api {
     pub fn def_window_proc(&self, window: WindowHandle, message: u32, wparam: u64, lparam: u64) -> u64 {
 
         unsafe { (self.DefWindowProcA)(window, message, wparam, lparam) }
+    }
+
+    #[inline]
+    pub fn set_window_user_data(&self, window: WindowHandle, data: u64) {
+
+        unsafe { (self.SetWindowLongPtrA)(window, GWLP_USERDATA, data) };
+    }
+
+    #[inline]
+    pub fn get_window_user_data(&self, window: WindowHandle) -> u64 {
+
+        unsafe { (self.GetWindowLongPtrA)(window, GWLP_USERDATA) }
     }
 
 }

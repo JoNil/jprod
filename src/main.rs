@@ -27,6 +27,7 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: u64, lpar
 
         win32::WM_CLOSE => {
             win32::output_debug_string_a(b"WM_CLOSE\n\0");
+            win32::exit_process(0);
         }
 
         win32::WM_ACTIVATEAPP => {
@@ -53,9 +54,13 @@ fn main() {
         panic!();
     }
 
-    let window_handle = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
+    let window = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
 
-    if window_handle != ptr::null_mut() {
+
+    w32.set_window_user_data(window, 1);
+    w32.get_window_user_data(window);
+
+    if window != ptr::null_mut() {
         loop {
             if let Some(msg) = w32.get_message() {
                 w32.translate_and_dispatch_message(&msg);
