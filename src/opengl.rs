@@ -19,13 +19,16 @@ impl Api {
 
      pub fn new() -> Api {
         
-        let opengl32 = Module::new(b"Opengl32.dll\0").unwrap();
+        if let Some(opengl32) = Module::new(b"Opengl32.dll\0") {
 
-        Api {
-            
-            wglCreateContext: load_proc!(opengl32,  b"wglCreateContext\0"),
+            Api {
+                
+                wglCreateContext: load_proc!(opengl32,  b"wglCreateContext\0"),
 
-            opengl32: opengl32,
+                opengl32: opengl32,
+            }
+        } else {
+            panic!();
         }
     }
 

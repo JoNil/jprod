@@ -109,22 +109,25 @@ pub struct Api {
 impl Api {
     pub fn new() -> Api {
         
-        let user32 = Module::new(b"user32.dll\0").unwrap();
+        if let Some(user32) = Module::new(b"user32.dll\0") {
 
-        Api {
-            MessageBoxA: load_proc!(user32,  b"MessageBoxA\0"),
+            Api {
+                MessageBoxA: load_proc!(user32,  b"MessageBoxA\0"),
 
-            RegisterClassA: load_proc!(user32, b"RegisterClassA\0"),
-            CreateWindowExA: load_proc!(user32, b"CreateWindowExA\0"),
+                RegisterClassA: load_proc!(user32, b"RegisterClassA\0"),
+                CreateWindowExA: load_proc!(user32, b"CreateWindowExA\0"),
 
-            GetMessageA: load_proc!(user32, b"GetMessageA\0"),
-            TranslateMessage: load_proc!(user32, b"TranslateMessage\0"),
-            DispatchMessageA: load_proc!(user32, b"DispatchMessageA\0"),
-            DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
+                GetMessageA: load_proc!(user32, b"GetMessageA\0"),
+                TranslateMessage: load_proc!(user32, b"TranslateMessage\0"),
+                DispatchMessageA: load_proc!(user32, b"DispatchMessageA\0"),
+                DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
 
-            LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
+                LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
 
-            user32: user32,
+                user32: user32,
+            }
+        } else {
+            panic!();
         }
     }
 
