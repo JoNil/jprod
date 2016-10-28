@@ -20,6 +20,8 @@ mod win32_types;
 use core::ptr;
 use win32_types::*;
 
+static window_class: &'static [u8] = b"C\0";
+
 static mut W32: *const win32::Api = ptr::null();
 
 extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
@@ -57,11 +59,11 @@ fn main() {
 
     let gl = opengl::Api::new();
 
-    if !w32.register_class(b"JProdWindowClass\n\0", window_proc) {
+    if !w32.register_class(window_class, window_proc) {
         panic!();
     }
 
-    let window = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
+    let window = w32.create_window(window_class, b"JProd\n\0");
 
     gl.create_context(&w32);
 
