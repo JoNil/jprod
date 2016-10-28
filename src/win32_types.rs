@@ -34,3 +34,33 @@ pub const WS_SYSMENU: u32 = 0x00080000;
 pub const WS_THICKFRAME: u32 = 0x00040000;
 pub const WS_VISIBLE: u32 = 0x10000000;
 pub const WS_OVERLAPPEDWINDOW: u32 = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+
+#[repr(C)]
+pub struct Point {
+    pub x: i32,
+    pub y: i32,
+}
+
+#[repr(C)]
+pub struct Msg {
+    pub window_handle: WindowHandle,
+    pub message: u32,
+    pub wparam: usize,
+    pub lparam: usize,
+    pub time: u32,
+    pub point: Point,
+}
+
+#[repr(C)]
+pub struct WindowClass {
+    pub style: u32,
+    pub window_proc: WindowProc,
+    pub cls_extra: i32,
+    pub wnd_extra: i32,
+    pub instance: InstanceHandle,
+    pub icon: IconHandle,
+    pub cursor: CursorHandle,
+    pub background: BrushHandle,
+    pub menu_name: *const u8,
+    pub class_name: *const u8,
+}

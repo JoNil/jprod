@@ -4,7 +4,6 @@
 #![no_main]
 #![no_std]
 
-
 #[link_args = "/SUBSYSTEM:WINDOWS"]
 extern {}
 
@@ -13,16 +12,14 @@ extern crate rlibc;
 #[macro_use]
 mod win32_macros;
 
-mod opengl;
+mod gl;
 mod win32;
 mod win32_types;
 
 use core::ptr;
 use win32_types::*;
 
-static window_class: &'static [u8] = b"C\0";
-
-static mut W32: *const win32::Api = ptr::null();
+static WINDOW_CLASS: &'static [u8] = b"C\0";
 
 extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
     
@@ -46,7 +43,7 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
         }
 
         _ => {
-            return unsafe { (*W32).def_window_proc(window, msg, wparam, lparam) };
+            return win32::def_window_proc(window, msg, wparam, lparam);
         }
     }
 
@@ -54,28 +51,26 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
 }
 
 fn main() {
-    let w32 = win32::Api::new();
-    unsafe { W32 = &w32 };
+    win32::init();
+    gl::init();
 
-    let gl = opengl::Api::new();
-
-    if !w32.register_class(window_class, window_proc) {
+    if !win32::register_class(WINDOW_CLASS, window_proc) {
         panic!();
     }
 
-    let window = w32.create_window(window_class, b"JProd\n\0");
+    let window = win32::create_window(WINDOW_CLASS, b"JProd\n\0");
 
-    gl.create_context(&w32);
+    gl::create_context();
 
     if window != ptr::null_mut() {
         loop {
-            if let Some(msg) = w32.get_message() {
-                w32.translate_and_dispatch_message(&msg);
+            if let Some(msg) = win32::get_message() {
+                win32::translate_and_dispatch_message(&msg);
             }
         }
     }
 
-    w32.message_box(b"Hi\0", b"there\0", 0);
+    win32::message_box(b"Hi\0", b"there\0", 0);
 }
 
 #[allow(non_snake_case)]

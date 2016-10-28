@@ -1,5 +1,3 @@
-use core::intrinsics::transmute;
-use core::mem;
 use core::ptr;
 use win32_types::*;
 
@@ -27,7 +25,7 @@ pub fn exit_process(exit_code: u32) -> ! {
 }
 
 pub struct Module {
-    handle: ModuleHandle
+    pub handle: ModuleHandle
 }
 
 impl Module {
@@ -51,44 +49,16 @@ impl Module {
     }
 }
 
-impl Drop for Module {
+/*impl Drop for Module {
     fn drop(&mut self) {
          unsafe { FreeLibrary(self.handle) }
     }
-}
+}*/
 
-#[repr(C)]
-struct WindowClass {
-    style: u32,
-    window_proc: WindowProc,
-    cls_extra: i32,
-    wnd_extra: i32,
-    instance: InstanceHandle,
-    icon: IconHandle,
-    cursor: CursorHandle,
-    background: BrushHandle,
-    menu_name: *const u8,
-    class_name: *const u8,
-}
-
-#[repr(C)]
-pub struct Point {
-    x: i32,
-    y: i32,
-}
-
-#[repr(C)]
-pub struct Msg {
-    window_handle: WindowHandle,
-    message: u32,
-    wparam: usize,
-    lparam: usize,
-    time: u32,
-    point: Point,
-}
+static mut API: Option<Api> = None;
 
 #[allow(non_snake_case)]
-pub struct Api {
+struct Api {
     
     #[allow(dead_code)]
     user32: Module,
@@ -106,99 +76,112 @@ pub struct Api {
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
 }
 
-impl Api {
-    pub fn new() -> Api {
-        
-        if let Some(user32) = Module::new(b"user32.dll\0") {
-
-            Api {
-                MessageBoxA: load_proc!(user32,  1501 + 617),
-
-                RegisterClassA: load_proc!(user32, 1501 + 700),
-                CreateWindowExA: load_proc!(user32, 1501 + 121),
-
-                GetMessageA: load_proc!(user32, 1501 + 383),
-                TranslateMessage: load_proc!(user32, 1501 + 897),
-                DispatchMessageA: load_proc!(user32, 1501 + 190),
-                DefWindowProcA: load_proc!(user32, 1501 + 170),
-
-                LoadCursorA: load_proc!(user32, 1501 + 577),
-
-                user32: user32,
-            }
+#[inline]
+fn api() -> &'static Api {
+    unsafe {
+        if let Some(ref api) = API {
+            api
         } else {
             panic!();
         }
     }
+}
 
-    #[inline]
-    pub fn message_box(&self, text: &[u8], caption: &[u8], box_type: u32) {
-        unsafe {
-            (self.MessageBoxA)(ptr::null_mut(), &text[0], &caption[0], box_type);
-        }
-    }
+pub fn init() {
 
-    #[inline]
-    pub fn register_class(&self, name: &[u8], window_proc: WindowProc) -> bool {
-        let window_class = WindowClass {
-            style: CS_VREDRAW | CS_HREDRAW | CS_OWNDC,
-            window_proc: window_proc,
-            cls_extra: 0,
-            wnd_extra: 0,
-            instance: unsafe { GetModuleHandleA(ptr::null_mut()) },
-            icon: ptr::null_mut(),
-            cursor: unsafe { (self.LoadCursorA)(ptr::null_mut(), IDC_ARROW) },
-            background: ptr::null_mut(),
-            menu_name: ptr::null(),
-            class_name: &name[0],
-        };
+        if let Some(user32) = Module::new(b"user32.dll\0") {
 
-        unsafe { (self.RegisterClassA)(&window_class) != 0 }
-    }
+            unsafe {
+                API = Some(Api {
+                    MessageBoxA: load_proc!(user32,  1501 + 617),
 
-    #[inline]
-    pub fn create_window(&self, class_name: &[u8], name: &[u8]) -> WindowHandle {
-        unsafe {
-            (self.CreateWindowExA)(
-                    0,
-                    &class_name[0],
-                    &name[0],
-                    WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                    CW_USEDEFAULT,
-                    CW_USEDEFAULT,
-                    CW_USEDEFAULT,
-                    CW_USEDEFAULT,
-                    ptr::null_mut(),
-                    ptr::null_mut(),
-                    GetModuleHandleA(ptr::null_mut()),
-                    ptr::null_mut())
-        }
-    }
+                    RegisterClassA: load_proc!(user32, 1501 + 700),
+                    CreateWindowExA: load_proc!(user32, 1501 + 121),
 
-    #[inline]
-    pub fn get_message(&self) -> Option<Msg> {
-        let mut msg: Msg = unsafe { mem::uninitialized() };
-            
-        let msg_result = unsafe { (self.GetMessageA)(&mut msg, ptr::null_mut(), 0, 0) };
+                    GetMessageA: load_proc!(user32, 1501 + 383),
+                    TranslateMessage: load_proc!(user32, 1501 + 897),
+                    DispatchMessageA: load_proc!(user32, 1501 + 190),
+                    DefWindowProcA: load_proc!(user32, 1501 + 170),
 
-        if msg_result != 0 {
-            Some(msg)
+                    LoadCursorA: load_proc!(user32, 1501 + 577),
+
+                    user32: user32,
+                })
+            }
         } else {
-            None
+            panic!();
         }
-    }
 
-    #[inline]
-    pub fn translate_and_dispatch_message(&self, msg: &Msg) {
-        unsafe { 
-            (self.TranslateMessage)(msg as *const Msg);
-            (self.DispatchMessageA)(msg as *const Msg);
-        }
-    }
+}
 
-    #[inline]
-    pub fn def_window_proc(&self, window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
-
-        unsafe { (self.DefWindowProcA)(window, message, wparam, lparam) }
+pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
+    unsafe {
+        (api().MessageBoxA)(ptr::null_mut(), &text[0], &caption[0], box_type);
     }
+}
+
+pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
+    let window_class = WindowClass {
+        style: CS_VREDRAW | CS_HREDRAW | CS_OWNDC,
+        window_proc: window_proc,
+        cls_extra: 0,
+        wnd_extra: 0,
+        instance: unsafe { GetModuleHandleA(ptr::null_mut()) },
+        icon: ptr::null_mut(),
+        cursor: unsafe { (api().LoadCursorA)(ptr::null_mut(), IDC_ARROW) },
+        background: ptr::null_mut(),
+        menu_name: ptr::null(),
+        class_name: &name[0],
+    };
+
+    unsafe { (api().RegisterClassA)(&window_class) != 0 }
+}
+
+pub fn create_window(class_name: &[u8], name: &[u8]) -> WindowHandle {
+    unsafe {
+        (api().CreateWindowExA)(
+                0,
+                &class_name[0],
+                &name[0],
+                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                ptr::null_mut(),
+                ptr::null_mut(),
+                GetModuleHandleA(ptr::null_mut()),
+                ptr::null_mut())
+    }
+}
+
+pub fn get_message() -> Option<Msg> {
+    let mut msg: Msg = Msg {
+        window_handle: ptr::null_mut(),
+        message: 0,
+        wparam: 0,
+        lparam: 0,
+        time: 0,
+        point: Point { x: 0, y: 0 },
+    };
+        
+    let msg_result = unsafe { (api().GetMessageA)(&mut msg, ptr::null_mut(), 0, 0) };
+
+    if msg_result != 0 {
+        Some(msg)
+    } else {
+        None
+    }
+}
+
+pub fn translate_and_dispatch_message(msg: &Msg) {
+    unsafe { 
+        (api().TranslateMessage)(msg as *const Msg);
+        (api().DispatchMessageA)(msg as *const Msg);
+    }
+}
+
+pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
+
+    unsafe { (api().DefWindowProcA)(window, message, wparam, lparam) }
 }
