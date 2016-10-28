@@ -60,7 +60,9 @@ fn main() {
 
     let window = win32::create_window(WINDOW_CLASS, b"JProd\n\0");
 
-    gl::create_context();
+    let gl_dc = win32::get_dc(window);
+
+    let gl_context = gl::create_context(gl_dc);
 
     if window != ptr::null_mut() {
         loop {

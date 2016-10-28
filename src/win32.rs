@@ -2,6 +2,7 @@ use core::ptr;
 use win32_types::*;
 
 #[link_args = "kernel32.lib"]
+#[allow(dead_code)]
 extern "system" {
     fn OutputDebugStringA(output_string: *const u8);
     fn ExitProcess(exit_code: u32) -> !;
@@ -49,12 +50,6 @@ impl Module {
     }
 }
 
-/*impl Drop for Module {
-    fn drop(&mut self) {
-         unsafe { FreeLibrary(self.handle) }
-    }
-}*/
-
 static mut API: Option<Api> = None;
 
 #[allow(non_snake_case)]
@@ -67,6 +62,7 @@ struct Api {
 
     RegisterClassA: unsafe extern "system" fn(windowClass: *const WindowClass) -> Atom,
     CreateWindowExA: unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut Void) -> WindowHandle,
+    GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
 
     GetMessageA: unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: i32, msg_filter_max: i32) -> i32,
     TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
@@ -89,29 +85,29 @@ fn api() -> &'static Api {
 
 pub fn init() {
 
-        if let Some(user32) = Module::new(b"user32.dll\0") {
+    if let Some(user32) = Module::new(b"user32.dll\0") {
 
-            unsafe {
-                API = Some(Api {
-                    MessageBoxA: load_proc!(user32,  1501 + 617),
+        unsafe {
+            API = Some(Api {
+                MessageBoxA: load_proc!(user32,  1501 + 617),
 
-                    RegisterClassA: load_proc!(user32, 1501 + 700),
-                    CreateWindowExA: load_proc!(user32, 1501 + 121),
+                RegisterClassA: load_proc!(user32, 1501 + 700),
+                CreateWindowExA: load_proc!(user32, 1501 + 121),
+                GetDC: load_proc!(user32, 1501 + 322),
 
-                    GetMessageA: load_proc!(user32, 1501 + 383),
-                    TranslateMessage: load_proc!(user32, 1501 + 897),
-                    DispatchMessageA: load_proc!(user32, 1501 + 190),
-                    DefWindowProcA: load_proc!(user32, 1501 + 170),
+                GetMessageA: load_proc!(user32, 1501 + 383),
+                TranslateMessage: load_proc!(user32, 1501 + 897),
+                DispatchMessageA: load_proc!(user32, 1501 + 190),
+                DefWindowProcA: load_proc!(user32, 1501 + 170),
 
-                    LoadCursorA: load_proc!(user32, 1501 + 577),
+                LoadCursorA: load_proc!(user32, 1501 + 577),
 
-                    user32: user32,
-                })
-            }
-        } else {
-            panic!();
+                user32: user32,
+            })
         }
-
+    } else {
+        panic!();
+    }
 }
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
@@ -153,6 +149,10 @@ pub fn create_window(class_name: &[u8], name: &[u8]) -> WindowHandle {
                 GetModuleHandleA(ptr::null_mut()),
                 ptr::null_mut())
     }
+}
+
+pub fn get_dc(window: WindowHandle) -> DcHandle {
+    unsafe { (api().GetDC)(window) }
 }
 
 pub fn get_message() -> Option<Msg> {

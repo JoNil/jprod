@@ -42,6 +42,7 @@ fn api() -> &'static Api {
     }
 }
 
-pub fn create_context() {
-
+pub fn create_context(dc: DcHandle) -> GlrcHandle {
+    
+    unsafe { (api().wglCreateContext)(dc) }
 }
