@@ -2,13 +2,9 @@
 name = "jprod"
 version = "0.1.0"
 authors = ["Jonathan"]
-build = "build.rs"
 
 [dependencies]
 rlibc = "1.0"
-
-[build-dependencies]
-gcc = "0.3"
 
 [profile.release]
 opt-level = "s"
