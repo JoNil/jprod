@@ -23,7 +23,7 @@ impl Api {
 
             Api {
                 
-                wglCreateContext: load_proc!(opengl32,  b"wglCreateContext\0"),
+                wglCreateContext: load_proc!(opengl32, 346),
 
                 opengl32: opengl32,
             }

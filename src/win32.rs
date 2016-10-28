@@ -45,9 +45,9 @@ impl Module {
         }
     }
 
-    pub fn get_proc_address(&self, proc_name: &[u8]) -> Proc {
+    pub fn get_proc_address(&self, proc_name: *const u8) -> Proc {
 
-        unsafe { GetProcAddress(self.handle, &proc_name[0]) }   
+        unsafe { GetProcAddress(self.handle, proc_name) }   
     }
 }
 
@@ -112,17 +112,17 @@ impl Api {
         if let Some(user32) = Module::new(b"user32.dll\0") {
 
             Api {
-                MessageBoxA: load_proc!(user32,  b"MessageBoxA\0"),
+                MessageBoxA: load_proc!(user32,  1501 + 617),
 
-                RegisterClassA: load_proc!(user32, b"RegisterClassA\0"),
-                CreateWindowExA: load_proc!(user32, b"CreateWindowExA\0"),
+                RegisterClassA: load_proc!(user32, 1501 + 700),
+                CreateWindowExA: load_proc!(user32, 1501 + 121),
 
-                GetMessageA: load_proc!(user32, b"GetMessageA\0"),
-                TranslateMessage: load_proc!(user32, b"TranslateMessage\0"),
-                DispatchMessageA: load_proc!(user32, b"DispatchMessageA\0"),
-                DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
+                GetMessageA: load_proc!(user32, 1501 + 383),
+                TranslateMessage: load_proc!(user32, 1501 + 897),
+                DispatchMessageA: load_proc!(user32, 1501 + 190),
+                DefWindowProcA: load_proc!(user32, 1501 + 170),
 
-                LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
+                LoadCursorA: load_proc!(user32, 1501 + 577),
 
                 user32: user32,
             }
