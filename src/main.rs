@@ -10,10 +10,15 @@ extern {}
 
 extern crate rlibc;
 
+#[macro_use]
+mod win32_macros;
+
+mod opengl;
 mod win32;
+mod win32_types;
 
 use core::ptr;
-use win32::WindowHandle;
+use win32_types::*;
 
 static mut W32: *const win32::Api = ptr::null();
 
@@ -21,20 +26,20 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
     
     match msg {
 
-        win32::WM_SIZE => {
+        WM_SIZE => {
             win32::output_debug_string_a(b"WM_SIZE\n\0");
         }
 
-        win32::WM_CLOSE => {
+        WM_CLOSE => {
             win32::output_debug_string_a(b"WM_CLOSE\n\0");
             win32::exit_process(0);
         }
 
-        win32::WM_ACTIVATEAPP => {
+        WM_ACTIVATEAPP => {
             win32::output_debug_string_a(b"WM_ACTIVATEAPP\n\0");
         }
 
-        win32::WM_DESTROY =>  {
+        WM_DESTROY =>  {
             win32::output_debug_string_a(b"WM_DESTROY\n\0");
         }
 
@@ -50,11 +55,15 @@ fn main() {
     let w32 = win32::Api::new();
     unsafe { W32 = &w32 };
 
+    let gl = opengl::Api::new();
+
     if !w32.register_class(b"JProdWindowClass\n\0", window_proc) {
         panic!();
     }
 
     let window = w32.create_window(b"JProdWindowClass\n\0", b"JProd\n\0");
+
+    gl.create_context(&w32);
 
     if window != ptr::null_mut() {
         loop {

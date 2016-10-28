@@ -1,52 +1,7 @@
 use core::intrinsics::transmute;
 use core::mem;
 use core::ptr;
-
-macro_rules! load_proc {
-    ($module:expr, $name:expr) => {
-        {
-            let procedure = get_proc_address($module, $name);
-            if procedure == ptr::null_mut() {
-                panic!();
-            }
-            unsafe { transmute(procedure) }
-        }
-    }
-}
-
-pub enum Void {}
-pub type WindowHandle = *mut Void;
-pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
-type Atom = u16;
-type BrushHandle = *mut Void;
-type CursorHandle = *mut Void;
-type GdiObjectHandle = *mut Void;
-type Handle = *mut Void;
-type IconHandle = *mut Void;
-type InstanceHandle = *mut Void;
-type MenuHandle = *mut Void;
-type ModuleHandle = *mut Void;
-type Proc = *mut Void;
-
-pub const WM_ACTIVATEAPP: u32 = 0x001C;
-pub const WM_CLOSE: u32 = 0x0010;
-pub const WM_DESTROY: u32 = 0x0002;
-pub const WM_SIZE: u32 = 0x0005;
-
-const CS_HREDRAW: u32 = 0x0002;
-const CS_OWNDC: u32 = 0x0020;
-const CS_VREDRAW: u32 = 0x0001;
-const CW_USEDEFAULT: i32 = (0x80000000 as u32) as i32;
-const IDC_ARROW: usize = 32512;
-
-const WS_CAPTION: u32 = 0x00C00000;
-const WS_MAXIMIZEBOX: u32 = 0x00010000;
-const WS_MINIMIZEBOX: u32 = 0x00020000;
-const WS_OVERLAPPED: u32 = 0x00000000;
-const WS_SYSMENU: u32 = 0x00080000;
-const WS_THICKFRAME: u32 = 0x00040000;
-const WS_VISIBLE: u32 = 0x10000000;
-const WS_OVERLAPPEDWINDOW: u32 = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+use win32_types::*;
 
 #[link_args = "kernel32.lib"]
 extern "system" {
@@ -71,22 +26,35 @@ pub fn exit_process(exit_code: u32) -> ! {
     unsafe { ExitProcess(exit_code); }
 }
 
-#[inline]
-fn load_library_a(file_name: &[u8]) -> ModuleHandle {
-
-    unsafe { LoadLibraryA(&file_name[0]) }
+pub struct Module {
+    handle: ModuleHandle
 }
 
-#[inline]
-fn free_library(module: ModuleHandle) {
+impl Module {
 
-    unsafe { FreeLibrary(module) }
+    pub fn new(file_name: &[u8]) -> Option<Module> {
+
+        let handle = unsafe { LoadLibraryA(&file_name[0]) }; 
+
+        if handle == ptr::null_mut() {
+            None
+        } else {
+            Some(Module {
+                handle: handle,
+            })
+        }
+    }
+
+    pub fn get_proc_address(&self, proc_name: &[u8]) -> Proc {
+
+        unsafe { GetProcAddress(self.handle, &proc_name[0]) }   
+    }
 }
 
-#[inline]
-fn get_proc_address(module: ModuleHandle, proc_name: &[u8]) -> Proc {
-
-    unsafe { GetProcAddress(module, &proc_name[0]) }   
+impl Drop for Module {
+    fn drop(&mut self) {
+         unsafe { FreeLibrary(self.handle) }
+    }
 }
 
 #[repr(C)]
@@ -121,7 +89,9 @@ pub struct Msg {
 
 #[allow(non_snake_case)]
 pub struct Api {
-    user32: ModuleHandle,
+    
+    #[allow(dead_code)]
+    user32: Module,
 
     MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32,
 
@@ -139,14 +109,9 @@ pub struct Api {
 impl Api {
     pub fn new() -> Api {
         
-        let user32 = load_library_a(b"user32.dll\0");
-        if user32 == ptr::null_mut() {
-            panic!();
-        }
+        let user32 = Module::new(b"user32.dll\0").unwrap();
 
         Api {
-            user32: user32,
-            
             MessageBoxA: load_proc!(user32,  b"MessageBoxA\0"),
 
             RegisterClassA: load_proc!(user32, b"RegisterClassA\0"),
@@ -158,6 +123,8 @@ impl Api {
             DefWindowProcA: load_proc!(user32, b"DefWindowProcA\0"),
 
             LoadCursorA: load_proc!(user32, b"LoadCursorA\0"),
+
+            user32: user32,
         }
     }
 
@@ -230,14 +197,5 @@ impl Api {
     pub fn def_window_proc(&self, window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
         unsafe { (self.DefWindowProcA)(window, message, wparam, lparam) }
-    }
-}
-
-impl Drop for Api {
-    fn drop(&mut self) {
-        if self.user32 != ptr::null_mut() {
-            free_library(self.user32);
-            self.user32 = ptr::null_mut();
-        }
     }
 }
