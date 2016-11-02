@@ -1,4 +1,6 @@
+use core::mem;
 use module::Module;
+use win32;
 use win32_types::*;
 
 pub type GlrcHandle = *mut Void;
@@ -16,6 +18,14 @@ struct Api {
     wglMakeCurrent: unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32,
 
     wglGetProcAddress: unsafe extern "system" fn(name: *const u8) -> Proc,
+
+    //wglChoosePixelFormatARB: Option<>,
+
+    //wglCreateContextAttribsARB: Option<>,
+
+    //wglSwapIntervalEXT: Option<>,
+
+    wglGetExtensionsStringEXT: Option<unsafe extern "system" fn() -> *const u8>,
 }
 
 #[inline]
@@ -42,11 +52,29 @@ fn api() -> &'static Api {
 
                 wglGetProcAddress: load_proc!(opengl32, 356),
 
+                wglGetExtensionsStringEXT: None,
+
                 opengl32: opengl32,
             })
         }
     } else {
         panic!();
+    }
+}
+
+pub fn load_extensions() {
+
+    unsafe {
+        if let Some(ref mut api) = API {
+            
+            api.wglGetExtensionsStringEXT = Some(mem::transmute(get_proc_address(b"wglGetExtensionsStringEXT\0")));
+
+            win32::output_debug_string_raw((api.wglGetExtensionsStringEXT.unwrap())());
+
+
+        } else {
+            panic!();
+        }
     }
 }
 

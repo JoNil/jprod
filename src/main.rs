@@ -12,7 +12,6 @@ extern crate rlibc;
 #[macro_use]
 mod win32_macros;
 
-mod context;
 mod gdi32;
 mod module;
 mod opengl32;
@@ -31,20 +30,20 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
     match msg {
 
         WM_SIZE => {
-            win32::output_debug_string_a(b"WM_SIZE\n\0");
+            win32::output_debug_string(b"WM_SIZE\n\0");
         }
 
         WM_CLOSE => {
-            win32::output_debug_string_a(b"WM_CLOSE\n\0");
+            win32::output_debug_string(b"WM_CLOSE\n\0");
             win32::exit_process(0);
         }
 
         WM_ACTIVATEAPP => {
-            win32::output_debug_string_a(b"WM_ACTIVATEAPP\n\0");
+            win32::output_debug_string(b"WM_ACTIVATEAPP\n\0");
         }
 
         WM_DESTROY =>  {
-            win32::output_debug_string_a(b"WM_DESTROY\n\0");
+            win32::output_debug_string(b"WM_DESTROY\n\0");
         }
 
         _ => {
@@ -128,6 +127,7 @@ fn main() {
         panic!();
     }
 
+    opengl32::load_extensions();
 
     if window != ptr::null_mut() {
         loop {
@@ -159,5 +159,11 @@ pub extern fn rust_begin_panic(_msg: core::fmt::Arguments,
                                _file: &'static str,
                                _line: u32) -> ! {
 
+    win32::exit_process(1);
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
     win32::exit_process(1);
 }

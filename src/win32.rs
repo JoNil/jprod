@@ -14,9 +14,14 @@ extern "system" {
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 }
 
-pub fn output_debug_string_a(string: &[u8]) {
+pub fn output_debug_string(string: &[u8]) {
 
     unsafe { OutputDebugStringA(&string[0]); }
+}
+
+pub fn output_debug_string_raw(string: *const u8) {
+
+    unsafe { OutputDebugStringA(string); }
 }
 
 pub fn exit_process(exit_code: u32) -> ! {
