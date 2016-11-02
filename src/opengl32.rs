@@ -95,7 +95,6 @@ pub fn load_extensions() {
 
         if let Some(ref mut api) = API {
 
-
             api.ext = Some(ExtApi {
                 wglGetExtensionsStringEXT: wgl_load_proc!(b"wglGetExtensionsStringEXT\0"),
 
