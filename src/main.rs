@@ -55,7 +55,7 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
     return 0;
 }
 
-fn set_pixel_format(dc: DcHandle) {
+fn set_initial_pixel_format(dc: DcHandle) {
 
     let desired_pixel_format = PixelFormatDescriptor {
         size: mem::size_of::<PixelFormatDescriptor>() as u16,
@@ -87,11 +87,18 @@ fn set_pixel_format(dc: DcHandle) {
     };
 
     let suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
+    if suggested_pixel_format_index == 0 {
+        panic!();
+    }
 
     let mut suggested_pixel_format = unsafe { mem::uninitialized() };
-    gdi32::describe_pixel_format(dc, suggested_pixel_format_index, mem::size_of::<PixelFormatDescriptor>() as u32, &mut suggested_pixel_format);
+    if gdi32::describe_pixel_format(dc, suggested_pixel_format_index, mem::size_of::<PixelFormatDescriptor>() as u32, &mut suggested_pixel_format) == 0 {
+        panic!();
+    }
 
-    gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format);
+    if gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
+        panic!();
+    }
 }
 
 fn main() {
@@ -106,10 +113,21 @@ fn main() {
     let window = win32::create_window(WINDOW_CLASS, b"JProd\n\0");
 
     let gl_dc = win32::get_dc(window);
+    if gl_dc == ptr::null_mut() {
+        panic!();
+    }
 
-    set_pixel_format(gl_dc);
+    set_initial_pixel_format(gl_dc);
 
     let gl_context = opengl32::create_context(gl_dc);
+    if gl_context == ptr::null_mut() {
+        panic!();
+    }
+
+    if opengl32::make_current(gl_dc, gl_context) == 0 {
+        panic!();
+    }
+
 
     if window != ptr::null_mut() {
         loop {
