@@ -15,6 +15,7 @@ mod win32_macros;
 mod gdi32;
 mod module;
 mod opengl32;
+mod utils;
 mod win32;
 mod win32_types;
 mod window;
@@ -162,8 +163,8 @@ pub extern fn rust_begin_panic(_msg: core::fmt::Arguments,
     win32::exit_process(1);
 }
 
-#[allow(non_snake_case)]
+/*#[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
     win32::exit_process(1);
-}
+}*/
