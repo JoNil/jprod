@@ -4,7 +4,7 @@ macro_rules! load_proc {
         {
             use core;
 
-            let procedure = $module.get_proc_address($name as *const u8);
+            let procedure = $module.get_proc_address($name);
             if procedure == core::ptr::null_mut() {
                 panic!();
             }

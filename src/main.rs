@@ -12,11 +12,16 @@ extern crate rlibc;
 #[macro_use]
 mod win32_macros;
 
-mod gl;
+mod context;
+mod gdi32;
+mod module;
+mod opengl32;
 mod win32;
 mod win32_types;
+mod window;
 
 use core::ptr;
+use core::mem;
 use win32_types::*;
 
 static WINDOW_CLASS: &'static [u8] = b"C\0";
@@ -50,9 +55,49 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
     return 0;
 }
 
+fn set_pixel_format(dc: DcHandle) {
+
+    let desired_pixel_format = PixelFormatDescriptor {
+        size: mem::size_of::<PixelFormatDescriptor>() as u16,
+        version: 1,
+        flags: PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER,
+        pixel_type: PFD_TYPE_RGBA,
+        color_bits: 32,
+        red_bits: 0,
+        red_shift: 0,
+        green_bits: 0,
+        green_shift: 0,
+        blue_bits: 0,
+        blue_shift: 0,
+        alpha_bits: 8,
+        alpha_shift: 0,
+        accum_bits: 0,
+        accum_red_bits: 0,
+        accum_green_bits: 0,
+        accum_blue_bits: 0,
+        accum_alpha_bits: 0,
+        depth_bits: 0,
+        stencil_bits: 0,
+        aux_buffers: 0,
+        layer_type: PFD_MAIN_PLANE,
+        reserved: 0,
+        layer_mask: 0,
+        visible_mask: 0,
+        damage_mask: 0,
+    };
+
+    let suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
+
+    let mut suggested_pixel_format = unsafe { mem::uninitialized() };
+    gdi32::describe_pixel_format(dc, suggested_pixel_format_index, mem::size_of::<PixelFormatDescriptor>() as u32, &mut suggested_pixel_format);
+
+    gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format);
+}
+
 fn main() {
     win32::init();
-    gl::init();
+    gdi32::init();
+    opengl32::init();
 
     if !win32::register_class(WINDOW_CLASS, window_proc) {
         panic!();
@@ -62,7 +107,9 @@ fn main() {
 
     let gl_dc = win32::get_dc(window);
 
-    let gl_context = gl::create_context(gl_dc);
+    set_pixel_format(gl_dc);
+
+    let gl_context = opengl32::create_context(gl_dc);
 
     if window != ptr::null_mut() {
         loop {

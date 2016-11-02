@@ -64,3 +64,40 @@ pub struct WindowClass {
     pub menu_name: *const u8,
     pub class_name: *const u8,
 }
+
+pub const PFD_TYPE_RGBA: u8 = 0;
+pub const PFD_MAIN_PLANE: u8 = 0;
+
+pub const PFD_DOUBLEBUFFER: u32 = 0x00000001;
+pub const PFD_DRAW_TO_WINDOW: u32 = 0x00000004;
+pub const PFD_SUPPORT_OPENGL: u32 = 0x00000020;
+
+#[repr(C)]
+pub struct PixelFormatDescriptor {
+      pub size: u16,
+      pub version: u16,
+      pub flags: u32,
+      pub pixel_type: u8,
+      pub color_bits: u8,
+      pub red_bits: u8,
+      pub red_shift: u8,
+      pub green_bits: u8,
+      pub green_shift: u8,
+      pub blue_bits: u8,
+      pub blue_shift: u8,
+      pub alpha_bits: u8,
+      pub alpha_shift: u8,
+      pub accum_bits: u8,
+      pub accum_red_bits: u8,
+      pub accum_green_bits: u8,
+      pub accum_blue_bits: u8,
+      pub accum_alpha_bits: u8,
+      pub depth_bits: u8,
+      pub stencil_bits: u8,
+      pub aux_buffers: u8,
+      pub layer_type: u8,
+      pub reserved: u8,
+      pub layer_mask: u32,
+      pub visible_mask: u32,
+      pub damage_mask: u32,
+}

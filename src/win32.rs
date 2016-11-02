@@ -1,4 +1,5 @@
 use core::ptr;
+use module::Module;
 use win32_types::*;
 
 #[link_args = "kernel32.lib"]
@@ -13,41 +14,34 @@ extern "system" {
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 }
 
-#[inline]
 pub fn output_debug_string_a(string: &[u8]) {
 
     unsafe { OutputDebugStringA(&string[0]); }
 }
 
-#[inline]
 pub fn exit_process(exit_code: u32) -> ! {
     
     unsafe { ExitProcess(exit_code); }
 }
 
-pub struct Module {
-    pub handle: ModuleHandle
+pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
+
+    unsafe { GetModuleHandleA(&module_name[0]) }
 }
 
-impl Module {
+pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
-    pub fn new(file_name: &[u8]) -> Option<Module> {
+    unsafe { LoadLibraryA(&file_name[0]) }
+}
 
-        let handle = unsafe { LoadLibraryA(&file_name[0]) }; 
+pub fn free_library(module: ModuleHandle) {
 
-        if handle == ptr::null_mut() {
-            None
-        } else {
-            Some(Module {
-                handle: handle,
-            })
-        }
-    }
+    unsafe { FreeLibrary(module); }
+}
 
-    pub fn get_proc_address(&self, proc_name: *const u8) -> Proc {
+pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
 
-        unsafe { GetProcAddress(self.handle, proc_name) }   
-    }
+    unsafe { GetProcAddress(module, proc_index as *const u8) }
 }
 
 static mut API: Option<Api> = None;
