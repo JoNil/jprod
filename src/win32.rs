@@ -1,3 +1,4 @@
+use c_types::*;
 use core::ptr;
 use module::Module;
 use win32_types::*;
@@ -60,7 +61,7 @@ struct Api {
     MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32,
 
     RegisterClassA: unsafe extern "system" fn(windowClass: *const WindowClass) -> Atom,
-    CreateWindowExA: unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut Void) -> WindowHandle,
+    CreateWindowExA: unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle,
     GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
 
     GetMessageA: unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: i32, msg_filter_max: i32) -> i32,

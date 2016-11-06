@@ -1,17 +1,17 @@
-pub enum Void {}
+use c_types::c_void;
 
 pub type Atom = u16;
-pub type BrushHandle = *mut Void;
-pub type CursorHandle = *mut Void;
-pub type DcHandle = *mut Void;
-pub type GdiObjectHandle = *mut Void;
-pub type Handle = *mut Void;
-pub type IconHandle = *mut Void;
-pub type InstanceHandle = *mut Void;
-pub type MenuHandle = *mut Void;
-pub type ModuleHandle = *mut Void;
-pub type Proc = *mut Void;
-pub type WindowHandle = *mut Void;
+pub type BrushHandle = *mut c_void;
+pub type CursorHandle = *mut c_void;
+pub type DcHandle = *mut c_void;
+pub type GdiObjectHandle = *mut c_void;
+pub type Handle = *mut c_void;
+pub type IconHandle = *mut c_void;
+pub type InstanceHandle = *mut c_void;
+pub type MenuHandle = *mut c_void;
+pub type ModuleHandle = *mut c_void;
+pub type Proc = *mut c_void;
+pub type WindowHandle = *mut c_void;
 pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
 
 pub const CS_HREDRAW: u32 = 0x0002;

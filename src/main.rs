@@ -12,7 +12,9 @@ extern crate rlibc;
 #[macro_use]
 mod win32_macros;
 
+mod c_types;
 mod gdi32;
+mod gl;
 mod module;
 mod opengl32;
 mod utils;
@@ -129,6 +131,8 @@ fn main() {
     }
 
     opengl32::load_extensions();
+
+    gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
 
     if window != ptr::null_mut() {
         loop {
