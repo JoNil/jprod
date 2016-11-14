@@ -1,3 +1,5 @@
+#![allow(non_upper_case_globals)]
+
 use c_types::*;
 use core::mem;
 

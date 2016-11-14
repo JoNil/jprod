@@ -1,3 +1,5 @@
+#![allow(non_camel_case_types)]
+
 pub enum c_void {}
 
 pub type c_char = u8;
