@@ -143,9 +143,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
 }
 
 fn main() {
-    win32::init();
-    gdi32::init();
-    opengl32::init();
+    
 
     if !win32::register_class(WINDOW_CLASS, window_proc) {
         panic!();
@@ -223,6 +221,10 @@ fn main() {
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
+
+    win32::init();
+    gdi32::init();
+    opengl32::init();
 
     main();
 
