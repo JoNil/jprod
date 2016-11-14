@@ -17,17 +17,23 @@ extern "system" {
 
 pub fn output_debug_string(string: &[u8]) {
 
-    unsafe { OutputDebugStringA(&string[0]); }
+    unsafe {
+        OutputDebugStringA(&string[0]);
+    }
 }
 
 pub fn output_debug_string_raw(string: *const u8) {
 
-    unsafe { OutputDebugStringA(string); }
+    unsafe {
+        OutputDebugStringA(string);
+    }
 }
 
 pub fn exit_process(exit_code: u32) -> ! {
-    
-    unsafe { ExitProcess(exit_code); }
+
+    unsafe {
+        ExitProcess(exit_code);
+    }
 }
 
 pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
@@ -42,7 +48,9 @@ pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
 pub fn free_library(module: ModuleHandle) {
 
-    unsafe { FreeLibrary(module); }
+    unsafe {
+        FreeLibrary(module);
+    }
 }
 
 pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
@@ -54,20 +62,43 @@ static mut API: Option<Api> = None;
 
 #[allow(non_snake_case)]
 struct Api {
-    
     #[allow(dead_code)]
     user32: Module,
 
-    MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32,
+    MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle,
+                                           text: *const u8,
+                                           caption: *const u8,
+                                           message_type: u32)
+                                           -> i32,
 
     RegisterClassA: unsafe extern "system" fn(windowClass: *const WindowClass) -> Atom,
-    CreateWindowExA: unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle,
+    CreateWindowExA: unsafe extern "system" fn(ex_style: u32,
+                                               class_name: *const u8,
+                                               window_name: *const u8,
+                                               style: u32,
+                                               x: i32,
+                                               y: i32,
+                                               width: i32,
+                                               height: i32,
+                                               parent_winodw: WindowHandle,
+                                               menu: MenuHandle,
+                                               instance: InstanceHandle,
+                                               param: *mut c_void)
+                                               -> WindowHandle,
     GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
 
-    GetMessageA: unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: i32, msg_filter_max: i32) -> i32,
+    GetMessageA: unsafe extern "system" fn(msg: *mut Msg,
+                                           window_handle: WindowHandle,
+                                           msg_filter_min: i32,
+                                           msg_filter_max: i32)
+                                           -> i32,
     TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DispatchMessageA: unsafe extern "system" fn(msg: *const Msg) -> i32,
-    DefWindowProcA: unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize,
+    DefWindowProcA: unsafe extern "system" fn(window: WindowHandle,
+                                              message: u32,
+                                              wparam: usize,
+                                              lparam: usize)
+                                              -> usize,
 
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
 }
@@ -89,7 +120,7 @@ pub fn init() {
 
         unsafe {
             API = Some(Api {
-                MessageBoxA: load_proc!(user32,  1501 + 617),
+                MessageBoxA: load_proc!(user32, 1501 + 617),
 
                 RegisterClassA: load_proc!(user32, 1501 + 700),
                 CreateWindowExA: load_proc!(user32, 1501 + 121),
@@ -135,19 +166,18 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
 
 pub fn create_window(class_name: &[u8], name: &[u8]) -> WindowHandle {
     unsafe {
-        (api().CreateWindowExA)(
-                0,
-                &class_name[0],
-                &name[0],
-                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                CW_USEDEFAULT,
-                CW_USEDEFAULT,
-                CW_USEDEFAULT,
-                CW_USEDEFAULT,
-                ptr::null_mut(),
-                ptr::null_mut(),
-                GetModuleHandleA(ptr::null_mut()),
-                ptr::null_mut())
+        (api().CreateWindowExA)(0,
+                                &class_name[0],
+                                &name[0],
+                                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                                CW_USEDEFAULT,
+                                CW_USEDEFAULT,
+                                CW_USEDEFAULT,
+                                CW_USEDEFAULT,
+                                ptr::null_mut(),
+                                ptr::null_mut(),
+                                GetModuleHandleA(ptr::null_mut()),
+                                ptr::null_mut())
     }
 }
 
@@ -164,18 +194,14 @@ pub fn get_message() -> Option<Msg> {
         time: 0,
         point: Point { x: 0, y: 0 },
     };
-        
+
     let msg_result = unsafe { (api().GetMessageA)(&mut msg, ptr::null_mut(), 0, 0) };
 
-    if msg_result != 0 {
-        Some(msg)
-    } else {
-        None
-    }
+    if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
-    unsafe { 
+    unsafe {
         (api().TranslateMessage)(msg as *const Msg);
         (api().DispatchMessageA)(msg as *const Msg);
     }

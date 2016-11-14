@@ -5,7 +5,7 @@
 #![no_std]
 
 #[link_args = "/SUBSYSTEM:WINDOWS"]
-extern {}
+extern "C" {}
 
 extern crate rlibc;
 
@@ -28,8 +28,12 @@ use win32_types::*;
 
 static WINDOW_CLASS: &'static [u8] = b"C\0";
 
-extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
-    
+extern "system" fn window_proc(window: WindowHandle,
+                               msg: u32,
+                               wparam: usize,
+                               lparam: usize)
+                               -> usize {
+
     match msg {
 
         WM_SIZE => {
@@ -45,7 +49,7 @@ extern "system" fn window_proc(window: WindowHandle, msg: u32, wparam: usize, lp
             win32::output_debug_string(b"WM_ACTIVATEAPP\n\0");
         }
 
-        WM_DESTROY =>  {
+        WM_DESTROY => {
             win32::output_debug_string(b"WM_DESTROY\n\0");
         }
 
@@ -94,7 +98,10 @@ fn set_initial_pixel_format(dc: DcHandle) {
     }
 
     let mut suggested_pixel_format = unsafe { mem::uninitialized() };
-    if gdi32::describe_pixel_format(dc, suggested_pixel_format_index, mem::size_of::<PixelFormatDescriptor>() as u32, &mut suggested_pixel_format) == 0 {
+    if gdi32::describe_pixel_format(dc,
+                                    suggested_pixel_format_index,
+                                    mem::size_of::<PixelFormatDescriptor>() as u32,
+                                    &mut suggested_pixel_format) == 0 {
         panic!();
     }
 
@@ -150,25 +157,26 @@ fn main() {
 pub extern "system" fn WinMainCRTStartup() {
 
     main();
-    
+
     win32::exit_process(0);
 }
 
 #[lang = "eh_personality"]
 #[no_mangle]
-pub extern fn eh_personality() {}
+pub extern "C" fn eh_personality() {}
 
 #[lang = "panic_fmt"]
 #[no_mangle]
-pub extern fn rust_begin_panic(_msg: core::fmt::Arguments,
-                               _file: &'static str,
-                               _line: u32) -> ! {
+pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
+                                   _file: &'static str,
+                                   _line: u32)
+                                   -> ! {
 
     win32::exit_process(1);
 }
 
-/*#[allow(non_snake_case)]
-#[no_mangle]
-pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
-    win32::exit_process(1);
-}*/
+// #[allow(non_snake_case)]
+// #[no_mangle]
+// pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
+// win32::exit_process(1);
+// }

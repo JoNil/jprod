@@ -10,16 +10,24 @@ static mut API: Option<Api> = None;
 struct ExtApi {
     wglGetExtensionsStringEXT: unsafe extern "system" fn() -> *const u8,
 
-    wglChoosePixelFormatARB: unsafe extern "system" fn(dc: DcHandle, attrib_i_list: *const i32, attrib_f_list: *const f32, max_formats: u32, pixel_formats: *mut i32, num_formats: *mut u32) -> i32,
+    wglChoosePixelFormatARB: unsafe extern "system" fn(dc: DcHandle,
+                                                       attrib_i_list: *const i32,
+                                                       attrib_f_list: *const f32,
+                                                       max_formats: u32,
+                                                       pixel_formats: *mut i32,
+                                                       num_formats: *mut u32)
+                                                       -> i32,
 
-    wglCreateContextAttribsARB: unsafe extern "system" fn(dc: DcHandle, shared_context: GlrcHandle, attrib_list: *const i32) -> GlrcHandle,
+    wglCreateContextAttribsARB: unsafe extern "system" fn(dc: DcHandle,
+                                                          shared_context: GlrcHandle,
+                                                          attrib_list: *const i32)
+                                                          -> GlrcHandle,
 
     wglSwapIntervalEXT: unsafe extern "system" fn(interval: i32) -> i32,
 }
 
 #[allow(non_snake_case)]
 struct Api {
-
     #[allow(dead_code)]
     opengl32: Module,
 
@@ -52,13 +60,12 @@ fn ext_api() -> &'static ExtApi {
     }
 }
 
- pub fn init() {
-    
+pub fn init() {
+
     if let Some(opengl32) = Module::new(b"Opengl32.dll\0") {
 
         unsafe {
             API = Some(Api {
-                
                 wglCreateContext: load_proc!(opengl32, 346),
 
                 wglMakeCurrent: load_proc!(opengl32, 357),
@@ -113,17 +120,17 @@ pub fn load_extensions() {
 }
 
 pub fn create_context(dc: DcHandle) -> GlrcHandle {
-    
+
     unsafe { (api().wglCreateContext)(dc) }
 }
 
 pub fn make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
-    
+
     unsafe { (api().wglMakeCurrent)(dc, context) }
 }
 
 pub fn get_proc_address(name: &[u8]) -> Proc {
-    
+
     unsafe { (api().wglGetProcAddress)(&name[0]) }
 }
 
@@ -132,12 +139,28 @@ pub fn get_extensions_string() -> *const u8 {
     unsafe { (ext_api().wglGetExtensionsStringEXT)() }
 }
 
-pub fn choose_pixel_format(dc: DcHandle, attrib_i_list: *const i32, attrib_f_list: *const f32, max_formats: u32, pixel_formats: *mut i32, num_formats: *mut u32)  -> i32 {
+pub fn choose_pixel_format(dc: DcHandle,
+                           attrib_i_list: *const i32,
+                           attrib_f_list: *const f32,
+                           max_formats: u32,
+                           pixel_formats: *mut i32,
+                           num_formats: *mut u32)
+                           -> i32 {
 
-    unsafe { (ext_api().wglChoosePixelFormatARB)(dc, attrib_i_list, attrib_f_list, max_formats, pixel_formats, num_formats) }
+    unsafe {
+        (ext_api().wglChoosePixelFormatARB)(dc,
+                                            attrib_i_list,
+                                            attrib_f_list,
+                                            max_formats,
+                                            pixel_formats,
+                                            num_formats)
+    }
 }
 
-pub fn create_context_attribs(dc: DcHandle, shared_context: GlrcHandle, attrib_list: *const i32) -> GlrcHandle {
+pub fn create_context_attribs(dc: DcHandle,
+                              shared_context: GlrcHandle,
+                              attrib_list: *const i32)
+                              -> GlrcHandle {
 
     unsafe { (ext_api().wglCreateContextAttribsARB)(dc, shared_context, attrib_list) }
 }

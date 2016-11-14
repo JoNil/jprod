@@ -1,3 +1,4 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(non_upper_case_globals)]
 
 use c_types::*;

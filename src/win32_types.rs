@@ -12,7 +12,11 @@ pub type MenuHandle = *mut c_void;
 pub type ModuleHandle = *mut c_void;
 pub type Proc = *mut c_void;
 pub type WindowHandle = *mut c_void;
-pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
+pub type WindowProc = extern "system" fn(window: WindowHandle,
+                                         message: u32,
+                                         wparam: usize,
+                                         lparam: usize)
+                                         -> usize;
 
 pub const CS_HREDRAW: u32 = 0x0002;
 pub const CS_OWNDC: u32 = 0x0020;
@@ -33,7 +37,8 @@ pub const WS_OVERLAPPED: u32 = 0x00000000;
 pub const WS_SYSMENU: u32 = 0x00080000;
 pub const WS_THICKFRAME: u32 = 0x00040000;
 pub const WS_VISIBLE: u32 = 0x10000000;
-pub const WS_OVERLAPPEDWINDOW: u32 = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+pub const WS_OVERLAPPEDWINDOW: u32 =
+    WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
 #[repr(C)]
 pub struct Point {
@@ -74,30 +79,30 @@ pub const PFD_SUPPORT_OPENGL: u32 = 0x00000020;
 
 #[repr(C)]
 pub struct PixelFormatDescriptor {
-      pub size: u16,
-      pub version: u16,
-      pub flags: u32,
-      pub pixel_type: u8,
-      pub color_bits: u8,
-      pub red_bits: u8,
-      pub red_shift: u8,
-      pub green_bits: u8,
-      pub green_shift: u8,
-      pub blue_bits: u8,
-      pub blue_shift: u8,
-      pub alpha_bits: u8,
-      pub alpha_shift: u8,
-      pub accum_bits: u8,
-      pub accum_red_bits: u8,
-      pub accum_green_bits: u8,
-      pub accum_blue_bits: u8,
-      pub accum_alpha_bits: u8,
-      pub depth_bits: u8,
-      pub stencil_bits: u8,
-      pub aux_buffers: u8,
-      pub layer_type: u8,
-      pub reserved: u8,
-      pub layer_mask: u32,
-      pub visible_mask: u32,
-      pub damage_mask: u32,
+    pub size: u16,
+    pub version: u16,
+    pub flags: u32,
+    pub pixel_type: u8,
+    pub color_bits: u8,
+    pub red_bits: u8,
+    pub red_shift: u8,
+    pub green_bits: u8,
+    pub green_shift: u8,
+    pub blue_bits: u8,
+    pub blue_shift: u8,
+    pub alpha_bits: u8,
+    pub alpha_shift: u8,
+    pub accum_bits: u8,
+    pub accum_red_bits: u8,
+    pub accum_green_bits: u8,
+    pub accum_blue_bits: u8,
+    pub accum_alpha_bits: u8,
+    pub depth_bits: u8,
+    pub stencil_bits: u8,
+    pub aux_buffers: u8,
+    pub layer_type: u8,
+    pub reserved: u8,
+    pub layer_mask: u32,
+    pub visible_mask: u32,
+    pub damage_mask: u32,
 }
