@@ -170,12 +170,12 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
     unsafe { (api().RegisterClassA)(&window_class) != 0 }
 }
 
-pub fn create_window(class_name: &[u8], name: &[u8]) -> WindowHandle {
+pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
         (api().CreateWindowExA)(0,
                                 &class_name[0],
                                 &name[0],
-                                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                                WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
                                 CW_USEDEFAULT,
                                 CW_USEDEFAULT,
                                 CW_USEDEFAULT,

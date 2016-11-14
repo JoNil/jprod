@@ -1,5 +1,6 @@
-use module::Module;
 use c_types::*;
+use core::ptr;
+use module::Module;
 use win32_types::*;
 
 pub type GlrcHandle = *mut c_void;
@@ -90,7 +91,7 @@ macro_rules! wgl_load_proc {
             use core;
 
             let procedure = get_proc_address($name);
-            if procedure == core::ptr::null_mut() {
+            if procedure == ptr::null_mut() {
                 panic!();
             }
             #[allow(unused_unsafe)]
@@ -147,29 +148,28 @@ pub fn get_extensions_string() -> *const u8 {
 }
 
 pub fn choose_pixel_format(dc: DcHandle,
-                           attrib_i_list: *const i32,
-                           attrib_f_list: *const f32,
-                           max_formats: u32,
-                           pixel_formats: *mut i32,
-                           num_formats: *mut u32)
+                           attrib_i_list: Option<&[i32]>,
+                           attrib_f_list: Option<&[f32]>,
+                           pixel_formats: &mut i32,
+                           num_formats: &mut u32)
                            -> i32 {
 
     unsafe {
         (ext_api().wglChoosePixelFormatARB)(dc,
-                                            attrib_i_list,
-                                            attrib_f_list,
-                                            max_formats,
-                                            pixel_formats,
-                                            num_formats)
+                                            if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
+                                            if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
+                                            1,
+                                            pixel_formats as *mut _,
+                                            num_formats as *mut _)
     }
 }
 
 pub fn create_context_attribs(dc: DcHandle,
                               shared_context: GlrcHandle,
-                              attrib_list: *const i32)
+                              attrib_list: &[i32])
                               -> GlrcHandle {
 
-    unsafe { (ext_api().wglCreateContextAttribsARB)(dc, shared_context, attrib_list) }
+    unsafe { (ext_api().wglCreateContextAttribsARB)(dc, shared_context, &attrib_list[0]) }
 }
 
 pub fn swap_interval(interval: i32) -> i32 {
