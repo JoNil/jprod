@@ -32,6 +32,7 @@ struct Api {
     opengl32: Module,
 
     wglCreateContext: unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle,
+    wglDeleteContext: unsafe extern "system" fn(glrc: GlrcHandle) -> i32,
 
     wglMakeCurrent: unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32,
 
@@ -67,6 +68,7 @@ pub fn init() {
         unsafe {
             API = Some(Api {
                 wglCreateContext: load_proc!(opengl32, 346),
+                wglDeleteContext : load_proc!(opengl32, 348),
 
                 wglMakeCurrent: load_proc!(opengl32, 357),
 
@@ -122,6 +124,11 @@ pub fn load_extensions() {
 pub fn create_context(dc: DcHandle) -> GlrcHandle {
 
     unsafe { (api().wglCreateContext)(dc) }
+}
+
+pub fn delete_context(glrc: GlrcHandle) -> i32 {
+
+    unsafe { (api().wglDeleteContext)(glrc) }
 }
 
 pub fn make_current(dc: DcHandle, context: GlrcHandle) -> i32 {

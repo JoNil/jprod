@@ -115,39 +115,58 @@ fn main() {
     gdi32::init();
     opengl32::init();
 
-    if !win32::register_class(WINDOW_CLASS, window_proc) {
-        panic!();
+    {
+        if !win32::register_class(WINDOW_CLASS, window_proc) {
+            panic!();
+        }
+    
+        let window = win32::create_window(WINDOW_CLASS, b"JProd\n\0");
+
+        let gl_dc = win32::get_dc(window);
+        if gl_dc == ptr::null_mut() {
+            panic!();
+        }
+
+        set_initial_pixel_format(gl_dc);
+
+        let gl_context = opengl32::create_context(gl_dc);
+        if gl_context == ptr::null_mut() {
+            panic!();
+        }
+
+        if opengl32::make_current(gl_dc, gl_context) == 0 {
+            panic!();
+        }
+
+        opengl32::load_extensions();
+
+        if opengl32::make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
+            panic!();
+        }
+
+        if opengl32::delete_context(gl_context) == 0 {
+            panic!();
+        }
+
+        if win32::release_dc(window, gl_dc) == 0 {
+            panic!();
+        }
+
+        if win32::destroy_window(window) == 0 {
+            panic!();
+        }
+
     }
 
-    let window = win32::create_window(WINDOW_CLASS, b"JProd\n\0");
+    //gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
 
-    let gl_dc = win32::get_dc(window);
-    if gl_dc == ptr::null_mut() {
-        panic!();
-    }
-
-    set_initial_pixel_format(gl_dc);
-
-    let gl_context = opengl32::create_context(gl_dc);
-    if gl_context == ptr::null_mut() {
-        panic!();
-    }
-
-    if opengl32::make_current(gl_dc, gl_context) == 0 {
-        panic!();
-    }
-
-    opengl32::load_extensions();
-
-    gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
-
-    if window != ptr::null_mut() {
+    /*if window != ptr::null_mut() {
         loop {
             if let Some(msg) = win32::get_message() {
                 win32::translate_and_dispatch_message(&msg);
             }
         }
-    }
+    }*/
 
     win32::message_box(b"Hi\0", b"there\0", 0);
 }

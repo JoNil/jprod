@@ -85,7 +85,10 @@ struct Api {
                                                instance: InstanceHandle,
                                                param: *mut c_void)
                                                -> WindowHandle,
+    DestroyWindow: unsafe extern "system" fn(window_handle: WindowHandle) -> i32,
+
     GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
+    ReleaseDC: unsafe extern "system" fn(window: WindowHandle, dc: DcHandle) -> i32,
 
     GetMessageA: unsafe extern "system" fn(msg: *mut Msg,
                                            window_handle: WindowHandle,
@@ -124,7 +127,10 @@ pub fn init() {
 
                 RegisterClassA: load_proc!(user32, 1501 + 700),
                 CreateWindowExA: load_proc!(user32, 1501 + 121),
+                DestroyWindow: load_proc!(user32, 1501 + 183),
+                
                 GetDC: load_proc!(user32, 1501 + 322),
+                ReleaseDC: load_proc!(user32, 1501 + 733),
 
                 GetMessageA: load_proc!(user32, 1501 + 383),
                 TranslateMessage: load_proc!(user32, 1501 + 897),
@@ -181,8 +187,16 @@ pub fn create_window(class_name: &[u8], name: &[u8]) -> WindowHandle {
     }
 }
 
+pub fn destroy_window(window: WindowHandle) -> i32 {
+    unsafe { (api().DestroyWindow)(window) }
+}
+
 pub fn get_dc(window: WindowHandle) -> DcHandle {
     unsafe { (api().GetDC)(window) }
+}
+
+pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
+    unsafe { (api().ReleaseDC)(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
