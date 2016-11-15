@@ -8,8 +8,7 @@ use win32_types::*;
 static WINDOW_NAME: &'static [u8] = b"JProd\n\0";
 static WINDOW_CLASS: &'static [u8] = b"C\0";
 
-static WGL_ATTRIBS: &'static [i32] =
-&[
+static WGL_ATTRIBS: &'static [i32] = &[
     WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
     WGL_CONTEXT_MINOR_VERSION_ARB, 5,
     WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
@@ -17,8 +16,7 @@ static WGL_ATTRIBS: &'static [i32] =
     0,
 ];
 
-static WINDOW_ATTRIBS: &'static [i32] =
-&[
+static WINDOW_ATTRIBS: &'static [i32] = &[
     WGL_DRAW_TO_WINDOW_ARB, 1,
     WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
     WGL_SUPPORT_OPENGL_ARB, 1,
@@ -32,7 +30,6 @@ extern "system" fn window_proc(window: WindowHandle,
                                wparam: usize,
                                lparam: usize)
                                -> usize {
-
     match msg {
 
         WM_SIZE => {
@@ -66,7 +63,11 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
     let mut extended_pick = 0;
 
     if !initial {
-        if opengl32::choose_pixel_format(dc, Some(WINDOW_ATTRIBS), None, &mut suggested_pixel_format_index, &mut extended_pick) == 0 {
+        if opengl32::choose_pixel_format(dc,
+                                         Some(WINDOW_ATTRIBS),
+                                         None,
+                                         &mut suggested_pixel_format_index,
+                                         &mut extended_pick) == 0 {
             panic!();
         }
     }
@@ -143,7 +144,10 @@ impl RawWindow {
             panic!();
         }
 
-        RawDc { window: self, handle: dc }
+        RawDc {
+            window: self,
+            handle: dc,
+        }
     }
 }
 
@@ -166,16 +170,19 @@ impl RawDc {
         set_pixel_format(self.handle, inital);
 
         let context = if inital {
-                opengl32::create_context(self.handle)
-            } else {
-                opengl32::create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
-            };
+            opengl32::create_context(self.handle)
+        } else {
+            opengl32::create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
+        };
 
         if context == ptr::null_mut() {
             panic!();
         }
 
-        RawContext { dc: self, handle: context }
+        RawContext {
+            dc: self,
+            handle: context,
+        }
     }
 }
 
@@ -247,5 +254,4 @@ impl Window {
             win32::translate_and_dispatch_message(&msg);
         }
     }
-
 }
