@@ -5,6 +5,7 @@ pub type BrushHandle = *mut c_void;
 pub type CursorHandle = *mut c_void;
 pub type DcHandle = *mut c_void;
 pub type GdiObjectHandle = *mut c_void;
+pub type GlrcHandle = *mut c_void;
 pub type Handle = *mut c_void;
 pub type IconHandle = *mut c_void;
 pub type InstanceHandle = *mut c_void;

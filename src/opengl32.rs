@@ -1,9 +1,6 @@
-use c_types::*;
 use core::ptr;
 use module::Module;
 use win32_types::*;
-
-pub type GlrcHandle = *mut c_void;
 
 static mut API: Option<Api> = None;
 
