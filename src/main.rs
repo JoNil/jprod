@@ -30,9 +30,11 @@ fn main() {
 
     gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
 
-    window.process_messages();
+    loop {
+        window.process_messages();
 
-    win32::message_box(b"Hi\0", b"there\0", 0);
+        // win32::message_box(b"Frame\0", b"Frame\0", 0);
+    }
 }
 
 #[allow(non_snake_case)]

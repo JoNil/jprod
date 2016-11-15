@@ -66,7 +66,7 @@ pub fn init() {
         unsafe {
             API = Some(Api {
                 wglCreateContext: load_proc!(opengl32, 346),
-                wglDeleteContext : load_proc!(opengl32, 348),
+                wglDeleteContext: load_proc!(opengl32, 348),
 
                 wglMakeCurrent: load_proc!(opengl32, 357),
 
@@ -153,8 +153,16 @@ pub fn choose_pixel_format(dc: DcHandle,
 
     unsafe {
         (ext_api().wglChoosePixelFormatARB)(dc,
-                                            if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
-                                            if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
+                                            if let Some(i_attrib) = attrib_i_list {
+                                                &i_attrib[0]
+                                            } else {
+                                                ptr::null()
+                                            },
+                                            if let Some(f_attrib) = attrib_f_list {
+                                                &f_attrib[0]
+                                            } else {
+                                                ptr::null()
+                                            },
                                             1,
                                             pixel_formats as *mut _,
                                             num_formats as *mut _)

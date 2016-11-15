@@ -243,10 +243,8 @@ impl Window {
     }
 
     pub fn process_messages(&self) {
-        loop {
-            if let Some(msg) = win32::get_message() {
-                win32::translate_and_dispatch_message(&msg);
-            }
+        while let Some(msg) = win32::get_message() {
+            win32::translate_and_dispatch_message(&msg);
         }
     }
 

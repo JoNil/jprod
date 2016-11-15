@@ -90,11 +90,12 @@ struct Api {
     GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
     ReleaseDC: unsafe extern "system" fn(window: WindowHandle, dc: DcHandle) -> i32,
 
-    GetMessageA: unsafe extern "system" fn(msg: *mut Msg,
-                                           window_handle: WindowHandle,
-                                           msg_filter_min: i32,
-                                           msg_filter_max: i32)
-                                           -> i32,
+    PeekMessageA: unsafe extern "system" fn(msg: *mut Msg,
+                                            window_handle: WindowHandle,
+                                            msg_filter_min: u32,
+                                            msg_filter_max: u32,
+                                            remove_message: u32)
+                                            -> i32,
     TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DispatchMessageA: unsafe extern "system" fn(msg: *const Msg) -> i32,
     DefWindowProcA: unsafe extern "system" fn(window: WindowHandle,
@@ -128,11 +129,11 @@ pub fn init() {
                 RegisterClassA: load_proc!(user32, 1501 + 700),
                 CreateWindowExA: load_proc!(user32, 1501 + 121),
                 DestroyWindow: load_proc!(user32, 1501 + 183),
-                
+
                 GetDC: load_proc!(user32, 1501 + 322),
                 ReleaseDC: load_proc!(user32, 1501 + 733),
 
-                GetMessageA: load_proc!(user32, 1501 + 383),
+                PeekMessageA: load_proc!(user32, 1501 + 654),
                 TranslateMessage: load_proc!(user32, 1501 + 897),
                 DispatchMessageA: load_proc!(user32, 1501 + 190),
                 DefWindowProcA: load_proc!(user32, 1501 + 170),
@@ -209,7 +210,7 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { (api().GetMessageA)(&mut msg, ptr::null_mut(), 0, 0) };
+    let msg_result = unsafe { (api().PeekMessageA)(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
