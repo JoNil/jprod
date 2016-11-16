@@ -30,6 +30,29 @@ fn main() {
 
     gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
 
+    gl::CreateProgram::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteProgram::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::CreateShader::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteShader::load_with(|s| opengl32::get_proc_address(s));
+
+
+    let program = unsafe { gl::CreateProgram() };
+    if program == 0 {
+        panic!();
+    }
+
+    let fragment = unsafe { gl::CreateShader(gl::FRAGMENT_SHADER) };
+    if fragment == 0 {
+        panic!();
+    }
+
+    let vertex = unsafe { gl::CreateShader(gl::VERTEX_SHADER) };
+    if vertex == 0 {
+        panic!();
+    }
+
+
     loop {
         window.process_messages();
 
@@ -38,6 +61,10 @@ fn main() {
 
         window.swap();
     }
+
+    unsafe { gl::DeleteProgram(program) };
+    unsafe { gl::DeleteShader(fragment) };
+    unsafe { gl::DeleteShader(vertex) };
 }
 
 #[allow(non_snake_case)]
