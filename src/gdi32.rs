@@ -22,6 +22,8 @@ struct Api {
                                               pixel_format: i32,
                                               descriptor: *const PixelFormatDescriptor)
                                               -> i32,
+
+    SwapBuffers: unsafe extern "system" fn(dc: DcHandle) -> i32,
 }
 
 #[inline]
@@ -46,6 +48,8 @@ pub fn init() {
                 DescribePixelFormat: load_proc!(gdi32, 999 + 360),
 
                 SetPixelFormat: load_proc!(gdi32, 999 + 1491),
+
+                SwapBuffers: load_proc!(gdi32, 999 + 1528),
 
                 gdi32: gdi32,
             })
@@ -80,4 +84,9 @@ pub fn set_pixel_format(dc: DcHandle,
                         -> i32 {
 
     unsafe { (api().SetPixelFormat)(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+}
+
+pub fn swap_buffers(dc: DcHandle) -> bool {
+
+    unsafe { (api().SwapBuffers)(dc) != 0 }
 }

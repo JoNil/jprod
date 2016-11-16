@@ -34,6 +34,9 @@ fn main() {
         window.process_messages();
 
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
+
+
+        window.swap();
     }
 }
 

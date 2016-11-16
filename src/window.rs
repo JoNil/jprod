@@ -254,4 +254,10 @@ impl Window {
             win32::translate_and_dispatch_message(&msg);
         }
     }
+
+    pub fn swap(&self) {
+        if !gdi32::swap_buffers(self.context.dc.handle) {
+            panic!();
+        }
+    }
 }
