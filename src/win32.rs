@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use c_types::*;
 use core::ptr;
 use module::Module;

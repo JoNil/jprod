@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use core::ptr;
 use module::Module;
 use win32_types::*;
@@ -177,6 +179,7 @@ pub fn create_context_attribs(dc: DcHandle,
     unsafe { (ext_api().wglCreateContextAttribsARB)(dc, shared_context, &attrib_list[0]) }
 }
 
+#[allow(dead_code)]
 pub fn swap_interval(interval: i32) -> i32 {
 
     unsafe { (ext_api().wglSwapIntervalEXT)(interval) }

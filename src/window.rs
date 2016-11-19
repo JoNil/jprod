@@ -1,6 +1,7 @@
 use core::mem;
 use core::ptr;
 use gdi32;
+use gl;
 use opengl32;
 use win32;
 use win32_types::*;
@@ -24,103 +25,6 @@ static WINDOW_ATTRIBS: &'static [i32] = &[
     WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
     0,
 ];
-
-extern "system" fn window_proc(window: WindowHandle,
-                               msg: u32,
-                               wparam: usize,
-                               lparam: usize)
-                               -> usize {
-    match msg {
-
-        WM_SIZE => {
-            win32::output_debug_string(b"WM_SIZE\n\0");
-        }
-
-        WM_CLOSE => {
-            win32::output_debug_string(b"WM_CLOSE\n\0");
-            win32::exit_process(0);
-        }
-
-        WM_ACTIVATEAPP => {
-            win32::output_debug_string(b"WM_ACTIVATEAPP\n\0");
-        }
-
-        WM_DESTROY => {
-            win32::output_debug_string(b"WM_DESTROY\n\0");
-        }
-
-        _ => {
-            return win32::def_window_proc(window, msg, wparam, lparam);
-        }
-    }
-
-    return 0;
-}
-
-fn set_pixel_format(dc: DcHandle, initial: bool) {
-
-    let mut suggested_pixel_format_index = 0;
-    let mut extended_pick = 0;
-
-    if !initial {
-        if opengl32::choose_pixel_format(dc,
-                                         Some(WINDOW_ATTRIBS),
-                                         None,
-                                         &mut suggested_pixel_format_index,
-                                         &mut extended_pick) == 0 {
-            panic!();
-        }
-    }
-
-    if extended_pick == 0 {
-
-        let desired_pixel_format = PixelFormatDescriptor {
-            size: mem::size_of::<PixelFormatDescriptor>() as u16,
-            version: 1,
-            flags: PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER,
-            pixel_type: PFD_TYPE_RGBA,
-            color_bits: 32,
-            red_bits: 0,
-            red_shift: 0,
-            green_bits: 0,
-            green_shift: 0,
-            blue_bits: 0,
-            blue_shift: 0,
-            alpha_bits: 8,
-            alpha_shift: 0,
-            accum_bits: 0,
-            accum_red_bits: 0,
-            accum_green_bits: 0,
-            accum_blue_bits: 0,
-            accum_alpha_bits: 0,
-            depth_bits: 0,
-            stencil_bits: 0,
-            aux_buffers: 0,
-            layer_type: PFD_MAIN_PLANE,
-            reserved: 0,
-            layer_mask: 0,
-            visible_mask: 0,
-            damage_mask: 0,
-        };
-
-        suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
-        if suggested_pixel_format_index == 0 {
-            panic!();
-        }
-    }
-
-    let mut suggested_pixel_format = unsafe { mem::uninitialized() };
-    if gdi32::describe_pixel_format(dc,
-                                    suggested_pixel_format_index,
-                                    mem::size_of::<PixelFormatDescriptor>() as u32,
-                                    &mut suggested_pixel_format) == 0 {
-        panic!();
-    }
-
-    if gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
-        panic!();
-    }
-}
 
 struct RawWindow {
     handle: WindowHandle,
@@ -246,6 +150,8 @@ impl Window {
 
         context.make_current();
 
+        gl_init();
+
         Window { context: context }
     }
 
@@ -260,4 +166,124 @@ impl Window {
             panic!();
         }
     }
+}
+
+extern "system" fn window_proc(window: WindowHandle,
+                               msg: u32,
+                               wparam: usize,
+                               lparam: usize)
+                               -> usize {
+    match msg {
+
+        WM_SIZE => {
+            win32::output_debug_string(b"WM_SIZE\n\0");
+        }
+
+        WM_CLOSE => {
+            win32::output_debug_string(b"WM_CLOSE\n\0");
+            win32::exit_process(0);
+        }
+
+        WM_ACTIVATEAPP => {
+            win32::output_debug_string(b"WM_ACTIVATEAPP\n\0");
+        }
+
+        WM_DESTROY => {
+            win32::output_debug_string(b"WM_DESTROY\n\0");
+        }
+
+        _ => {
+            return win32::def_window_proc(window, msg, wparam, lparam);
+        }
+    }
+
+    return 0;
+}
+
+fn set_pixel_format(dc: DcHandle, initial: bool) {
+
+    let mut suggested_pixel_format_index = 0;
+    let mut extended_pick = 0;
+
+    if !initial {
+        if opengl32::choose_pixel_format(dc,
+                                         Some(WINDOW_ATTRIBS),
+                                         None,
+                                         &mut suggested_pixel_format_index,
+                                         &mut extended_pick) == 0 {
+            panic!();
+        }
+    }
+
+    if extended_pick == 0 {
+
+        let desired_pixel_format = PixelFormatDescriptor {
+            size: mem::size_of::<PixelFormatDescriptor>() as u16,
+            version: 1,
+            flags: PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER,
+            pixel_type: PFD_TYPE_RGBA,
+            color_bits: 32,
+            red_bits: 0,
+            red_shift: 0,
+            green_bits: 0,
+            green_shift: 0,
+            blue_bits: 0,
+            blue_shift: 0,
+            alpha_bits: 8,
+            alpha_shift: 0,
+            accum_bits: 0,
+            accum_red_bits: 0,
+            accum_green_bits: 0,
+            accum_blue_bits: 0,
+            accum_alpha_bits: 0,
+            depth_bits: 0,
+            stencil_bits: 0,
+            aux_buffers: 0,
+            layer_type: PFD_MAIN_PLANE,
+            reserved: 0,
+            layer_mask: 0,
+            visible_mask: 0,
+            damage_mask: 0,
+        };
+
+        suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
+        if suggested_pixel_format_index == 0 {
+            panic!();
+        }
+    }
+
+    let mut suggested_pixel_format = unsafe { mem::uninitialized() };
+    if gdi32::describe_pixel_format(dc,
+                                    suggested_pixel_format_index,
+                                    mem::size_of::<PixelFormatDescriptor>() as u32,
+                                    &mut suggested_pixel_format) == 0 {
+        panic!();
+    }
+
+    if gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
+        panic!();
+    }
+}
+
+fn gl_init() {
+    gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
+
+    // Program functions
+    gl::CreateProgram::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteProgram::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::AttachShader::load_with(|s| opengl32::get_proc_address(s));
+    gl::LinkProgram::load_with(|s| opengl32::get_proc_address(s));
+    gl::GetProgramInfoLog::load_with(|s| opengl32::get_proc_address(s));
+    gl::ValidateProgram::load_with(|s| opengl32::get_proc_address(s));
+    gl::GetProgramiv::load_with(|s| opengl32::get_proc_address(s));
+
+    // Shader functions
+    gl::CreateShader::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteShader::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::ShaderSource::load_with(|s| opengl32::get_proc_address(s));
+    gl::CompileShader::load_with(|s| opengl32::get_proc_address(s));
+    gl::GetShaderInfoLog::load_with(|s| opengl32::get_proc_address(s));
+    gl::GetShaderiv::load_with(|s| opengl32::get_proc_address(s));
 }
