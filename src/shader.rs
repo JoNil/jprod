@@ -5,7 +5,7 @@ use win32;
 
 struct RawProgram {
     program: u32,
-    marker: PhantomData<*const u32>, 
+    marker: PhantomData<*const u32>,
 }
 
 impl RawProgram {
@@ -15,7 +15,10 @@ impl RawProgram {
             panic!();
         }
 
-        RawProgram { program: program, marker: PhantomData }
+        RawProgram {
+            program: program,
+            marker: PhantomData,
+        }
     }
 }
 
@@ -27,7 +30,7 @@ impl Drop for RawProgram {
 
 struct RawShader {
     shader: u32,
-    marker: PhantomData<*const u32>, 
+    marker: PhantomData<*const u32>,
 }
 
 impl RawShader {
@@ -37,7 +40,10 @@ impl RawShader {
             panic!();
         }
 
-        RawShader { shader: shader, marker: PhantomData }
+        RawShader {
+            shader: shader,
+            marker: PhantomData,
+        }
     }
 }
 
@@ -49,7 +55,7 @@ impl Drop for RawShader {
 
 pub struct Shader {
     program: RawProgram,
-    
+
     fragment: RawShader,
     vertex: RawShader,
 }
@@ -117,7 +123,11 @@ impl Shader {
             }
         }
 
-        Shader { program: program, fragment: fragment, vertex: vertex }
+        Shader {
+            program: program,
+            fragment: fragment,
+            vertex: vertex,
+        }
     }
 }
 
