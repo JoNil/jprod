@@ -2,21 +2,22 @@ use core::marker::PhantomData;
 use core::ptr;
 use gl;
 use win32;
+use window::GlContext;
 
 struct RawProgram {
-    program: u32,
+    handle: u32,
     marker: PhantomData<*const u32>,
 }
 
 impl RawProgram {
     fn new() -> RawProgram {
-        let program = unsafe { gl::CreateProgram() };
-        if program == 0 {
+        let handle = unsafe { gl::CreateProgram() };
+        if handle == 0 {
             panic!();
         }
 
         RawProgram {
-            program: program,
+            handle: handle,
             marker: PhantomData,
         }
     }
@@ -24,24 +25,24 @@ impl RawProgram {
 
 impl Drop for RawProgram {
     fn drop(&mut self) {
-        unsafe { gl::DeleteProgram(self.program) };
+        unsafe { gl::DeleteProgram(self.handle) };
     }
 }
 
 struct RawShader {
-    shader: u32,
+    handle: u32,
     marker: PhantomData<*const u32>,
 }
 
 impl RawShader {
     fn new(shader_type: u32) -> RawShader {
-        let shader = unsafe { gl::CreateShader(shader_type) };
-        if shader == 0 {
+        let handle = unsafe { gl::CreateShader(shader_type) };
+        if handle == 0 {
             panic!();
         }
 
         RawShader {
-            shader: shader,
+            handle: handle,
             marker: PhantomData,
         }
     }
@@ -49,19 +50,21 @@ impl RawShader {
 
 impl Drop for RawShader {
     fn drop(&mut self) {
-        unsafe { gl::DeleteShader(self.shader) };
+        unsafe { gl::DeleteShader(self.handle) };
     }
 }
 
 pub struct Shader {
     program: RawProgram,
 
+    #[allow(dead_code)]
     fragment: RawShader,
+    #[allow(dead_code)]
     vertex: RawShader,
 }
 
 impl Shader {
-    pub fn new(fragment_source: &[u8], vertex_source: &[u8]) -> Shader {
+    pub fn new(_: &GlContext, fragment_source: &[u8], vertex_source: &[u8]) -> Shader {
 
         let program = RawProgram::new();
         let fragment = RawShader::new(gl::FRAGMENT_SHADER);
@@ -70,14 +73,14 @@ impl Shader {
         {
             let frag_pointer: *const u8 = &fragment_source[0];
             let frag_size: i32 = fragment_source.len() as i32;
-            unsafe { gl::ShaderSource(fragment.shader, 1, &frag_pointer, &frag_size) };
-            unsafe { gl::CompileShader(fragment.shader) };
+            unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
+            unsafe { gl::CompileShader(fragment.handle) };
 
             let mut frag_status = 0;
-            unsafe { gl::GetShaderiv(fragment.shader, gl::COMPILE_STATUS, &mut frag_status) };
+            unsafe { gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status) };
 
             if frag_status == 0 {
-                print_shader_error(fragment.shader);
+                print_shader_error(fragment.handle);
                 panic!();
             }
         }
@@ -85,38 +88,38 @@ impl Shader {
         {
             let vert_pointer: *const u8 = &vertex_source[0];
             let vert_size: i32 = vertex_source.len() as i32;
-            unsafe { gl::ShaderSource(vertex.shader, 1, &vert_pointer, &vert_size) };
-            unsafe { gl::CompileShader(vertex.shader) };
+            unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
+            unsafe { gl::CompileShader(vertex.handle) };
 
             let mut vert_status = 0;
-            unsafe { gl::GetShaderiv(vertex.shader, gl::COMPILE_STATUS, &mut vert_status) };
+            unsafe { gl::GetShaderiv(vertex.handle, gl::COMPILE_STATUS, &mut vert_status) };
 
             if vert_status == 0 {
-                print_shader_error(vertex.shader);
+                print_shader_error(vertex.handle);
                 panic!();
             }
         }
 
         {
-            unsafe { gl::AttachShader(program.program, fragment.shader) };
-            unsafe { gl::AttachShader(program.program, vertex.shader) };
+            unsafe { gl::AttachShader(program.handle, fragment.handle) };
+            unsafe { gl::AttachShader(program.handle, vertex.handle) };
 
-            unsafe { gl::LinkProgram(program.program) };
+            unsafe { gl::LinkProgram(program.handle) };
 
             let mut program_status = 0;
-            unsafe { gl::GetProgramiv(program.program, gl::LINK_STATUS, &mut program_status) };
+            unsafe { gl::GetProgramiv(program.handle, gl::LINK_STATUS, &mut program_status) };
 
             if program_status == 0 {
-                print_program_error(program.program);
+                print_program_error(program.handle);
                 panic!();
             }
         }
 
         {
-            unsafe { gl::ValidateProgram(program.program) };
+            unsafe { gl::ValidateProgram(program.handle) };
 
             let mut program_valid = 0;
-            unsafe { gl::GetProgramiv(program.program, gl::VALIDATE_STATUS, &mut program_valid) };
+            unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
 
             if program_valid == 0 {
                 panic!();
@@ -128,6 +131,11 @@ impl Shader {
             fragment: fragment,
             vertex: vertex,
         }
+    }
+
+    // TODO(jonil): Should not be public! Make module for raw gl abstractions
+    pub fn get_program(&self) -> u32 {
+        self.program.handle
     }
 }
 

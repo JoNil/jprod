@@ -1,0 +1,114 @@
+use c_types::c_void;
+use core::marker::PhantomData;
+use core::mem;
+use core::ptr;
+use gl;
+use shader::Shader;
+use window::GlContext;
+
+struct RawVao {
+    handle: u32,
+    marker: PhantomData<*const u32>,
+}
+
+impl RawVao {
+    fn new() -> RawVao {
+        let mut handle = 0;
+        unsafe { gl::GenVertexArrays(1, &mut handle as *mut _) };
+        if handle == 0 {
+            panic!();
+        }
+
+        RawVao { handle: handle, marker: PhantomData }
+    }
+}
+
+impl Drop for RawVao {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteVertexArrays(1, &mut self.handle as *mut _); }
+    }
+}
+
+struct RawVbo {
+    handle: u32,
+    marker: PhantomData<*const u32>,
+}
+
+impl RawVbo {
+    fn new() -> RawVbo {
+        let mut handle = 0;
+        unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
+        if handle == 0 {
+            panic!();
+        }
+
+        RawVbo { handle: handle, marker: PhantomData }
+    }
+}
+
+impl Drop for RawVbo {
+    fn drop(&mut self) {
+        unsafe { gl::DeleteBuffers(1, &mut self.handle as *mut _); }
+    }
+}
+
+pub struct Mesh {
+    vao: RawVao,
+    vbo: RawVbo,
+    length: i32,
+}
+
+impl Mesh {
+    pub fn new(_: &GlContext) -> Mesh {
+        
+        let vao = RawVao::new();
+        let vbo = RawVbo::new();
+
+        unsafe { gl::BindVertexArray(vao.handle); }
+        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, vbo.handle); }
+
+        unsafe { gl::EnableVertexAttribArray(0); }
+        unsafe { gl::VertexAttribPointer(
+                0,              // attribute
+                3,              // size
+                gl::FLOAT,      // type
+                0,              // normalized?
+                0,              // stride
+                ptr::null()); } // array buffer offset
+
+        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
+        unsafe { gl::BindVertexArray(0); }
+
+        Mesh { vao: vao, vbo: vbo, length: 0 }
+    }
+
+    pub fn upload(&mut self, _: &GlContext, data: &[[f32; 3]]) {
+
+        self.length = data.len() as i32;
+
+        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo.handle); }
+
+        unsafe { gl::BufferData(gl::ARRAY_BUFFER,
+                (3 * data.len() *  mem::size_of::<f32>()) as isize,
+                mem::transmute::<*const f32, *const c_void>(&data[0][0] as *const f32),
+                gl::STATIC_DRAW); }
+
+        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
+    }
+
+    pub fn draw(&self, _: &GlContext, shader: &Shader) {
+
+        if self.length == 0 {
+            return;
+        }
+
+        unsafe { gl::UseProgram(shader.get_program()); }
+        unsafe { gl::BindVertexArray(self.vao.handle); }
+
+        unsafe { gl::DrawArrays(gl::TRIANGLES, 0, self.length); }
+
+        unsafe { gl::BindVertexArray(0); }
+        unsafe { gl::UseProgram(0); }
+    }
+}
+

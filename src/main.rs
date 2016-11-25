@@ -1,4 +1,3 @@
-#![feature(const_fn)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![no_main]
@@ -15,14 +14,16 @@ mod win32_macros;
 mod c_types;
 mod gdi32;
 mod gl;
+mod mesh;
 mod module;
 mod opengl32;
+mod shader;
 mod utils;
 mod win32;
 mod win32_types;
-mod shader;
 mod window;
 
+use mesh::Mesh;
 use shader::Shader;
 use window::Window;
 
@@ -60,13 +61,26 @@ fn main() {
 
     let window = Window::new();
 
-    let shader = Shader::new(FRAGMENT_SOURCE, VERTEX_SOURCE);
+    let shader = Shader::new(&window, FRAGMENT_SOURCE, VERTEX_SOURCE);
+
+    let mut mesh = Mesh::new(&window);
+
+    let triangle = [
+        [  0.0, 1.0, 0.0   ],
+        [ -1.0, -1.0, 0.0  ],
+        [  1.0, -1.0, 0.0  ]
+    ];
+
+    mesh.upload(&window, &triangle);
 
     loop {
         window.process_messages();
 
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
 
+        window.clear();
+
+        mesh.draw(&window, &shader);
 
         window.swap();
     }

@@ -26,6 +26,8 @@ static WINDOW_ATTRIBS: &'static [i32] = &[
     0,
 ];
 
+pub unsafe trait GlContext { }
+
 struct RawWindow {
     handle: WindowHandle,
 }
@@ -161,12 +163,19 @@ impl Window {
         }
     }
 
+    pub fn clear(&self) {
+        unsafe { gl::ClearColor(0.0, 0.5, 0.0, 1.0); }
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT); }
+    }
+
     pub fn swap(&self) {
         if !gdi32::swap_buffers(self.context.dc.handle) {
             panic!();
         }
     }
 }
+
+unsafe impl GlContext for Window {}
 
 extern "system" fn window_proc(window: WindowHandle,
                                msg: u32,
@@ -266,8 +275,6 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
 }
 
 fn gl_init() {
-    gl::GetNamedBufferPointerv::load_with(|s| opengl32::get_proc_address(s));
-
     // Program functions
     gl::CreateProgram::load_with(|s| opengl32::get_proc_address(s));
     gl::DeleteProgram::load_with(|s| opengl32::get_proc_address(s));
@@ -277,6 +284,7 @@ fn gl_init() {
     gl::GetProgramInfoLog::load_with(|s| opengl32::get_proc_address(s));
     gl::ValidateProgram::load_with(|s| opengl32::get_proc_address(s));
     gl::GetProgramiv::load_with(|s| opengl32::get_proc_address(s));
+    gl::UseProgram::load_with(|s| opengl32::get_proc_address(s));
 
     // Shader functions
     gl::CreateShader::load_with(|s| opengl32::get_proc_address(s));
@@ -286,4 +294,25 @@ fn gl_init() {
     gl::CompileShader::load_with(|s| opengl32::get_proc_address(s));
     gl::GetShaderInfoLog::load_with(|s| opengl32::get_proc_address(s));
     gl::GetShaderiv::load_with(|s| opengl32::get_proc_address(s));
+
+    // Vertex Buffer Object functions
+    gl::GenBuffers::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteBuffers::load_with(|s| opengl32::get_proc_address(s));
+    gl::BindBuffer::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::BufferData::load_with(|s| opengl32::get_proc_address(s));
+
+    // Vertex Array Object functions
+    gl::GenVertexArrays::load_with(|s| opengl32::get_proc_address(s));
+    gl::DeleteVertexArrays::load_with(|s| opengl32::get_proc_address(s));
+    gl::BindVertexArray::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::EnableVertexAttribArray::load_with(|s| opengl32::get_proc_address(s));
+    gl::VertexAttribPointer::load_with(|s| opengl32::get_proc_address(s));
+
+    gl::DrawArrays::load_with(|s| opengl32::get_proc_address(s));
+
+    // Misc
+    gl::ClearColor::load_with(|s| opengl32::get_proc_address(s));
+    gl::Clear::load_with(|s| opengl32::get_proc_address(s));
 }
