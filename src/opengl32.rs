@@ -154,20 +154,13 @@ pub fn choose_pixel_format(dc: DcHandle,
                            -> i32 {
 
     unsafe {
-        (ext_api().wglChoosePixelFormatARB)(dc,
-                                            if let Some(i_attrib) = attrib_i_list {
-                                                &i_attrib[0]
-                                            } else {
-                                                ptr::null()
-                                            },
-                                            if let Some(f_attrib) = attrib_f_list {
-                                                &f_attrib[0]
-                                            } else {
-                                                ptr::null()
-                                            },
-                                            1,
-                                            pixel_formats as *mut _,
-                                            num_formats as *mut _)
+        (ext_api().wglChoosePixelFormatARB)(
+                dc,
+                if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
+                if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
+                1,
+                pixel_formats as *mut _,
+                num_formats as *mut _)
     }
 }
 
