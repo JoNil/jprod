@@ -4,6 +4,7 @@ use core::mem;
 use core::ptr;
 use gl;
 use shader::Shader;
+use win32;
 use window::GlContext;
 
 struct RawVao {
@@ -16,7 +17,7 @@ impl RawVao {
         let mut handle = 0;
         unsafe { gl::GenVertexArrays(1, &mut handle as *mut _) };
         if handle == 0 {
-            panic!();
+            win32::debug_break();
         }
 
         RawVao { handle: handle, marker: PhantomData }
@@ -39,7 +40,7 @@ impl RawVbo {
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
         if handle == 0 {
-            panic!();
+            win32::debug_break();
         }
 
         RawVbo { handle: handle, marker: PhantomData }

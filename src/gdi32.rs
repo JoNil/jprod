@@ -1,4 +1,5 @@
 use module::Module;
+use win32;
 use win32_types::*;
 
 static mut API: Option<Api> = None;
@@ -32,7 +33,7 @@ fn api() -> &'static Api {
         if let Some(ref api) = API {
             api
         } else {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -55,7 +56,7 @@ pub fn init() {
             })
         }
     } else {
-        panic!();
+        win32::debug_break();
     }
 }
 

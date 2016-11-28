@@ -37,7 +37,7 @@ impl RawWindow {
         let window = win32::create_window(WINDOW_CLASS, WINDOW_NAME, visible);
 
         if window == ptr::null_mut() {
-            panic!();
+            win32::debug_break();
         }
 
         RawWindow { handle: window }
@@ -47,7 +47,7 @@ impl RawWindow {
 
         let dc = win32::get_dc(self.handle);
         if dc == ptr::null_mut() {
-            panic!();
+            win32::debug_break();
         }
 
         RawDc {
@@ -60,7 +60,7 @@ impl RawWindow {
 impl Drop for RawWindow {
     fn drop(&mut self) {
         if win32::destroy_window(self.handle) == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -82,7 +82,7 @@ impl RawDc {
         };
 
         if context == ptr::null_mut() {
-            panic!();
+            win32::debug_break();
         }
 
         RawContext {
@@ -95,7 +95,7 @@ impl RawDc {
 impl Drop for RawDc {
     fn drop(&mut self) {
         if win32::release_dc(self.window.handle, self.handle) == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -108,7 +108,7 @@ struct RawContext {
 impl RawContext {
     pub fn make_current(&self) {
         if opengl32::make_current(self.dc.handle, self.handle) == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -116,11 +116,11 @@ impl RawContext {
 impl Drop for RawContext {
     fn drop(&mut self) {
         if opengl32::make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
-            panic!();
+            win32::debug_break();
         }
 
         if opengl32::delete_context(self.handle) == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -133,7 +133,7 @@ impl Window {
     pub fn new() -> Window {
 
         if !win32::register_class(WINDOW_CLASS, window_proc) {
-            panic!();
+            win32::debug_break();
         }
 
         {
@@ -170,7 +170,7 @@ impl Window {
 
     pub fn swap(&self) {
         if !gdi32::swap_buffers(self.context.dc.handle) {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -220,7 +220,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
                                          None,
                                          &mut suggested_pixel_format_index,
                                          &mut extended_pick) == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 
@@ -257,7 +257,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
 
         suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
         if suggested_pixel_format_index == 0 {
-            panic!();
+            win32::debug_break();
         }
     }
 
@@ -266,11 +266,11 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
                                     suggested_pixel_format_index,
                                     mem::size_of::<PixelFormatDescriptor>() as u32,
                                     &mut suggested_pixel_format) == 0 {
-        panic!();
+        win32::debug_break();
     }
 
     if gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
-        panic!();
+        win32::debug_break();
     }
 }
 

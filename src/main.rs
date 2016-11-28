@@ -1,3 +1,4 @@
+#![feature(asm)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![no_main]

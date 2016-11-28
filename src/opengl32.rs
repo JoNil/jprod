@@ -2,6 +2,7 @@
 
 use core::ptr;
 use module::Module;
+use win32;
 use win32_types::*;
 
 static mut API: Option<Api> = None;
@@ -47,7 +48,7 @@ fn api() -> &'static Api {
         if let Some(ref api) = API {
             api
         } else {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -57,7 +58,7 @@ fn ext_api() -> &'static ExtApi {
     if let Some(ref api) = api().ext {
         api
     } else {
-        panic!();
+        win32::debug_break();
     }
 }
 
@@ -80,7 +81,7 @@ pub fn init() {
             })
         }
     } else {
-        panic!();
+        win32::debug_break();
     }
 }
 
@@ -91,7 +92,7 @@ macro_rules! wgl_load_proc {
 
             let procedure = get_proc_address($name);
             if procedure == ptr::null_mut() {
-                panic!();
+                win32::debug_break();
             }
             #[allow(unused_unsafe)]
             unsafe { core::intrinsics::transmute(procedure) }
@@ -116,7 +117,7 @@ pub fn load_extensions() {
             });
 
         } else {
-            panic!();
+            win32::debug_break();
         }
     }
 }

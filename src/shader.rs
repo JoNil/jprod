@@ -13,7 +13,7 @@ impl RawProgram {
     fn new() -> RawProgram {
         let handle = unsafe { gl::CreateProgram() };
         if handle == 0 {
-            panic!();
+            win32::debug_break();
         }
 
         RawProgram {
@@ -38,7 +38,7 @@ impl RawShader {
     fn new(shader_type: u32) -> RawShader {
         let handle = unsafe { gl::CreateShader(shader_type) };
         if handle == 0 {
-            panic!();
+            win32::debug_break();
         }
 
         RawShader {
@@ -81,7 +81,7 @@ impl Shader {
 
             if frag_status == 0 {
                 print_shader_error(fragment.handle);
-                panic!();
+                win32::debug_break();
             }
         }
 
@@ -96,7 +96,7 @@ impl Shader {
 
             if vert_status == 0 {
                 print_shader_error(vertex.handle);
-                panic!();
+                win32::debug_break();
             }
         }
 
@@ -111,7 +111,7 @@ impl Shader {
 
             if program_status == 0 {
                 print_program_error(program.handle);
-                panic!();
+                win32::debug_break();
             }
         }
 
@@ -122,7 +122,7 @@ impl Shader {
             unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
 
             if program_valid == 0 {
-                panic!();
+                win32::debug_break();
             }
         }
 

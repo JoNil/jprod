@@ -3,6 +3,7 @@
 
 use c_types::*;
 use core::mem;
+use win32;
 
 #[inline(never)]
 fn metaloadfn(mut loadfn: &mut FnMut(&[u8]) -> *const c_void, symbol: &[u8], fallbacks: &[&[u8]]) -> *const c_void {
@@ -14,6 +15,9 @@ fn metaloadfn(mut loadfn: &mut FnMut(&[u8]) -> *const c_void, symbol: &[u8], fal
                 break;
             }
         }
+    }
+    if ptr.is_null() {
+        win32::debug_break();
     }
     ptr
 }

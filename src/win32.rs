@@ -3,6 +3,7 @@
 use c_types::*;
 use core::ptr;
 use module::Module;
+use win32;
 use win32_types::*;
 
 #[link_args = "kernel32.lib"]
@@ -15,6 +16,8 @@ extern "system" {
     fn LoadLibraryA(file_name: *const u8) -> ModuleHandle;
     fn FreeLibrary(module: ModuleHandle);
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
+
+    fn DebugBreak() -> !;
 }
 
 pub fn output_debug_string(string: &[u8]) {
@@ -52,6 +55,12 @@ pub fn free_library(module: ModuleHandle) {
 
     unsafe {
         FreeLibrary(module);
+    }
+}
+
+pub fn debug_break() -> ! {
+    unsafe {
+        DebugBreak();
     }
 }
 
@@ -115,7 +124,7 @@ fn api() -> &'static Api {
         if let Some(ref api) = API {
             api
         } else {
-            panic!();
+            win32::debug_break();
         }
     }
 }
@@ -146,7 +155,7 @@ pub fn init() {
             })
         }
     } else {
-        panic!();
+        win32::debug_break();
     }
 }
 
