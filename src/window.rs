@@ -164,8 +164,14 @@ impl Window {
     }
 
     pub fn clear(&self) {
-        unsafe { gl::ClearColor(0.0, 0.5, 0.0, 1.0); }
-        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT); }
+
+        let color = [ 0.0f32, 0.5, 0.0, 1.0 ];
+
+        unsafe { gl::ClearBufferfv(gl::COLOR, 0, &color as *const f32); }
+
+        let depth = [ 1.0f32 ];
+
+        unsafe { gl::ClearBufferfv(gl::DEPTH, 0, &depth as *const f32); }
     }
 
     pub fn swap(&self) {
@@ -313,6 +319,5 @@ fn gl_init() {
     gl::DrawArrays::load_with(|s| opengl32::get_proc_address(s));
 
     // Misc
-    gl::ClearColor::load_with(|s| opengl32::get_proc_address(s));
-    gl::Clear::load_with(|s| opengl32::get_proc_address(s));
+    gl::ClearBufferfv::load_with(|s| opengl32::get_proc_address(s));
 }
