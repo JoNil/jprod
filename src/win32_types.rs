@@ -125,3 +125,21 @@ pub struct PixelFormatDescriptor {
     pub visible_mask: u32,
     pub damage_mask: u32,
 }
+
+pub const GET_FILE_EX_INFO_STANDARD: i32 = 0;
+
+#[repr(C)]
+pub struct Filetime {
+    low_datetime: u32,
+    high_datetime: u32,
+}
+
+#[repr(C)]
+pub struct FileAttributrData {
+    file_attributes: u32,
+    creation_time: Filetime,
+    last_access_time: Filetime,
+    last_write_time: Filetime,
+    file_size_high: u32,
+    file_size_low: u32,
+}

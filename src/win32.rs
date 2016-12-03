@@ -17,6 +17,9 @@ extern "system" {
     fn FreeLibrary(module: ModuleHandle);
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 
+    fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *const FileAttributrData);
+    fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
+
     fn DebugBreak() -> !;
 }
 
