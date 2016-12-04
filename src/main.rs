@@ -1,4 +1,3 @@
-#![feature(asm)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![no_main]
@@ -19,6 +18,7 @@ mod mesh;
 mod module;
 mod opengl32;
 mod shader;
+mod shader_sources;
 mod utils;
 mod win32;
 mod win32_types;
@@ -26,23 +26,14 @@ mod window;
 
 use mesh::Mesh;
 use shader::Shader;
+use shader_sources::ShaderId;
 use window::Window;
-
-static FRAGMENT_SOURCE: &'static [u8] = br##"
-
-
-"##;
-
-static VERTEX_SOURCE: &'static [u8] = br##"
-
-
-"##;
 
 fn main() {
 
     let window = Window::new();
 
-    let shader = Shader::new(&window, FRAGMENT_SOURCE, VERTEX_SOURCE);
+    let shader = Shader::new(&window, ShaderId::First);
 
     let mut mesh = Mesh::new(&window);
 

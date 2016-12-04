@@ -1,9 +1,11 @@
 extern crate walkdir;
 
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::Error;
 use std::io::Read;
+use std::io::Write;
 use std::path::Path;
 use walkdir::WalkDir;
 
@@ -14,19 +16,100 @@ fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     Ok(s)
 }
 
+fn write_file<P: AsRef<Path>>(path: P, data: &str) -> Result<(), Error> {
+    let mut f = try!(File::create(path));
+    try!(f.write_all(data.as_bytes()));
+    Ok(())
+}
+
+fn uppercase_first_letter(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+    }
+}
+
+#[derive(Hash, Eq, PartialEq, Debug)]
+struct ShaderData {
+    vertex_source: Option<String>,
+    vertex_path: Option<String>,
+    fragment_source: Option<String>,
+    fragment_path: Option<String>,
+}
+
+impl ShaderData {
+    fn new() -> ShaderData {
+        ShaderData {
+            vertex_source: None,
+            vertex_path: None,
+            fragment_source: None,
+            fragment_path: None,
+        }
+    }
+}
+
 fn main() {
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
+    let mut shaders = HashMap::new();
+
     for entry in WalkDir::new("src/shaders").into_iter().filter_map(|e| e.ok()) {
-        
-        let metadata = entry.metadata().unwrap();
 
-        if metadata.is_file() {
-            println!("{}", read_file(entry.path()).unwrap());
+        if entry.metadata().unwrap().is_file() {
+
+            let name = uppercase_first_letter(entry.path().file_stem().unwrap().to_str().unwrap());
+            let extension = entry.path().extension().unwrap().to_str().unwrap();
+
+            let shader = shaders.entry(name).or_insert(ShaderData::new());
+
+            if extension == "vs" {
+                shader.vertex_source = Some(read_file(entry.path()).unwrap());
+                shader.vertex_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+            } else if extension == "ps" {
+                shader.fragment_source = Some(read_file(entry.path()).unwrap());
+                shader.fragment_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+            }
         }
-    }   
+    }
 
+    {
+        let mut shader_ids = String::new();
 
-    panic!();
+        shader_ids.push_str("pub enum ShaderId {\n");
+
+        for keys in shaders.keys() {
+            shader_ids.push_str(keys);
+            shader_ids.push_str("\n");
+        }
+
+        shader_ids.push_str("}\n");
+
+        write_file(&format!("{}/shader_ids.rs", out_dir), &shader_ids).unwrap();
+    }
+
+    {
+        let mut shader_source = String::new();
+
+        shader_source.push_str("pub fn get_shader_source(id: ShaderId) -> ShaderSource { match id {");
+
+        for (name, shader) in shaders {
+
+            if let (&Some(ref vertex), &Some(ref fragment), &Some(ref vertex_path), &Some(ref fragment_path)) =
+                    (&shader.vertex_source, &shader.fragment_source, &shader.vertex_path, &shader.fragment_path) {
+                
+                shader_source.push_str(&format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, fragment_source: {}, fragment_path: {} }},",
+                    name,
+                    format!(r###"br##"{}"##"###, vertex),
+                    format!(r###"br##"{}\0"##"###, vertex_path),
+                    format!(r###"br##"{}"##"###, fragment),
+                    format!(r###"br##"{}\0"##"###, fragment_path)));
+            }
+        }
+
+        shader_source.push_str("}}");
+
+        write_file(&format!("{}/shader_source.rs", out_dir), &shader_source).unwrap();
+    }
 }

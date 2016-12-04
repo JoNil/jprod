@@ -1,12 +1,11 @@
-pub enum ShaderId {
 
+include!(concat!(env!("OUT_DIR"), "/shader_ids.rs"));
+
+pub struct ShaderSource {
+    pub vertex_source: &'static [u8],
+    pub vertex_path: &'static [u8],
+    pub fragment_source: &'static [u8],
+    pub fragment_path: &'static [u8],
 }
 
-struct ShaderSource {
-    source: &[u8],
-    path: &[u8],
-}
-
-pub fn get_shader_source(id: ShaderId) -> &[u8] {
-    b"\0"
-}
+include!(concat!(env!("OUT_DIR"), "/shader_source.rs"));

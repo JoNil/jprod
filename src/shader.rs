@@ -1,6 +1,9 @@
 use core::marker::PhantomData;
 use core::ptr;
 use gl;
+use shader_sources::get_shader_source;
+use shader_sources::ShaderId;
+use shader_sources::ShaderSource;
 use win32;
 use window::GlContext;
 
@@ -55,6 +58,8 @@ impl Drop for RawShader {
 }
 
 pub struct Shader {
+    source: ShaderSource,
+
     program: RawProgram,
 
     #[allow(dead_code)]
@@ -64,15 +69,17 @@ pub struct Shader {
 }
 
 impl Shader {
-    pub fn new(_: &GlContext, fragment_source: &[u8], vertex_source: &[u8]) -> Shader {
+    pub fn new(_: &GlContext, id: ShaderId) -> Shader {
+
+        let source = get_shader_source(id);
 
         let program = RawProgram::new();
         let fragment = RawShader::new(gl::FRAGMENT_SHADER);
         let vertex = RawShader::new(gl::VERTEX_SHADER);
 
         {
-            let frag_pointer: *const u8 = &fragment_source[0];
-            let frag_size: i32 = fragment_source.len() as i32;
+            let frag_pointer: *const u8 = &source.fragment_source[0];
+            let frag_size: i32 = source.fragment_source.len() as i32;
             unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
             unsafe { gl::CompileShader(fragment.handle) };
 
@@ -86,8 +93,8 @@ impl Shader {
         }
 
         {
-            let vert_pointer: *const u8 = &vertex_source[0];
-            let vert_size: i32 = vertex_source.len() as i32;
+            let vert_pointer: *const u8 = &source.vertex_source[0];
+            let vert_size: i32 = source.vertex_source.len() as i32;
             unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
             unsafe { gl::CompileShader(vertex.handle) };
 
@@ -127,6 +134,7 @@ impl Shader {
         }
 
         Shader {
+            source: source,
             program: program,
             fragment: fragment,
             vertex: vertex,
