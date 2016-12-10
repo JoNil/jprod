@@ -17,7 +17,7 @@ extern "system" {
     fn FreeLibrary(module: ModuleHandle);
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 
-    fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *const FileAttributrData);
+    fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *mut FileAttributrData) -> i32;
     fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
 
     fn CreateFile(
@@ -35,23 +35,17 @@ extern "system" {
 
 pub fn output_debug_string(string: &[u8]) {
 
-    unsafe {
-        OutputDebugStringA(&string[0]);
-    }
+    unsafe { OutputDebugStringA(&string[0]); }
 }
 
 pub fn output_debug_string_raw(string: *const u8) {
 
-    unsafe {
-        OutputDebugStringA(string);
-    }
+    unsafe { OutputDebugStringA(string); }
 }
 
 pub fn exit_process(exit_code: u32) -> ! {
 
-    unsafe {
-        ExitProcess(exit_code);
-    }
+    unsafe { ExitProcess(exit_code); }
 }
 
 pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
@@ -66,20 +60,29 @@ pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
 pub fn free_library(module: ModuleHandle) {
 
-    unsafe {
-        FreeLibrary(module);
-    }
+    unsafe { FreeLibrary(module); }
+}
+
+pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
+
+    unsafe { GetProcAddress(module, proc_index as *const u8) }
+}
+
+pub fn get_file_attributes(filename: &[u8], info_level_id: i32, file_information: &mut FileAttributrData) -> i32 {
+
+    unsafe { GetFileAttributesExA(&filename[0], info_level_id, file_information as *mut _) }
+}
+
+
+pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isize {
+
+    unsafe { CompareFileTime(file_time_1 as *const _, file_time_2 as *const _) }
 }
 
 pub fn debug_break() -> ! {
     unsafe {
         DebugBreak();
     }
-}
-
-pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
-
-    unsafe { GetProcAddress(module, proc_index as *const u8) }
 }
 
 static mut API: Option<Api> = None;

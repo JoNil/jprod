@@ -102,9 +102,9 @@ fn main() {
                 shader_source.push_str(&format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, fragment_source: {}, fragment_path: {} }},",
                     name,
                     format!(r###"br##"{}"##"###, vertex),
-                    format!(r###"br##"{}\0"##"###, vertex_path),
+                    format!(r###"b"{}\0""###, vertex_path.replace("\\", "/")),
                     format!(r###"br##"{}"##"###, fragment),
-                    format!(r###"br##"{}\0"##"###, fragment_path)));
+                    format!(r###"b"{}\0""###, fragment_path.replace("\\", "/"))));
             }
         }
 

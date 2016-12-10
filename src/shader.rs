@@ -5,6 +5,7 @@ use shader_sources::get_shader_source;
 use shader_sources::ShaderId;
 use shader_sources::ShaderSource;
 use win32;
+use win32_types::*;
 use window::GlContext;
 
 struct RawProgram {
@@ -143,6 +144,15 @@ impl Shader {
 
     // TODO(jonil): Should not be public! Make module for raw gl abstractions
     pub fn get_program(&self) -> u32 {
+
+        let mut vertex_file_attributes: FileAttributrData = FileAttributrData::new();
+        win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
+
+        let mut fragment_file_attributes: FileAttributrData = FileAttributrData::new();
+        win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
+
+
+
         self.program.handle
     }
 }

@@ -136,6 +136,15 @@ pub struct Filetime {
     high_datetime: u32,
 }
 
+impl Filetime {
+    pub fn new() -> Filetime {
+        Filetime {
+            low_datetime: 0,
+            high_datetime: 0,
+        }
+    }
+}
+
 #[repr(C)]
 pub struct FileAttributrData {
     file_attributes: u32,
@@ -144,4 +153,17 @@ pub struct FileAttributrData {
     last_write_time: Filetime,
     file_size_high: u32,
     file_size_low: u32,
+}
+
+impl FileAttributrData {
+    pub fn new() -> FileAttributrData {
+        FileAttributrData {
+            file_attributes: 0, 
+            creation_time: Filetime::new(),
+            last_access_time: Filetime::new(),
+            last_write_time: Filetime::new(),
+            file_size_high: 0,
+            file_size_low: 0,
+        }
+    }
 }
