@@ -17,7 +17,7 @@ extern "system" {
     fn FreeLibrary(module: ModuleHandle);
     fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 
-    fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *mut FileAttributrData) -> i32;
+    fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *mut FileAttributeData) -> i32;
     fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
 
     fn CreateFile(
@@ -68,7 +68,7 @@ pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
     unsafe { GetProcAddress(module, proc_index as *const u8) }
 }
 
-pub fn get_file_attributes(filename: &[u8], info_level_id: i32, file_information: &mut FileAttributrData) -> i32 {
+pub fn get_file_attributes(filename: &[u8], info_level_id: i32, file_information: &mut FileAttributeData) -> i32 {
 
     unsafe { GetFileAttributesExA(&filename[0], info_level_id, file_information as *mut _) }
 }

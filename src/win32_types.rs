@@ -132,36 +132,43 @@ pub const GET_FILE_EX_INFO_STANDARD: i32 = 0;
 
 #[repr(C)]
 pub struct Filetime {
-    low_datetime: u32,
-    high_datetime: u32,
+    pub low_datetime: u32,
+    pub high_datetime: u32,
 }
 
 impl Filetime {
-    pub fn new() -> Filetime {
+    pub fn zero() -> Filetime {
         Filetime {
             low_datetime: 0,
             high_datetime: 0,
         }
     }
+
+    pub fn new(low: u32, high: u32) -> Filetime {
+        Filetime {
+            low_datetime: low,
+            high_datetime: high,
+        }
+    }
 }
 
 #[repr(C)]
-pub struct FileAttributrData {
-    file_attributes: u32,
-    creation_time: Filetime,
-    last_access_time: Filetime,
-    last_write_time: Filetime,
-    file_size_high: u32,
-    file_size_low: u32,
+pub struct FileAttributeData {
+    pub file_attributes: u32,
+    pub creation_time: Filetime,
+    pub last_access_time: Filetime,
+    pub last_write_time: Filetime,
+    pub file_size_high: u32,
+    pub file_size_low: u32,
 }
 
-impl FileAttributrData {
-    pub fn new() -> FileAttributrData {
-        FileAttributrData {
+impl FileAttributeData {
+    pub fn new() -> FileAttributeData {
+        FileAttributeData {
             file_attributes: 0, 
-            creation_time: Filetime::new(),
-            last_access_time: Filetime::new(),
-            last_write_time: Filetime::new(),
+            creation_time: Filetime::zero(),
+            last_access_time: Filetime::zero(),
+            last_write_time: Filetime::zero(),
             file_size_high: 0,
             file_size_low: 0,
         }

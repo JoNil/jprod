@@ -1,4 +1,6 @@
+extern crate kernel32;
 extern crate walkdir;
+extern crate winapi;
 
 use std::collections::HashMap;
 use std::env;
@@ -6,8 +8,13 @@ use std::fs::File;
 use std::io::Error;
 use std::io::Read;
 use std::io::Write;
+use std::iter::once;
+use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
 use walkdir::WalkDir;
+use winapi::fileapi::WIN32_FILE_ATTRIBUTE_DATA;
+use winapi::minwinbase::GetFileExInfoStandard;
+use winapi::minwindef::FILETIME;
 
 fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     let mut f = try!(File::open(path));
@@ -31,11 +38,19 @@ fn uppercase_first_letter(s: &str) -> String {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
+struct Filetime {
+    low: u32,
+    high: u32,
+}
+
+#[derive(Hash, Eq, PartialEq, Debug)]
 struct ShaderData {
     vertex_source: Option<String>,
     vertex_path: Option<String>,
+    vertex_filetime: Option<Filetime>,
     fragment_source: Option<String>,
     fragment_path: Option<String>,
+    fragment_filetime: Option<Filetime>,
 }
 
 impl ShaderData {
@@ -43,8 +58,10 @@ impl ShaderData {
         ShaderData {
             vertex_source: None,
             vertex_path: None,
+            vertex_filetime: None,
             fragment_source: None,
             fragment_path: None,
+            fragment_filetime: None,
         }
     }
 }
@@ -64,12 +81,32 @@ fn main() {
 
             let shader = shaders.entry(name).or_insert(ShaderData::new());
 
+            let wide_path: Vec<u16> = entry.path().as_os_str().encode_wide().chain(once(0)).collect();
+
+            let filetime = unsafe {
+
+                let mut data = WIN32_FILE_ATTRIBUTE_DATA {
+                    dwFileAttributes: 0,
+                    ftCreationTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                    ftLastAccessTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                    ftLastWriteTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                    nFileSizeHigh: 0,
+                    nFileSizeLow: 0,
+                };
+
+                kernel32::GetFileAttributesExW(wide_path.as_ptr(), GetFileExInfoStandard, &mut data as *mut WIN32_FILE_ATTRIBUTE_DATA as *mut _);
+
+                data.ftLastWriteTime
+            };         
+
             if extension == "vs" {
                 shader.vertex_source = Some(read_file(entry.path()).unwrap());
                 shader.vertex_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+                shader.vertex_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
             } else if extension == "ps" {
                 shader.fragment_source = Some(read_file(entry.path()).unwrap());
                 shader.fragment_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+                shader.fragment_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
             }
         }
     }
@@ -96,15 +133,20 @@ fn main() {
 
         for (name, shader) in shaders {
 
-            if let (&Some(ref vertex), &Some(ref fragment), &Some(ref vertex_path), &Some(ref fragment_path)) =
-                    (&shader.vertex_source, &shader.fragment_source, &shader.vertex_path, &shader.fragment_path) {
+            if let (&Some(ref vertex), &Some(ref fragment), &Some(ref vertex_path), &Some(ref fragment_path), &Some(ref vertex_filetime), &Some(ref fragment_filetime)) =
+                    (&shader.vertex_source, &shader.fragment_source, &shader.vertex_path, &shader.fragment_path, &shader.vertex_filetime, &shader.fragment_filetime) {
                 
-                shader_source.push_str(&format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, fragment_source: {}, fragment_path: {} }},",
-                    name,
-                    format!(r###"br##"{}"##"###, vertex),
-                    format!(r###"b"{}\0""###, vertex_path.replace("\\", "/")),
-                    format!(r###"br##"{}"##"###, fragment),
-                    format!(r###"b"{}\0""###, fragment_path.replace("\\", "/"))));
+                shader_source.push_str(
+                        &format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, vertex_filetime: Filetime::new({}, {}), fragment_source: {}, fragment_path: {}, fragment_filetime: Filetime::new({}, {}) }},",
+                                name,
+                                format!(r###"br##"{}"##"###, vertex),
+                                format!(r###"b"{}\0""###, vertex_path.replace("\\", "/")),
+                                vertex_filetime.low,
+                                vertex_filetime.high,
+                                format!(r###"br##"{}"##"###, fragment),
+                                format!(r###"b"{}\0""###, fragment_path.replace("\\", "/")),
+                                fragment_filetime.low,
+                                fragment_filetime.high));
             }
         }
 
