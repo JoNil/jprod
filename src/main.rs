@@ -3,7 +3,7 @@
 #![no_main]
 #![no_std]
 
-#[link_args = "/SUBSYSTEM:WINDOWS"]
+#[link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement"]
 extern "C" {}
 
 extern crate rlibc;
@@ -90,3 +90,7 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
 // pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
 // win32::exit_process(1);
 // }
+
+#[allow(non_upper_case_globals)]
+#[no_mangle]
+pub static NvOptimusEnablement: i32 = 1;

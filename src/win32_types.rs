@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use c_types::c_void;
 
 pub type Atom = u16;
