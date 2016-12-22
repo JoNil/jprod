@@ -150,23 +150,33 @@ impl Shader {
     }
 
     // TODO(jonil): Should not be public! Make module for raw gl abstractions
-    pub fn get_program(&self) -> u32 {
+    pub fn get_program(&mut self) -> u32 {
+
+        let mut needs_update = false;
 
         let mut vertex_file_attributes: FileAttributeData = FileAttributeData::new();
         win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
 
         if win32::compare_file_time(&vertex_file_attributes.last_write_time, &self.source.vertex_filetime) == 1 {
-            win32::output_debug_string(b"Vertex needs update\n\0");
+            needs_update = true;
         }
 
         let mut fragment_file_attributes: FileAttributeData = FileAttributeData::new();
         win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
 
         if win32::compare_file_time(&fragment_file_attributes.last_write_time, &self.source.fragment_filetime) == 1 {
-            win32::output_debug_string(b"Fragment needs update\n\0");
+            needs_update = true;
+        }
+
+        if needs_update {
+            self.reload_shader();
         }
 
         self.program.handle
+    }
+
+    fn reload_shader(&mut self) {
+
     }
 }
 

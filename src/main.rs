@@ -17,6 +17,7 @@ mod gl;
 mod mesh;
 mod module;
 mod opengl32;
+mod pool;
 mod shader;
 mod shader_sources;
 mod utils;
@@ -33,7 +34,7 @@ fn main() {
 
     let window = Window::new();
 
-    let shader = Shader::new(&window, ShaderId::First);
+    let mut shader = Shader::new(&window, ShaderId::First);
 
     let mut mesh = Mesh::new(&window);
 
@@ -52,7 +53,7 @@ fn main() {
 
         window.clear();
 
-        mesh.draw(&window, &shader);
+        mesh.draw(&window, &mut shader);
 
         window.swap();
     }
