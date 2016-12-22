@@ -20,6 +20,16 @@ extern "system" {
     fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *const FileAttributrData);
     fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
 
+    fn CreateFile(
+            file_name: *const u8,
+            desired_access: u32,
+            share_mode: u32,
+            security_attributes: *const c_void,
+            creation_disposition: u32,
+            flags_and_attributes: u32,
+            template_file: Handle) -> Handle;
+    fn CloseHandle(handle: Handle) -> i32;
+
     fn DebugBreak() -> !;
 }
 
