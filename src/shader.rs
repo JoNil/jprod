@@ -58,6 +58,71 @@ impl Drop for RawShader {
     }
 }
 
+fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, RawShader, RawShader) {
+
+    let program = RawProgram::new();
+    let fragment = RawShader::new(gl::FRAGMENT_SHADER);
+    let vertex = RawShader::new(gl::VERTEX_SHADER);
+
+    {
+        let frag_pointer: *const u8 = &fragment_source[0];
+        let frag_size: i32 = fragment_source.len() as i32;
+        unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
+        unsafe { gl::CompileShader(fragment.handle) };
+
+        let mut frag_status = 0;
+        unsafe { gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status) };
+
+        if frag_status == 0 {
+            print_shader_error(fragment.handle);
+            win32::debug_break();
+        }
+    }
+
+    {
+        let vert_pointer: *const u8 = &vertex_source[0];
+        let vert_size: i32 = vertex_source.len() as i32;
+        unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
+        unsafe { gl::CompileShader(vertex.handle) };
+
+        let mut vert_status = 0;
+        unsafe { gl::GetShaderiv(vertex.handle, gl::COMPILE_STATUS, &mut vert_status) };
+
+        if vert_status == 0 {
+            print_shader_error(vertex.handle);
+            win32::debug_break();
+        }
+    }
+
+    {
+        unsafe { gl::AttachShader(program.handle, fragment.handle) };
+        unsafe { gl::AttachShader(program.handle, vertex.handle) };
+
+        unsafe { gl::LinkProgram(program.handle) };
+
+        let mut program_status = 0;
+        unsafe { gl::GetProgramiv(program.handle, gl::LINK_STATUS, &mut program_status) };
+
+        if program_status == 0 {
+            print_program_error(program.handle);
+            win32::debug_break();
+        }
+    }
+
+    {
+        unsafe { gl::ValidateProgram(program.handle) };
+
+        let mut program_valid = 0;
+        unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
+
+        if program_valid == 0 {
+            win32::debug_break();
+        }
+    }
+
+    (program, fragment, vertex)
+}
+
 pub struct Shader {
     source: ShaderSource,
 
@@ -74,65 +139,7 @@ impl Shader {
 
         let source = get_shader_source(id);
 
-        let program = RawProgram::new();
-        let fragment = RawShader::new(gl::FRAGMENT_SHADER);
-        let vertex = RawShader::new(gl::VERTEX_SHADER);
-
-        {
-            let frag_pointer: *const u8 = &source.fragment_source[0];
-            let frag_size: i32 = source.fragment_source.len() as i32;
-            unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
-            unsafe { gl::CompileShader(fragment.handle) };
-
-            let mut frag_status = 0;
-            unsafe { gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status) };
-
-            if frag_status == 0 {
-                print_shader_error(fragment.handle);
-                win32::debug_break();
-            }
-        }
-
-        {
-            let vert_pointer: *const u8 = &source.vertex_source[0];
-            let vert_size: i32 = source.vertex_source.len() as i32;
-            unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
-            unsafe { gl::CompileShader(vertex.handle) };
-
-            let mut vert_status = 0;
-            unsafe { gl::GetShaderiv(vertex.handle, gl::COMPILE_STATUS, &mut vert_status) };
-
-            if vert_status == 0 {
-                print_shader_error(vertex.handle);
-                win32::debug_break();
-            }
-        }
-
-        {
-            unsafe { gl::AttachShader(program.handle, fragment.handle) };
-            unsafe { gl::AttachShader(program.handle, vertex.handle) };
-
-            unsafe { gl::LinkProgram(program.handle) };
-
-            let mut program_status = 0;
-            unsafe { gl::GetProgramiv(program.handle, gl::LINK_STATUS, &mut program_status) };
-
-            if program_status == 0 {
-                print_program_error(program.handle);
-                win32::debug_break();
-            }
-        }
-
-        {
-            unsafe { gl::ValidateProgram(program.handle) };
-
-            let mut program_valid = 0;
-            unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
-
-            if program_valid == 0 {
-                win32::debug_break();
-            }
-        }
+        let (program, fragment, vertex) = load_shader(source.fragment_source, source.vertex_source);
 
         Shader {
             source: source,
@@ -149,14 +156,14 @@ impl Shader {
         win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
 
         if win32::compare_file_time(&vertex_file_attributes.last_write_time, &self.source.vertex_filetime) == 1 {
-            win32::output_debug_string(b"Vertex needs update\0");
+            win32::output_debug_string(b"Vertex needs update\n\0");
         }
 
         let mut fragment_file_attributes: FileAttributeData = FileAttributeData::new();
         win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
 
         if win32::compare_file_time(&fragment_file_attributes.last_write_time, &self.source.fragment_filetime) == 1 {
-            win32::output_debug_string(b"Fragment needs update\0");
+            win32::output_debug_string(b"Fragment needs update\n\0");
         }
 
         self.program.handle
