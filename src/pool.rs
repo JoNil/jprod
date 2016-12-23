@@ -1,6 +1,5 @@
 use c_types::c_void;
 use core::cell::Cell;
-use core::ptr;
 use core::slice;
 use win32;
 
@@ -94,13 +93,13 @@ fn pool_test() {
 
 
     {
-        let mut allocator1 = pool.get_allocator();
+        let allocator1 = pool.get_allocator();
 
         assert_eq!(allocator1.used.get(), 0);
 
         {
-            let mut alloc_1 = allocator1.allocate(5);
-            let mut alloc_2 = allocator1.allocate(5);
+            let alloc_1 = allocator1.allocate(5);
+            let alloc_2 = allocator1.allocate(5);
 
             assert_eq!(allocator1.used.get(), 10);
             assert_eq!(alloc_1.len(), 5);
@@ -109,14 +108,14 @@ fn pool_test() {
             //let mut alloc_5; // Should fail to compile
 
             {
-                let mut sub_alloc_1 = allocator1.get_sub_allocator();
+                let sub_alloc_1 = allocator1.get_sub_allocator();
 
                 assert_eq!(allocator1.borrowed.get(), true);
                 assert_eq!(sub_alloc_1.used.get(), 0);
                 assert_eq!(sub_alloc_1.offset, 10);
 
-                let mut alloc_3 = sub_alloc_1.allocate(5);
-                let mut alloc_4 = sub_alloc_1.allocate(5);
+                let alloc_3 = sub_alloc_1.allocate(5);
+                let alloc_4 = sub_alloc_1.allocate(5);
 
                 assert_eq!(sub_alloc_1.used.get(), 10);
                 assert_eq!(alloc_3.len(), 5);
@@ -128,18 +127,18 @@ fn pool_test() {
                 //let mut sub_alloc_2 = allocator1.get_sub_allocator(); // Should panic
             }
 
-            let mut alloc_5 = allocator1.allocate(5);
+            let alloc_5 = allocator1.allocate(5);
 
             assert_eq!(alloc_5.len(), 5);
         }
     }
 
     {
-        let mut allocator2 = pool.get_allocator();
+        let allocator2 = pool.get_allocator();
 
         {
-            let mut alloc_1 = allocator2.allocate(5);
-            let mut alloc_2 = allocator2.allocate(5);
+            let alloc_1 = allocator2.allocate(5);
+            let alloc_2 = allocator2.allocate(5);
 
             assert_eq!(allocator2.used.get(), 10);
             assert_eq!(alloc_1.len(), 5);

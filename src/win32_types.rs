@@ -180,3 +180,16 @@ pub const MEM_COMMIT: u32 = 0x00001000;
 pub const MEM_RESERVE: u32 = 0x00002000;
 pub const MEM_RELEASE: u32 = 0x00008000;
 pub const PAGE_READWRITE: u32 = 0x04;
+
+pub const GENERIC_READ: u32 = 0x80000000;
+pub const GENERIC_WRITE: u32 = 0x40000000;
+
+pub const FILE_SHARE_READ: u32 = 0x00000001;
+pub const FILE_SHARE_WRITE: u32 = 0x00000002;
+pub const FILE_SHARE_DELETE: u32 = 0x00000004;
+
+pub const OPEN_EXISTING: u32 = 3;
+
+pub const FILE_ATTRIBUTE_NORMAL: u32 = 0x80;
+
+pub const INVALID_HANDLE_VALUE: Handle = -1isize as usize as Handle;

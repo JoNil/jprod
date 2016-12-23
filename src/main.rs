@@ -12,6 +12,7 @@ extern crate rlibc;
 mod win32_macros;
 
 mod c_types;
+mod file;
 mod gdi32;
 mod gl;
 mod mesh;
@@ -26,11 +27,15 @@ mod win32_types;
 mod window;
 
 use mesh::Mesh;
+use pool::Pool;
 use shader::Shader;
 use shader_sources::ShaderId;
 use window::Window;
 
 fn main() {
+
+    let mut pool = Pool::new(256 * 1024 * 1024);
+    let allocator = pool.get_allocator();
 
     let window = Window::new();
 
@@ -51,9 +56,11 @@ fn main() {
 
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
 
+        shader.reload_if_changed(&allocator);
+
         window.clear();
 
-        mesh.draw(&window, &mut shader);
+        mesh.draw(&window, &shader);
 
         window.swap();
     }

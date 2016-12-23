@@ -1,6 +1,8 @@
 use core::marker::PhantomData;
 use core::ptr;
+use file::File;
 use gl;
+use pool::PoolAllocator;
 use shader_sources::get_shader_source;
 use shader_sources::ShaderId;
 use shader_sources::ShaderSource;
@@ -149,9 +151,7 @@ impl Shader {
         }
     }
 
-    // TODO(jonil): Should not be public! Make module for raw gl abstractions
-    pub fn get_program(&mut self) -> u32 {
-
+    pub fn reload_if_changed<'a>(&mut self, allocator: &PoolAllocator<'a>) {
         let mut needs_update = false;
 
         let mut vertex_file_attributes: FileAttributeData = FileAttributeData::new();
@@ -169,14 +169,28 @@ impl Shader {
         }
 
         if needs_update {
-            self.reload_shader();
-        }
+            let local_allocator = allocator.get_sub_allocator();
 
-        self.program.handle
+            if let (Some(fragment_file), Some(vertex_file)) =
+                (File::open(self.source.fragment_path), File::open(self.source.vertex_path)) {
+
+                let vertex_source = vertex_file.read_entire_file(&local_allocator);
+                let fragment_source = fragment_file.read_entire_file(&local_allocator);    
+
+                let (program, fragment, vertex) = load_shader(fragment_source, vertex_source);
+
+                self.program = program;
+                self.fragment = fragment;
+                self.vertex = vertex;
+                self.source.vertex_filetime = vertex_file_attributes.last_write_time;
+                self.source.fragment_filetime = fragment_file_attributes.last_write_time;
+            }
+        }
     }
 
-    fn reload_shader(&mut self) {
-
+    // TODO(jonil): Should not be public! Make module for raw gl abstractions
+    pub fn get_program(&self) -> u32 {
+        self.program.handle
     }
 }
 

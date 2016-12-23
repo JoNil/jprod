@@ -97,7 +97,7 @@ impl Mesh {
         unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
     }
 
-    pub fn draw(&self, _: &GlContext, shader: &mut Shader) {
+    pub fn draw(&self, _: &GlContext, shader: &Shader) {
 
         if self.length == 0 {
             return;

@@ -20,7 +20,7 @@ extern "system" {
     fn GetFileAttributesExA(file_name: *const u8, info_level_id: i32, file_information: *mut FileAttributeData) -> i32;
     fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
 
-    fn CreateFile(
+    fn CreateFileA(
             file_name: *const u8,
             desired_access: u32,
             share_mode: u32,
@@ -29,6 +29,8 @@ extern "system" {
             flags_and_attributes: u32,
             template_file: Handle) -> Handle;
     fn CloseHandle(handle: Handle) -> i32;
+    fn GetFileSize(handle: Handle, file_size_high: *mut u32) -> u32;
+    fn ReadFile(handle: Handle, buffer: *mut c_void, bytes_to_read: u32, bytes_read: *mut u32, overlapped: *mut c_void) -> i32;
 
     fn VirtualAlloc(base_address: *mut c_void, size: usize, allocation_type: u32, protect: u32) -> *mut c_void;
     fn VirtualFree(address: *mut c_void, size: usize, free_type: u32) -> i32;
@@ -71,11 +73,43 @@ pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
     unsafe { GetProcAddress(module, proc_index as *const u8) }
 }
 
-pub fn get_file_attributes(filename: &[u8], info_level_id: i32, file_information: &mut FileAttributeData) -> i32 {
+pub fn get_file_attributes(file_name: &[u8], info_level_id: i32, file_information: &mut FileAttributeData) -> i32 {
 
-    unsafe { GetFileAttributesExA(&filename[0], info_level_id, file_information as *mut _) }
+    unsafe { GetFileAttributesExA(&file_name[0], info_level_id, file_information as *mut _) }
 }
 
+pub fn open_file(file_name: &[u8]) -> Handle {
+    unsafe {
+        CreateFileA(
+            &file_name[0],
+            GENERIC_READ | GENERIC_WRITE,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+            ptr::null_mut(),
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            ptr::null_mut())
+    }
+
+}
+
+pub fn close_file(handle: Handle) {
+    unsafe { CloseHandle(handle); };
+}
+
+pub fn get_file_size(handle: Handle) -> u64 {
+
+    let mut size_high: u32 = 0;
+
+    let size_low = unsafe { GetFileSize(handle, &mut size_high as *mut u32) };
+
+    ((size_high as u64) << 32) | (size_low as u64)
+}
+
+pub fn read_file(handle: Handle, buffer: &mut [u8]) -> i32 {
+
+    unsafe { ReadFile(handle, &mut buffer[0] as *mut u8 as *mut c_void, buffer.len() as u32, ptr::null_mut(), ptr::null_mut()) }
+
+}
 
 pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isize {
 
