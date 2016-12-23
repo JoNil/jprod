@@ -1,7 +1,7 @@
 use core::cell::Cell;
-use core::marker::PhantomData;
 use core::ptr;
 use core::slice;
+use win32;
 
 pub struct Pool {
     memory: *mut u8,
@@ -17,19 +17,15 @@ impl Pool {
         }
     }
 
-    pub fn get_allocator<'a>(&'a mut self) -> (PoolAllocator<'a>, PoolReborrowToken<'a>) {
-        (
-            PoolAllocator {
-                pool: self,
-                offset: 0,
-                used: Cell::new(0),
-            },
-            PoolReborrowToken {
-                marker: PhantomData
-            }
-        )
+    pub fn get_allocator<'a>(&'a mut self) -> PoolAllocator<'a> {
+        PoolAllocator {
+            pool: self,
+            offset: 0,
+            used: Cell::new(0),
+            parent: None,
+            borrowed: Cell::new(false),
+        }
     }
-
 }
 
 impl Drop for Pool {
@@ -42,46 +38,39 @@ pub struct PoolAllocator<'a> {
     pool: &'a Pool,
     offset: usize,
     used: Cell<usize>,
-} 
-
-pub struct PoolReborrowToken<'a> {
-    marker: PhantomData<&'a mut Pool>
+    parent: Option<&'a PoolAllocator<'a>>,
+    borrowed: Cell<bool>,
 }
 
-
-impl<'a, 'b> PoolAllocator<'a> {
-    pub fn allocate(&'b self, token: &mut PoolReborrowToken, size: usize) -> &'b mut [u8]
-        where 'a: 'b
+impl<'a> PoolAllocator<'a> {
+    pub fn allocate(&'a self, size: usize) -> &'a mut [u8]
     {
+        if self.borrowed.get() {
+            win32::debug_break();
+        }
 
         unsafe { slice::from_raw_parts_mut(ptr::null_mut(), 1) }
     }
 
-    pub fn get_sub_allocator(&'b self, token: &'b mut PoolReborrowToken) -> (PoolAllocator<'b>, PoolReborrowToken<'b>)
-        where 'a: 'b
+    pub fn get_sub_allocator(&'a self) -> PoolAllocator<'a>
     {
-        (
-            PoolAllocator {
-                pool: self.pool,
-                offset: self.offset + self.used.get(),
-                used: Cell::new(0),
-            },
-            PoolReborrowToken {
-                marker: PhantomData
-            }
-        )
+        self.borrowed.set(true);
+
+        PoolAllocator {
+            pool: self.pool,
+            offset: self.offset + self.used.get(),
+            used: Cell::new(0),
+            borrowed: Cell::new(false),
+            parent: Some(self),
+        }
     }
 }
 
-
 impl<'a> Drop for PoolAllocator<'a> {
     fn drop(&mut self) {
-
-    }   
-}
-
-impl<'a> Drop for PoolReborrowToken<'a> {
-    fn drop(&mut self) {
+        if let Some(parent) = self.parent {
+            parent.borrowed.set(false);
+        }
 
     }   
 }
@@ -93,32 +82,34 @@ fn pool_test() {
 
 
     {
-        let (mut allocator1, mut token) = pool.get_allocator();
+        let mut allocator1 = pool.get_allocator();
 
         {
-            let mut alloc_1 = allocator1.allocate(&mut token, 5);
-            let mut alloc_2 = allocator1.allocate(&mut token, 5);
+            let mut alloc_1 = allocator1.allocate(5);
+            let mut alloc_2 = allocator1.allocate(5);
 
             //let mut alloc_5;
 
             {
-                let (mut sub_alloc_1, mut sub_token) = allocator1.get_sub_allocator(&mut token);
+                let mut sub_alloc_1 = allocator1.get_sub_allocator();
 
-                let mut alloc_3 = sub_alloc_1.allocate(&mut sub_token, 5);
-                let mut alloc_4 = sub_alloc_1.allocate(&mut sub_token, 5);
+                let mut alloc_3 = sub_alloc_1.allocate(5);
+                let mut alloc_4 = sub_alloc_1.allocate(5);
                 //alloc_5 = sub_alloc_1.allocate(5);
 
-                let mut alloc_5 = allocator1.allocate(&mut token, 5);
+                //let mut alloc_5 = allocator1.allocate(5);
             }
+
+            let mut alloc_5 = allocator1.allocate(5);
         }
     }
 
     {
-        let (mut allocator2, mut token) = pool.get_allocator();
+        let mut allocator2 = pool.get_allocator();
 
         {
-            let mut alloc_1 = allocator2.allocate(&mut token, 5);
-            let mut alloc_2 = allocator2.allocate(&mut token, 5);
+            let mut alloc_1 = allocator2.allocate(5);
+            let mut alloc_2 = allocator2.allocate(5);
         }
     }
 
