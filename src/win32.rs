@@ -30,6 +30,9 @@ extern "system" {
             template_file: Handle) -> Handle;
     fn CloseHandle(handle: Handle) -> i32;
 
+    fn VirtualAlloc(base_address: *mut c_void, size: usize, allocation_type: u32, protect: u32) -> *mut c_void;
+    fn VirtualFree(address: *mut c_void, size: usize, free_type: u32) -> i32;
+
     fn DebugBreak() -> !;
 }
 
@@ -77,6 +80,17 @@ pub fn get_file_attributes(filename: &[u8], info_level_id: i32, file_information
 pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isize {
 
     unsafe { CompareFileTime(file_time_1 as *const _, file_time_2 as *const _) }
+}
+
+pub fn virtual_alloc(size: usize) -> *mut c_void {
+
+    unsafe { VirtualAlloc(ptr::null_mut(), size,  MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE) }
+
+}
+
+pub fn virtual_free(address: *mut c_void)  {
+
+    unsafe { VirtualFree(address, 0, MEM_RELEASE) };
 }
 
 pub fn debug_break() -> ! {

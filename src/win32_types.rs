@@ -174,3 +174,9 @@ impl FileAttributeData {
         }
     }
 }
+
+
+pub const MEM_COMMIT: u32 = 0x00001000;
+pub const MEM_RESERVE: u32 = 0x00002000;
+pub const MEM_RELEASE: u32 = 0x00008000;
+pub const PAGE_READWRITE: u32 = 0x04;
