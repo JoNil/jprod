@@ -60,7 +60,7 @@ impl Drop for RawShader {
     }
 }
 
-fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, RawShader, RawShader) {
+fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgram, RawShader, RawShader)> {
 
     let program = RawProgram::new();
     let fragment = RawShader::new(gl::FRAGMENT_SHADER);
@@ -77,7 +77,7 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, Raw
 
         if frag_status == 0 {
             print_shader_error(fragment.handle);
-            win32::debug_break();
+            return None;
         }
     }
 
@@ -92,7 +92,7 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, Raw
 
         if vert_status == 0 {
             print_shader_error(vertex.handle);
-            win32::debug_break();
+            return None;
         }
     }
 
@@ -107,7 +107,7 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, Raw
 
         if program_status == 0 {
             print_program_error(program.handle);
-            win32::debug_break();
+            return None;
         }
     }
 
@@ -118,11 +118,11 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> (RawProgram, Raw
         unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
 
         if program_valid == 0 {
-            win32::debug_break();
+            return None;
         }
     }
 
-    (program, fragment, vertex)
+    Some((program, fragment, vertex))
 }
 
 pub struct Shader {
@@ -141,13 +141,15 @@ impl Shader {
 
         let source = get_shader_source(id);
 
-        let (program, fragment, vertex) = load_shader(source.fragment_source, source.vertex_source);
-
-        Shader {
-            source: source,
-            program: program,
-            fragment: fragment,
-            vertex: vertex,
+        if let Some((program, fragment, vertex)) = load_shader(source.fragment_source, source.vertex_source) {
+            return Shader {
+                source: source,
+                program: program,
+                fragment: fragment,
+                vertex: vertex,
+            }
+        } else {
+            win32::debug_break();
         }
     }
 
@@ -177,13 +179,14 @@ impl Shader {
                 let vertex_source = vertex_file.read_entire_file(&local_allocator);
                 let fragment_source = fragment_file.read_entire_file(&local_allocator);    
 
-                let (program, fragment, vertex) = load_shader(fragment_source, vertex_source);
-
-                self.program = program;
-                self.fragment = fragment;
-                self.vertex = vertex;
                 self.source.vertex_filetime = vertex_file_attributes.last_write_time;
                 self.source.fragment_filetime = fragment_file_attributes.last_write_time;
+
+                if let Some((program, fragment, vertex)) = load_shader(fragment_source, vertex_source) {
+                    self.program = program;
+                    self.fragment = fragment;
+                    self.vertex = vertex;
+                }
             }
         }
     }
