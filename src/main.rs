@@ -1,9 +1,9 @@
+#![cfg_attr(not(test), no_main)]
 #![feature(lang_items)]
 #![feature(link_args)]
-#![no_main]
 #![no_std]
 
-#[link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement"]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement")]
 extern "C" {}
 
 extern crate rlibc;
@@ -59,6 +59,7 @@ fn main() {
     }
 }
 
+#[cfg(not(test))]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
@@ -72,10 +73,12 @@ pub extern "system" fn WinMainCRTStartup() {
     win32::exit_process(0);
 }
 
+#[cfg(not(test))]
 #[lang = "eh_personality"]
 #[no_mangle]
 pub extern "C" fn eh_personality() {}
 
+#[cfg(not(test))]
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
@@ -86,6 +89,7 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
     win32::exit_process(1);
 }
 
+// #[cfg(not(test))]
 // #[allow(non_snake_case)]
 // #[no_mangle]
 // pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
