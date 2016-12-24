@@ -21,6 +21,7 @@ mod opengl32;
 mod pool;
 mod shader;
 mod shader_sources;
+mod ssbo;
 mod utils;
 mod win32;
 mod win32_types;
@@ -30,6 +31,7 @@ use mesh::Mesh;
 use pool::Pool;
 use shader::Shader;
 use shader_sources::ShaderId;
+use ssbo::Ssbo;
 use window::Window;
 
 fn main() {
@@ -49,7 +51,38 @@ fn main() {
         [  1.0, -1.0, 0.0  ]
     ];
 
-    mesh.upload(&window, &triangle);
+    mesh.upload(&triangle);
+
+    let mut instance_data = Ssbo::new(&window);
+
+    let mvps: [[[f32; 4]; 4]; 4] = [
+        [
+            [0.2, 0.0, 0.0, 0.0],
+            [0.0, 0.2, 0.0, 0.0],
+            [0.0, 0.0, 0.2, 0.0],
+            [0.5, 0.5, 0.0, 1.0],
+        ],
+        [
+            [0.2, 0.0, 0.0, 0.0],
+            [0.0, 0.2, 0.0, 0.0],
+            [0.0, 0.0, 0.2, 0.0],
+            [0.5, -0.5, 0.0, 1.0],
+        ],
+        [
+            [0.2, 0.0, 0.0, 0.0],
+            [0.0, 0.2, 0.0, 0.0],
+            [0.0, 0.0, 0.2, 0.0],
+            [-0.5, 0.5, 0.0, 1.0],
+        ],
+        [
+            [0.2, 0.0, 0.0, 0.0],
+            [0.0, 0.2, 0.0, 0.0],
+            [0.0, 0.0, 0.2, 0.0],
+            [-0.5, -0.5, 0.0, 1.0],
+        ],
+    ];
+
+    instance_data.upload(&mvps);
 
     loop {
         window.process_messages();
@@ -60,7 +93,7 @@ fn main() {
 
         window.clear();
 
-        mesh.draw(&window, &shader);
+        mesh.draw_instanced(&shader, &instance_data, 4);
 
         window.swap();
     }

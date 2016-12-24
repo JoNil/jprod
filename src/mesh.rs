@@ -4,6 +4,7 @@ use core::mem;
 use core::ptr;
 use gl;
 use shader::Shader;
+use ssbo::Ssbo;
 use win32;
 use window::GlContext;
 
@@ -83,21 +84,21 @@ impl Mesh {
         Mesh { vao: vao, vbo: vbo, length: 0 }
     }
 
-    pub fn upload(&mut self, _: &GlContext, data: &[[f32; 3]]) {
+    pub fn upload(&mut self, data: &[[f32; 3]]) {
 
         self.length = data.len() as i32;
 
         unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo.handle); }
 
         unsafe { gl::BufferData(gl::ARRAY_BUFFER,
-                (3 * data.len() *  mem::size_of::<f32>()) as isize,
+                (3 * data.len() * mem::size_of::<f32>()) as isize,
                 &data[0][0] as *const f32 as *const c_void,
                 gl::STATIC_DRAW); }
 
         unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
     }
 
-    pub fn draw(&self, _: &GlContext, shader: &Shader) {
+    pub fn draw(&self, shader: &Shader) {
 
         if self.length == 0 {
             return;
@@ -108,6 +109,24 @@ impl Mesh {
 
         unsafe { gl::DrawArrays(gl::TRIANGLES, 0, self.length); }
 
+        unsafe { gl::BindVertexArray(0); }
+        unsafe { gl::UseProgram(0); }
+    }
+
+    pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, count: i32) {
+
+        if self.length == 0 || count <= 0 {
+            return;
+        }
+
+        unsafe { gl::UseProgram(shader.get_program()); }
+        unsafe { gl::BindVertexArray(self.vao.handle); }
+        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle()); }
+        unsafe { gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, instance_data.get_handle()); }
+
+        unsafe { gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count); }
+
+        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
         unsafe { gl::BindVertexArray(0); }
         unsafe { gl::UseProgram(0); }
     }

@@ -305,6 +305,7 @@ fn gl_init() {
     gl::GenBuffers::load_with(|s| opengl32::get_proc_address(s));
     gl::DeleteBuffers::load_with(|s| opengl32::get_proc_address(s));
     gl::BindBuffer::load_with(|s| opengl32::get_proc_address(s));
+    gl::BindBufferBase::load_with(|s| opengl32::get_proc_address(s));
 
     gl::BufferData::load_with(|s| opengl32::get_proc_address(s));
 
@@ -317,6 +318,7 @@ fn gl_init() {
     gl::VertexAttribPointer::load_with(|s| opengl32::get_proc_address(s));
 
     gl::DrawArrays::load_with(|s| opengl32::get_proc_address(s));
+    gl::DrawArraysInstanced::load_with(|s| opengl32::get_proc_address(s));
 
     // Misc
     gl::ClearBufferfv::load_with(|s| opengl32::get_proc_address(s));
