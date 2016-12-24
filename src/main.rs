@@ -6,6 +6,9 @@
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement")]
 extern "C" {}
 
+#[macro_use]
+extern crate lazy_static;
+
 extern crate rlibc;
 
 #[macro_use]
@@ -24,6 +27,7 @@ mod shader_sources;
 mod ssbo;
 mod utils;
 mod win32;
+mod time;
 mod win32_types;
 mod window;
 
@@ -86,9 +90,7 @@ fn main() {
 
     let mut uniform_data = Ssbo::new(&window);
 
-    let time: [f32; 1] = [ 0.0 ];
-
-    uniform_data.upload(&time);
+    let start = time::now_s();
 
     loop {
         window.process_messages();
@@ -96,6 +98,9 @@ fn main() {
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
 
         shader.reload_if_changed(&allocator);
+
+        let time: [f32; 1] = [ (time::now_s() - start) as f32 ];
+        uniform_data.upload(&time);
 
         window.clear();
 

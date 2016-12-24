@@ -35,6 +35,9 @@ extern "system" {
     fn VirtualAlloc(base_address: *mut c_void, size: usize, allocation_type: u32, protect: u32) -> *mut c_void;
     fn VirtualFree(address: *mut c_void, size: usize, free_type: u32) -> i32;
 
+    fn QueryPerformanceCounter(time: *mut i64) -> i32;
+    fn QueryPerformanceFrequency(frequency: *mut i64) -> i32;
+
     fn DebugBreak() -> !;
 }
 
@@ -108,7 +111,6 @@ pub fn get_file_size(handle: Handle) -> u64 {
 pub fn read_file(handle: Handle, buffer: &mut [u8]) -> i32 {
 
     unsafe { ReadFile(handle, &mut buffer[0] as *mut u8 as *mut c_void, buffer.len() as u32, ptr::null_mut(), ptr::null_mut()) }
-
 }
 
 pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isize {
@@ -119,12 +121,29 @@ pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isiz
 pub fn virtual_alloc(size: usize) -> *mut c_void {
 
     unsafe { VirtualAlloc(ptr::null_mut(), size,  MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE) }
-
 }
 
 pub fn virtual_free(address: *mut c_void)  {
 
     unsafe { VirtualFree(address, 0, MEM_RELEASE) };
+}
+
+pub fn query_performance_counter() -> i64 {
+
+    let mut time = 0;
+
+    unsafe { QueryPerformanceCounter(&mut time as *mut _); }
+
+    time
+}
+
+pub fn query_performance_frequency() -> i64 {
+
+    let mut frequency = 0;
+
+    unsafe { QueryPerformanceFrequency(&mut frequency as *mut _); }
+
+    frequency
 }
 
 pub fn debug_break() -> ! {

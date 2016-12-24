@@ -19,5 +19,5 @@ void main()
 {
     frag_uv = vertex_pos.xy/2.0 + 0.5;
 
-    gl_Position = mvp[gl_InstanceID] * vec4(vertex_pos, 1.0);
+    gl_Position = mvp[gl_InstanceID] * vec4(vertex_pos.x + sin(time), vertex_pos.yz, 1.0);
 }
