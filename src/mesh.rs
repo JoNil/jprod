@@ -113,7 +113,7 @@ impl Mesh {
         unsafe { gl::UseProgram(0); }
     }
 
-    pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, count: i32) {
+    pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
 
         if self.length == 0 || count <= 0 {
             return;
@@ -121,12 +121,15 @@ impl Mesh {
 
         unsafe { gl::UseProgram(shader.get_program()); }
         unsafe { gl::BindVertexArray(self.vao.handle); }
+
         unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle()); }
         unsafe { gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, instance_data.get_handle()); }
+        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle()); }
+        unsafe { gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, uniform_data.get_handle()); }
+        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
 
         unsafe { gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count); }
-
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
+        
         unsafe { gl::BindVertexArray(0); }
         unsafe { gl::UseProgram(0); }
     }

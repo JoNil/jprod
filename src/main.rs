@@ -84,6 +84,12 @@ fn main() {
 
     instance_data.upload(&mvps);
 
+    let mut uniform_data = Ssbo::new(&window);
+
+    let time: [f32; 1] = [ 0.0 ];
+
+    uniform_data.upload(&time);
+
     loop {
         window.process_messages();
 
@@ -93,7 +99,7 @@ fn main() {
 
         window.clear();
 
-        mesh.draw_instanced(&shader, &instance_data, 4);
+        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 4);
 
         window.swap();
     }
