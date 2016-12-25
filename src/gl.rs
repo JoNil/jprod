@@ -2109,2429 +2109,2429 @@ const WaitSyncIdx: u16 = 694;
 
 /// Fallbacks: EndTransformFeedbackEXT, EndTransformFeedbackNV
 pub unsafe fn EndTransformFeedback() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[EndTransformFeedbackIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(EndTransformFeedbackIdx as usize))()
 }
 pub unsafe fn GetProgramResourceLocationIndex(program: GLuint, programInterface: GLenum, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(GL_API[GetProgramResourceLocationIndexIdx as usize])(program, programInterface, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetProgramResourceLocationIndexIdx as usize))(program, programInterface, name)
 }
 pub unsafe fn GetProgramResourceLocation(program: GLuint, programInterface: GLenum, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(GL_API[GetProgramResourceLocationIdx as usize])(program, programInterface, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetProgramResourceLocationIdx as usize))(program, programInterface, name)
 }
 /// Fallbacks: VertexAttribL3dEXT
 pub unsafe fn VertexAttribL3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[VertexAttribL3dIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL3dIdx as usize))(index, x, y, z)
 }
 /// Fallbacks: ObjectPtrLabelKHR
 pub unsafe fn ObjectPtrLabel(ptr: *const c_void, length: GLsizei, label: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(*const c_void, GLsizei, *const GLchar) -> ()>(GL_API[ObjectPtrLabelIdx as usize])(ptr, length, label)
+    mem::transmute::<_, extern "system" fn(*const c_void, GLsizei, *const GLchar) -> ()>(*GL_API.get_unchecked(ObjectPtrLabelIdx as usize))(ptr, length, label)
 }
 pub unsafe fn ActiveShaderProgram(pipeline: GLuint, program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[ActiveShaderProgramIdx as usize])(pipeline, program)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(ActiveShaderProgramIdx as usize))(pipeline, program)
 }
 pub unsafe fn BindProgramPipeline(pipeline: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[BindProgramPipelineIdx as usize])(pipeline)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(BindProgramPipelineIdx as usize))(pipeline)
 }
 pub unsafe fn CreateProgramPipelines(n: GLsizei, pipelines: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateProgramPipelinesIdx as usize])(n, pipelines)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateProgramPipelinesIdx as usize))(n, pipelines)
 }
 pub unsafe fn NormalP3ui(type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[NormalP3uiIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(NormalP3uiIdx as usize))(type_, coords)
 }
 pub unsafe fn UseProgramStages(pipeline: GLuint, stages: GLbitfield, program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLbitfield, GLuint) -> ()>(GL_API[UseProgramStagesIdx as usize])(pipeline, stages, program)
+    mem::transmute::<_, extern "system" fn(GLuint, GLbitfield, GLuint) -> ()>(*GL_API.get_unchecked(UseProgramStagesIdx as usize))(pipeline, stages, program)
 }
 /// Fallbacks: VertexAttribL2dEXT
 pub unsafe fn VertexAttribL2d(index: GLuint, x: GLdouble, y: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(GL_API[VertexAttribL2dIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL2dIdx as usize))(index, x, y)
 }
 pub unsafe fn GetnHistogram(target: GLenum, reset: GLboolean, format: GLenum, type_: GLenum, bufSize: GLsizei, values: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLboolean, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetnHistogramIdx as usize])(target, reset, format, type_, bufSize, values)
+    mem::transmute::<_, extern "system" fn(GLenum, GLboolean, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnHistogramIdx as usize))(target, reset, format, type_, bufSize, values)
 }
 /// Fallbacks: ScissorArrayvNV
 pub unsafe fn ScissorArrayv(first: GLuint, count: GLsizei, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLint) -> ()>(GL_API[ScissorArrayvIdx as usize])(first, count, v)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(ScissorArrayvIdx as usize))(first, count, v)
 }
 /// Fallbacks: VertexAttribDivisorANGLE, VertexAttribDivisorARB, VertexAttribDivisorEXT, VertexAttribDivisorNV
 pub unsafe fn VertexAttribDivisor(index: GLuint, divisor: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[VertexAttribDivisorIdx as usize])(index, divisor)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribDivisorIdx as usize))(index, divisor)
 }
 pub unsafe fn GetTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLenum, *mut c_void) -> ()>(GL_API[GetTexImageIdx as usize])(target, level, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLenum, *mut c_void) -> ()>(*GL_API.get_unchecked(GetTexImageIdx as usize))(target, level, format, type_, pixels)
 }
 pub unsafe fn SamplerParameteri(sampler: GLuint, pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(GL_API[SamplerParameteriIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(*GL_API.get_unchecked(SamplerParameteriIdx as usize))(sampler, pname, param)
 }
 pub unsafe fn TextureBarrier() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[TextureBarrierIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(TextureBarrierIdx as usize))()
 }
 pub unsafe fn TextureParameteri(texture: GLuint, pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(GL_API[TextureParameteriIdx as usize])(texture, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(*GL_API.get_unchecked(TextureParameteriIdx as usize))(texture, pname, param)
 }
 /// Fallbacks: GetObjectLabelKHR
 pub unsafe fn GetObjectLabel(identifier: GLenum, name: GLuint, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetObjectLabelIdx as usize])(identifier, name, bufSize, length, label)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetObjectLabelIdx as usize))(identifier, name, bufSize, length, label)
 }
 pub unsafe fn ReadBuffer(src: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[ReadBufferIdx as usize])(src)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(ReadBufferIdx as usize))(src)
 }
 /// Fallbacks: StencilOpSeparateATI
 pub unsafe fn StencilOpSeparate(face: GLenum, sfail: GLenum, dpfail: GLenum, dppass: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum) -> ()>(GL_API[StencilOpSeparateIdx as usize])(face, sfail, dpfail, dppass)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(StencilOpSeparateIdx as usize))(face, sfail, dpfail, dppass)
 }
 /// Fallbacks: TexSubImage2DEXT
 pub unsafe fn TexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexSubImage2DIdx as usize])(target, level, xoffset, yoffset, width, height, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexSubImage2DIdx as usize))(target, level, xoffset, yoffset, width, height, format, type_, pixels)
 }
 /// Fallbacks: GetTransformFeedbackVaryingEXT
 pub unsafe fn GetTransformFeedbackVarying(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLsizei, type_: *mut GLenum, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLsizei, *mut GLenum, *mut GLchar) -> ()>(GL_API[GetTransformFeedbackVaryingIdx as usize])(program, index, bufSize, length, size, type_, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLsizei, *mut GLenum, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetTransformFeedbackVaryingIdx as usize))(program, index, bufSize, length, size, type_, name)
 }
 pub unsafe fn MapNamedBufferRange(buffer: GLuint, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *mut c_void {
-    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, GLbitfield) -> *mut c_void>(GL_API[MapNamedBufferRangeIdx as usize])(buffer, offset, length, access)
+    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, GLbitfield) -> *mut c_void>(*GL_API.get_unchecked(MapNamedBufferRangeIdx as usize))(buffer, offset, length, access)
 }
 pub unsafe fn SamplerParameteriv(sampler: GLuint, pname: GLenum, param: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(GL_API[SamplerParameterivIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(SamplerParameterivIdx as usize))(sampler, pname, param)
 }
 /// Fallbacks: ProgramUniform4fvEXT
 pub unsafe fn ProgramUniform4fv(program: GLuint, location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(GL_API[ProgramUniform4fvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform4fvIdx as usize))(program, location, count, value)
 }
 pub unsafe fn UniformMatrix4x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix4x3dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix4x3dvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: ScissorIndexedvNV
 pub unsafe fn ScissorIndexedv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[ScissorIndexedvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(ScissorIndexedvIdx as usize))(index, v)
 }
 pub unsafe fn BindImageTexture(unit: GLuint, texture: GLuint, level: GLint, layered: GLboolean, layer: GLint, access: GLenum, format: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum) -> ()>(GL_API[BindImageTextureIdx as usize])(unit, texture, level, layered, layer, access, format)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BindImageTextureIdx as usize))(unit, texture, level, layered, layer, access, format)
 }
 /// Fallbacks: BlendColorEXT
 pub unsafe fn BlendColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[BlendColorIdx as usize])(red, green, blue, alpha)
+    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(BlendColorIdx as usize))(red, green, blue, alpha)
 }
 /// Fallbacks: GetPointervEXT, GetPointervKHR
 pub unsafe fn GetPointerv(pname: GLenum, params: *const *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const *mut c_void) -> ()>(GL_API[GetPointervIdx as usize])(pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, *const *mut c_void) -> ()>(*GL_API.get_unchecked(GetPointervIdx as usize))(pname, params)
 }
 /// Fallbacks: ProgramUniform2uivEXT
 pub unsafe fn ProgramUniform2uiv(program: GLuint, location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(GL_API[ProgramUniform2uivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform2uivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: DrawElementsInstancedBaseVertexBaseInstanceEXT
 pub unsafe fn DrawElementsInstancedBaseVertexBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void, instancecount: GLsizei, basevertex: GLint, baseinstance: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLint, GLuint) -> ()>(GL_API[DrawElementsInstancedBaseVertexBaseInstanceIdx as usize])(mode, count, type_, indices, instancecount, basevertex, baseinstance)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLint, GLuint) -> ()>(*GL_API.get_unchecked(DrawElementsInstancedBaseVertexBaseInstanceIdx as usize))(mode, count, type_, indices, instancecount, basevertex, baseinstance)
 }
 /// Fallbacks: GetInteger64vAPPLE
 pub unsafe fn GetInteger64v(pname: GLenum, data: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *mut GLint64) -> ()>(GL_API[GetInteger64vIdx as usize])(pname, data)
+    mem::transmute::<_, extern "system" fn(GLenum, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetInteger64vIdx as usize))(pname, data)
 }
 /// Fallbacks: VertexAttribI2uiEXT
 pub unsafe fn VertexAttribI2ui(index: GLuint, x: GLuint, y: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[VertexAttribI2uiIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI2uiIdx as usize))(index, x, y)
 }
 /// Fallbacks: ProgramUniform1iEXT
 pub unsafe fn ProgramUniform1i(program: GLuint, location: GLint, v0: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint) -> ()>(GL_API[ProgramUniform1iIdx as usize])(program, location, v0)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform1iIdx as usize))(program, location, v0)
 }
 /// Fallbacks: GetVertexAttribivARB, GetVertexAttribivNV
 pub unsafe fn GetVertexAttribiv(index: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetVertexAttribivIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetVertexAttribivIdx as usize))(index, pname, params)
 }
 /// Fallbacks: ProgramUniform4iEXT
 pub unsafe fn ProgramUniform4i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint) -> ()>(GL_API[ProgramUniform4iIdx as usize])(program, location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform4iIdx as usize))(program, location, v0, v1, v2, v3)
 }
 pub unsafe fn VertexArrayAttribBinding(vaobj: GLuint, attribindex: GLuint, bindingindex: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[VertexArrayAttribBindingIdx as usize])(vaobj, attribindex, bindingindex)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayAttribBindingIdx as usize))(vaobj, attribindex, bindingindex)
 }
 pub unsafe fn GetFloatv(pname: GLenum, data: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *mut GLfloat) -> ()>(GL_API[GetFloatvIdx as usize])(pname, data)
+    mem::transmute::<_, extern "system" fn(GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetFloatvIdx as usize))(pname, data)
 }
 pub unsafe fn DispatchComputeIndirect(indirect: GLintptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLintptr) -> ()>(GL_API[DispatchComputeIndirectIdx as usize])(indirect)
+    mem::transmute::<_, extern "system" fn(GLintptr) -> ()>(*GL_API.get_unchecked(DispatchComputeIndirectIdx as usize))(indirect)
 }
 pub unsafe fn Enable(cap: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[EnableIdx as usize])(cap)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(EnableIdx as usize))(cap)
 }
 /// Fallbacks: BindBufferRangeEXT, BindBufferRangeNV
 pub unsafe fn BindBufferRange(target: GLenum, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[BindBufferRangeIdx as usize])(target, index, buffer, offset, size)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(BindBufferRangeIdx as usize))(target, index, buffer, offset, size)
 }
 /// Fallbacks: ShaderSourceARB
 pub unsafe fn ShaderSource(shader: GLuint, count: GLsizei, string: *const *const GLchar, length: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, *const GLint) -> ()>(GL_API[ShaderSourceIdx as usize])(shader, count, string, length)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, *const GLint) -> ()>(*GL_API.get_unchecked(ShaderSourceIdx as usize))(shader, count, string, length)
 }
 pub unsafe fn VertexArrayAttribIFormat(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLuint) -> ()>(GL_API[VertexArrayAttribIFormatIdx as usize])(vaobj, attribindex, size, type_, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayAttribIFormatIdx as usize))(vaobj, attribindex, size, type_, relativeoffset)
 }
 /// Fallbacks: VertexAttribI4ubvEXT
 pub unsafe fn VertexAttribI4ubv(index: GLuint, v: *const GLubyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(GL_API[VertexAttribI4ubvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(*GL_API.get_unchecked(VertexAttribI4ubvIdx as usize))(index, v)
 }
 /// Fallbacks: VertexAttrib1sARB, VertexAttrib1sNV
 pub unsafe fn VertexAttrib1s(index: GLuint, x: GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLshort) -> ()>(GL_API[VertexAttrib1sIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib1sIdx as usize))(index, x)
 }
 /// Fallbacks: VertexAttribI2ivEXT
 pub unsafe fn VertexAttribI2iv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttribI2ivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI2ivIdx as usize))(index, v)
 }
 /// Fallbacks: GetObjectPtrLabelKHR
 pub unsafe fn GetObjectPtrLabel(ptr: *const c_void, bufSize: GLsizei, length: *mut GLsizei, label: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(*const c_void, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetObjectPtrLabelIdx as usize])(ptr, bufSize, length, label)
+    mem::transmute::<_, extern "system" fn(*const c_void, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetObjectPtrLabelIdx as usize))(ptr, bufSize, length, label)
 }
 pub unsafe fn Uniform2d(location: GLint, x: GLdouble, y: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble) -> ()>(GL_API[Uniform2dIdx as usize])(location, x, y)
+    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(Uniform2dIdx as usize))(location, x, y)
 }
 /// Fallbacks: MultiDrawArraysIndirectAMD, MultiDrawArraysIndirectEXT
 pub unsafe fn MultiDrawArraysIndirect(mode: GLenum, indirect: *const c_void, drawcount: GLsizei, stride: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const c_void, GLsizei, GLsizei) -> ()>(GL_API[MultiDrawArraysIndirectIdx as usize])(mode, indirect, drawcount, stride)
+    mem::transmute::<_, extern "system" fn(GLenum, *const c_void, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(MultiDrawArraysIndirectIdx as usize))(mode, indirect, drawcount, stride)
 }
 /// Fallbacks: DrawArraysInstancedANGLE, DrawArraysInstancedARB, DrawArraysInstancedEXT, DrawArraysInstancedNV
 pub unsafe fn DrawArraysInstanced(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, GLsizei) -> ()>(GL_API[DrawArraysInstancedIdx as usize])(mode, first, count, instancecount)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(DrawArraysInstancedIdx as usize))(mode, first, count, instancecount)
 }
 pub unsafe fn GetVertexArrayIndexed64iv(vaobj: GLuint, index: GLuint, pname: GLenum, param: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint64) -> ()>(GL_API[GetVertexArrayIndexed64ivIdx as usize])(vaobj, index, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetVertexArrayIndexed64ivIdx as usize))(vaobj, index, pname, param)
 }
 pub unsafe fn GetQueryIndexediv(target: GLenum, index: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetQueryIndexedivIdx as usize])(target, index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetQueryIndexedivIdx as usize))(target, index, pname, params)
 }
 /// Fallbacks: GetFragDataLocationEXT
 pub unsafe fn GetFragDataLocation(program: GLuint, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(GL_API[GetFragDataLocationIdx as usize])(program, name)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetFragDataLocationIdx as usize))(program, name)
 }
 pub unsafe fn DispatchCompute(num_groups_x: GLuint, num_groups_y: GLuint, num_groups_z: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[DispatchComputeIdx as usize])(num_groups_x, num_groups_y, num_groups_z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(DispatchComputeIdx as usize))(num_groups_x, num_groups_y, num_groups_z)
 }
 pub unsafe fn CopyTextureSubImage2D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[CopyTextureSubImage2DIdx as usize])(texture, level, xoffset, yoffset, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTextureSubImage2DIdx as usize))(texture, level, xoffset, yoffset, x, y, width, height)
 }
 pub unsafe fn ClearTexImage(texture: GLuint, level: GLint, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearTexImageIdx as usize])(texture, level, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearTexImageIdx as usize))(texture, level, format, type_, data)
 }
 /// Fallbacks: VertexAttribI4uiEXT
 pub unsafe fn VertexAttribI4ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint, w: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLuint, GLuint) -> ()>(GL_API[VertexAttribI4uiIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI4uiIdx as usize))(index, x, y, z, w)
 }
 /// Fallbacks: VertexAttrib4NsvARB
 pub unsafe fn VertexAttrib4Nsv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttrib4NsvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib4NsvIdx as usize))(index, v)
 }
 /// Fallbacks: VertexAttribI3iEXT
 pub unsafe fn VertexAttribI3i(index: GLuint, x: GLint, y: GLint, z: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint) -> ()>(GL_API[VertexAttribI3iIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI3iIdx as usize))(index, x, y, z)
 }
 pub unsafe fn VertexAttribP4uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(GL_API[VertexAttribP4uivIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP4uivIdx as usize))(index, type_, normalized, value)
 }
 pub unsafe fn VertexAttribP2uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(GL_API[VertexAttribP2uivIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP2uivIdx as usize))(index, type_, normalized, value)
 }
 /// Fallbacks: ProgramUniform2uiEXT
 pub unsafe fn ProgramUniform2ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint) -> ()>(GL_API[ProgramUniform2uiIdx as usize])(program, location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform2uiIdx as usize))(program, location, v0, v1)
 }
 pub unsafe fn Viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[ViewportIdx as usize])(x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(ViewportIdx as usize))(x, y, width, height)
 }
 pub unsafe fn GetError() -> GLenum {
-    mem::transmute::<_, extern "system" fn() -> GLenum>(GL_API[GetErrorIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> GLenum>(*GL_API.get_unchecked(GetErrorIdx as usize))()
 }
 /// Fallbacks: DrawBuffersARB, DrawBuffersATI, DrawBuffersEXT
 pub unsafe fn DrawBuffers(n: GLsizei, bufs: *const GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLenum) -> ()>(GL_API[DrawBuffersIdx as usize])(n, bufs)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLenum) -> ()>(*GL_API.get_unchecked(DrawBuffersIdx as usize))(n, bufs)
 }
 pub unsafe fn GetTextureLevelParameterfv(texture: GLuint, level: GLint, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, *mut GLfloat) -> ()>(GL_API[GetTextureLevelParameterfvIdx as usize])(texture, level, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetTextureLevelParameterfvIdx as usize))(texture, level, pname, params)
 }
 /// Fallbacks: NamedBufferStorageEXT
 pub unsafe fn NamedBufferStorage(buffer: GLuint, size: GLsizeiptr, data: *const c_void, flags: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizeiptr, *const c_void, GLbitfield) -> ()>(GL_API[NamedBufferStorageIdx as usize])(buffer, size, data, flags)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizeiptr, *const c_void, GLbitfield) -> ()>(*GL_API.get_unchecked(NamedBufferStorageIdx as usize))(buffer, size, data, flags)
 }
 /// Fallbacks: DrawRangeElementsBaseVertexEXT, DrawRangeElementsBaseVertexOES
 pub unsafe fn DrawRangeElementsBaseVertex(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *const c_void, basevertex: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei, GLenum, *const c_void, GLint) -> ()>(GL_API[DrawRangeElementsBaseVertexIdx as usize])(mode, start, end, count, type_, indices, basevertex)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei, GLenum, *const c_void, GLint) -> ()>(*GL_API.get_unchecked(DrawRangeElementsBaseVertexIdx as usize))(mode, start, end, count, type_, indices, basevertex)
 }
 pub unsafe fn ProgramUniformMatrix2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix2dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: GetVertexAttribdvARB, GetVertexAttribdvNV
 pub unsafe fn GetVertexAttribdv(index: GLuint, pname: GLenum, params: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLdouble) -> ()>(GL_API[GetVertexAttribdvIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetVertexAttribdvIdx as usize))(index, pname, params)
 }
 pub unsafe fn GetnUniformdv(program: GLuint, location: GLint, bufSize: GLsizei, params: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLdouble) -> ()>(GL_API[GetnUniformdvIdx as usize])(program, location, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetnUniformdvIdx as usize))(program, location, bufSize, params)
 }
 pub unsafe fn ClearBufferuiv(buffer: GLenum, drawbuffer: GLint, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLuint) -> ()>(GL_API[ClearBufferuivIdx as usize])(buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLuint) -> ()>(*GL_API.get_unchecked(ClearBufferuivIdx as usize))(buffer, drawbuffer, value)
 }
 pub unsafe fn IsEnabled(cap: GLenum) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLenum) -> GLboolean>(GL_API[IsEnabledIdx as usize])(cap)
+    mem::transmute::<_, extern "system" fn(GLenum) -> GLboolean>(*GL_API.get_unchecked(IsEnabledIdx as usize))(cap)
 }
 /// Fallbacks: DrawTransformFeedbackNV
 pub unsafe fn DrawTransformFeedback(mode: GLenum, id: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[DrawTransformFeedbackIdx as usize])(mode, id)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(DrawTransformFeedbackIdx as usize))(mode, id)
 }
 /// Fallbacks: VertexAttribL2dvEXT
 pub unsafe fn VertexAttribL2dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttribL2dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL2dvIdx as usize))(index, v)
 }
 pub unsafe fn DepthFunc(func: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[DepthFuncIdx as usize])(func)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(DepthFuncIdx as usize))(func)
 }
 /// Fallbacks: MultiDrawElementsEXT
 pub unsafe fn MultiDrawElements(mode: GLenum, count: *const GLsizei, type_: GLenum, indices: *const *const c_void, drawcount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLsizei, GLenum, *const *const c_void, GLsizei) -> ()>(GL_API[MultiDrawElementsIdx as usize])(mode, count, type_, indices, drawcount)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLsizei, GLenum, *const *const c_void, GLsizei) -> ()>(*GL_API.get_unchecked(MultiDrawElementsIdx as usize))(mode, count, type_, indices, drawcount)
 }
 pub unsafe fn Flush() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[FlushIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(FlushIdx as usize))()
 }
 /// Fallbacks: GetUniformfvARB
 pub unsafe fn GetUniformfv(program: GLuint, location: GLint, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLfloat) -> ()>(GL_API[GetUniformfvIdx as usize])(program, location, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetUniformfvIdx as usize))(program, location, params)
 }
 pub unsafe fn GetnPixelMapuiv(map: GLenum, bufSize: GLsizei, values: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(GL_API[GetnPixelMapuivIdx as usize])(map, bufSize, values)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetnPixelMapuivIdx as usize))(map, bufSize, values)
 }
 /// Fallbacks: GetQueryObjecti64vEXT
 pub unsafe fn GetQueryObjecti64v(id: GLuint, pname: GLenum, params: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint64) -> ()>(GL_API[GetQueryObjecti64vIdx as usize])(id, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetQueryObjecti64vIdx as usize))(id, pname, params)
 }
 /// Fallbacks: GenerateMipmapEXT
 pub unsafe fn GenerateMipmap(target: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[GenerateMipmapIdx as usize])(target)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(GenerateMipmapIdx as usize))(target)
 }
 pub unsafe fn DrawTransformFeedbackStream(mode: GLenum, id: GLuint, stream: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(GL_API[DrawTransformFeedbackStreamIdx as usize])(mode, id, stream)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(DrawTransformFeedbackStreamIdx as usize))(mode, id, stream)
 }
 pub unsafe fn GetTexLevelParameterfv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, *mut GLfloat) -> ()>(GL_API[GetTexLevelParameterfvIdx as usize])(target, level, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetTexLevelParameterfvIdx as usize))(target, level, pname, params)
 }
 /// Fallbacks: VertexAttrib4uivARB
 pub unsafe fn VertexAttrib4uiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttrib4uivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttrib4uivIdx as usize))(index, v)
 }
 pub unsafe fn UniformMatrix4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix4dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix4dvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: VertexAttrib4dARB, VertexAttrib4dNV
 pub unsafe fn VertexAttrib4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[VertexAttrib4dIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib4dIdx as usize))(index, x, y, z, w)
 }
 pub unsafe fn DepthMask(flag: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLboolean) -> ()>(GL_API[DepthMaskIdx as usize])(flag)
+    mem::transmute::<_, extern "system" fn(GLboolean) -> ()>(*GL_API.get_unchecked(DepthMaskIdx as usize))(flag)
 }
 /// Fallbacks: VertexAttribL4dEXT
 pub unsafe fn VertexAttribL4d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[VertexAttribL4dIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL4dIdx as usize))(index, x, y, z, w)
 }
 /// Fallbacks: CopyTexSubImage1DEXT
 pub unsafe fn CopyTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei) -> ()>(GL_API[CopyTexSubImage1DIdx as usize])(target, level, xoffset, x, y, width)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTexSubImage1DIdx as usize))(target, level, xoffset, x, y, width)
 }
 /// Fallbacks: Uniform1uiEXT
 pub unsafe fn Uniform1ui(location: GLint, v0: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLuint) -> ()>(GL_API[Uniform1uiIdx as usize])(location, v0)
+    mem::transmute::<_, extern "system" fn(GLint, GLuint) -> ()>(*GL_API.get_unchecked(Uniform1uiIdx as usize))(location, v0)
 }
 /// Fallbacks: VertexAttrib4NubvARB, VertexAttrib4ubvNV
 pub unsafe fn VertexAttrib4Nubv(index: GLuint, v: *const GLubyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(GL_API[VertexAttrib4NubvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(*GL_API.get_unchecked(VertexAttrib4NubvIdx as usize))(index, v)
 }
 pub unsafe fn UniformSubroutinesuiv(shadertype: GLenum, count: GLsizei, indices: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLuint) -> ()>(GL_API[UniformSubroutinesuivIdx as usize])(shadertype, count, indices)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(UniformSubroutinesuivIdx as usize))(shadertype, count, indices)
 }
 pub unsafe fn Scissor(x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[ScissorIdx as usize])(x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(ScissorIdx as usize))(x, y, width, height)
 }
 pub unsafe fn TextureStorage3DMultisample(texture: GLuint, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TextureStorage3DMultisampleIdx as usize])(texture, samples, internalformat, width, height, depth, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TextureStorage3DMultisampleIdx as usize))(texture, samples, internalformat, width, height, depth, fixedsamplelocations)
 }
 pub unsafe fn StencilFuncSeparate(face: GLenum, func: GLenum, ref_: GLint, mask: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint, GLuint) -> ()>(GL_API[StencilFuncSeparateIdx as usize])(face, func, ref_, mask)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint, GLuint) -> ()>(*GL_API.get_unchecked(StencilFuncSeparateIdx as usize))(face, func, ref_, mask)
 }
 pub unsafe fn TexCoordP3uiv(type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[TexCoordP3uivIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP3uivIdx as usize))(type_, coords)
 }
 /// Fallbacks: ValidateProgramARB
 pub unsafe fn ValidateProgram(program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[ValidateProgramIdx as usize])(program)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(ValidateProgramIdx as usize))(program)
 }
 pub unsafe fn InvalidateSubFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *const GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLenum, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[InvalidateSubFramebufferIdx as usize])(target, numAttachments, attachments, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLenum, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(InvalidateSubFramebufferIdx as usize))(target, numAttachments, attachments, x, y, width, height)
 }
 /// Fallbacks: VertexAttrib3fvARB, VertexAttrib3fvNV
 pub unsafe fn VertexAttrib3fv(index: GLuint, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(GL_API[VertexAttrib3fvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib3fvIdx as usize))(index, v)
 }
 /// Fallbacks: DeleteVertexArraysAPPLE, DeleteVertexArraysOES
 pub unsafe fn DeleteVertexArrays(n: GLsizei, arrays: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteVertexArraysIdx as usize])(n, arrays)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteVertexArraysIdx as usize))(n, arrays)
 }
 /// Fallbacks: VertexAttribI4uivEXT
 pub unsafe fn VertexAttribI4uiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttribI4uivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI4uivIdx as usize))(index, v)
 }
 /// Fallbacks: VertexAttrib4svARB, VertexAttrib4svNV
 pub unsafe fn VertexAttrib4sv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttrib4svIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib4svIdx as usize))(index, v)
 }
 pub unsafe fn SamplerParameterf(sampler: GLuint, pname: GLenum, param: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat) -> ()>(GL_API[SamplerParameterfIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat) -> ()>(*GL_API.get_unchecked(SamplerParameterfIdx as usize))(sampler, pname, param)
 }
 /// Fallbacks: VertexAttribI1ivEXT
 pub unsafe fn VertexAttribI1iv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttribI1ivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI1ivIdx as usize))(index, v)
 }
 pub unsafe fn TexParameteriv(target: GLenum, pname: GLenum, params: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLint) -> ()>(GL_API[TexParameterivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(TexParameterivIdx as usize))(target, pname, params)
 }
 /// Fallbacks: Uniform4iARB
 pub unsafe fn Uniform4i(location: GLint, v0: GLint, v1: GLint, v2: GLint, v3: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint, GLint) -> ()>(GL_API[Uniform4iIdx as usize])(location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(Uniform4iIdx as usize))(location, v0, v1, v2, v3)
 }
 pub unsafe fn TexCoordP1ui(type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[TexCoordP1uiIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP1uiIdx as usize))(type_, coords)
 }
 /// Fallbacks: IsFramebufferEXT
 pub unsafe fn IsFramebuffer(framebuffer: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsFramebufferIdx as usize])(framebuffer)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsFramebufferIdx as usize))(framebuffer)
 }
 pub unsafe fn IsTexture(texture: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsTextureIdx as usize])(texture)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsTextureIdx as usize))(texture)
 }
 pub unsafe fn BlendFunc(sfactor: GLenum, dfactor: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[BlendFuncIdx as usize])(sfactor, dfactor)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendFuncIdx as usize))(sfactor, dfactor)
 }
 /// Fallbacks: ProgramUniform4uiEXT
 pub unsafe fn ProgramUniform4ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint, GLuint, GLuint) -> ()>(GL_API[ProgramUniform4uiIdx as usize])(program, location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform4uiIdx as usize))(program, location, v0, v1, v2, v3)
 }
 pub unsafe fn UniformMatrix2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix2dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix2dvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn VertexArrayElementBuffer(vaobj: GLuint, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[VertexArrayElementBufferIdx as usize])(vaobj, buffer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayElementBufferIdx as usize))(vaobj, buffer)
 }
 pub unsafe fn GenProgramPipelines(n: GLsizei, pipelines: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenProgramPipelinesIdx as usize])(n, pipelines)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenProgramPipelinesIdx as usize))(n, pipelines)
 }
 pub unsafe fn NamedFramebufferReadBuffer(framebuffer: GLuint, src: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(GL_API[NamedFramebufferReadBufferIdx as usize])(framebuffer, src)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(*GL_API.get_unchecked(NamedFramebufferReadBufferIdx as usize))(framebuffer, src)
 }
 pub unsafe fn DrawElements(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void) -> ()>(GL_API[DrawElementsIdx as usize])(mode, count, type_, indices)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(DrawElementsIdx as usize))(mode, count, type_, indices)
 }
 pub unsafe fn TextureParameteriv(texture: GLuint, pname: GLenum, param: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(GL_API[TextureParameterivIdx as usize])(texture, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(TextureParameterivIdx as usize))(texture, pname, param)
 }
 pub unsafe fn StencilOp(fail: GLenum, zfail: GLenum, zpass: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum) -> ()>(GL_API[StencilOpIdx as usize])(fail, zfail, zpass)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(StencilOpIdx as usize))(fail, zfail, zpass)
 }
 pub unsafe fn BindVertexBuffers(first: GLuint, count: GLsizei, buffers: *const GLuint, offsets: *const GLintptr, strides: *const GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizei) -> ()>(GL_API[BindVertexBuffersIdx as usize])(first, count, buffers, offsets, strides)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizei) -> ()>(*GL_API.get_unchecked(BindVertexBuffersIdx as usize))(first, count, buffers, offsets, strides)
 }
 /// Fallbacks: PopDebugGroupKHR
 pub unsafe fn PopDebugGroup() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[PopDebugGroupIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(PopDebugGroupIdx as usize))()
 }
 /// Fallbacks: Uniform2uiEXT
 pub unsafe fn Uniform2ui(location: GLint, v0: GLuint, v1: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint) -> ()>(GL_API[Uniform2uiIdx as usize])(location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(Uniform2uiIdx as usize))(location, v0, v1)
 }
 pub unsafe fn SecondaryColorP3uiv(type_: GLenum, color: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[SecondaryColorP3uivIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(SecondaryColorP3uivIdx as usize))(type_, color)
 }
 pub unsafe fn BindSampler(unit: GLuint, sampler: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[BindSamplerIdx as usize])(unit, sampler)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(BindSamplerIdx as usize))(unit, sampler)
 }
 pub unsafe fn Uniform1dv(location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(GL_API[Uniform1dvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(Uniform1dvIdx as usize))(location, count, value)
 }
 /// Fallbacks: VertexAttrib3dARB, VertexAttrib3dNV
 pub unsafe fn VertexAttrib3d(index: GLuint, x: GLdouble, y: GLdouble, z: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[VertexAttrib3dIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib3dIdx as usize))(index, x, y, z)
 }
 pub unsafe fn GetNamedBufferPointerv(buffer: GLuint, pname: GLenum, params: *const *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const *mut c_void) -> ()>(GL_API[GetNamedBufferPointervIdx as usize])(buffer, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const *mut c_void) -> ()>(*GL_API.get_unchecked(GetNamedBufferPointervIdx as usize))(buffer, pname, params)
 }
 pub unsafe fn CreateSamplers(n: GLsizei, samplers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateSamplersIdx as usize])(n, samplers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateSamplersIdx as usize))(n, samplers)
 }
 pub unsafe fn EndQueryIndexed(target: GLenum, index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[EndQueryIndexedIdx as usize])(target, index)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(EndQueryIndexedIdx as usize))(target, index)
 }
 pub unsafe fn ClearBufferfv(buffer: GLenum, drawbuffer: GLint, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLfloat) -> ()>(GL_API[ClearBufferfvIdx as usize])(buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLfloat) -> ()>(*GL_API.get_unchecked(ClearBufferfvIdx as usize))(buffer, drawbuffer, value)
 }
 /// Fallbacks: UniformMatrix4x2fvNV
 pub unsafe fn UniformMatrix4x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix4x2fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix4x2fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn StencilMask(mask: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[StencilMaskIdx as usize])(mask)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(StencilMaskIdx as usize))(mask)
 }
 /// Fallbacks: UniformMatrix4fvARB
 pub unsafe fn UniformMatrix4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix4fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix4fvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: PolygonModeNV
 pub unsafe fn PolygonMode(face: GLenum, mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[PolygonModeIdx as usize])(face, mode)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(PolygonModeIdx as usize))(face, mode)
 }
 /// Fallbacks: CompressedTexSubImage3DARB, CompressedTexSubImage3DOES
 pub unsafe fn CompressedTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexSubImage3DIdx as usize])(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexSubImage3DIdx as usize))(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data)
 }
 pub unsafe fn VertexAttribP4ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexAttribP4uiIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP4uiIdx as usize))(index, type_, normalized, value)
 }
 /// Fallbacks: VertexAttribIPointerEXT
 pub unsafe fn VertexAttribIPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLsizei, *const c_void) -> ()>(GL_API[VertexAttribIPointerIdx as usize])(index, size, type_, stride, pointer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(VertexAttribIPointerIdx as usize))(index, size, type_, stride, pointer)
 }
 pub unsafe fn NamedFramebufferTextureLayer(framebuffer: GLuint, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLint, GLint) -> ()>(GL_API[NamedFramebufferTextureLayerIdx as usize])(framebuffer, attachment, texture, level, layer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLint, GLint) -> ()>(*GL_API.get_unchecked(NamedFramebufferTextureLayerIdx as usize))(framebuffer, attachment, texture, level, layer)
 }
 /// Fallbacks: DeleteFramebuffersEXT
 pub unsafe fn DeleteFramebuffers(n: GLsizei, framebuffers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteFramebuffersIdx as usize])(n, framebuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteFramebuffersIdx as usize))(n, framebuffers)
 }
 pub unsafe fn Disable(cap: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[DisableIdx as usize])(cap)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(DisableIdx as usize))(cap)
 }
 pub unsafe fn GetShaderInfoLog(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetShaderInfoLogIdx as usize])(shader, bufSize, length, infoLog)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetShaderInfoLogIdx as usize))(shader, bufSize, length, infoLog)
 }
 pub unsafe fn Uniform3d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[Uniform3dIdx as usize])(location, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(Uniform3dIdx as usize))(location, x, y, z)
 }
 pub unsafe fn CopyTextureSubImage3D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[CopyTextureSubImage3DIdx as usize])(texture, level, xoffset, yoffset, zoffset, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTextureSubImage3DIdx as usize))(texture, level, xoffset, yoffset, zoffset, x, y, width, height)
 }
 pub unsafe fn InvalidateBufferData(buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[InvalidateBufferDataIdx as usize])(buffer)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(InvalidateBufferDataIdx as usize))(buffer)
 }
 /// Fallbacks: EndConditionalRenderNV, EndConditionalRenderNVX
 pub unsafe fn EndConditionalRender() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[EndConditionalRenderIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(EndConditionalRenderIdx as usize))()
 }
 pub unsafe fn ReleaseShaderCompiler() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[ReleaseShaderCompilerIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(ReleaseShaderCompilerIdx as usize))()
 }
 /// Fallbacks: NamedBufferSubDataEXT
 pub unsafe fn NamedBufferSubData(buffer: GLuint, offset: GLintptr, size: GLsizeiptr, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, *const c_void) -> ()>(GL_API[NamedBufferSubDataIdx as usize])(buffer, offset, size, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, *const c_void) -> ()>(*GL_API.get_unchecked(NamedBufferSubDataIdx as usize))(buffer, offset, size, data)
 }
 pub unsafe fn GetnPixelMapfv(map: GLenum, bufSize: GLsizei, values: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLfloat) -> ()>(GL_API[GetnPixelMapfvIdx as usize])(map, bufSize, values)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetnPixelMapfvIdx as usize))(map, bufSize, values)
 }
 /// Fallbacks: UniformMatrix3x2fvNV
 pub unsafe fn UniformMatrix3x2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix3x2fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix3x2fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn CopyNamedBufferSubData(readBuffer: GLuint, writeBuffer: GLuint, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLintptr, GLintptr, GLsizeiptr) -> ()>(GL_API[CopyNamedBufferSubDataIdx as usize])(readBuffer, writeBuffer, readOffset, writeOffset, size)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLintptr, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(CopyNamedBufferSubDataIdx as usize))(readBuffer, writeBuffer, readOffset, writeOffset, size)
 }
 pub unsafe fn ProgramUniformMatrix4x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix4x2dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4x2dvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn GetDoublev(pname: GLenum, data: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *mut GLdouble) -> ()>(GL_API[GetDoublevIdx as usize])(pname, data)
+    mem::transmute::<_, extern "system" fn(GLenum, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetDoublevIdx as usize))(pname, data)
 }
 /// Fallbacks: DisableVertexAttribArrayARB
 pub unsafe fn DisableVertexAttribArray(index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[DisableVertexAttribArrayIdx as usize])(index)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(DisableVertexAttribArrayIdx as usize))(index)
 }
 pub unsafe fn BindBuffersRange(target: GLenum, first: GLuint, count: GLsizei, buffers: *const GLuint, offsets: *const GLintptr, sizes: *const GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizeiptr) -> ()>(GL_API[BindBuffersRangeIdx as usize])(target, first, count, buffers, offsets, sizes)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizeiptr) -> ()>(*GL_API.get_unchecked(BindBuffersRangeIdx as usize))(target, first, count, buffers, offsets, sizes)
 }
 /// Fallbacks: ProgramUniform4uivEXT
 pub unsafe fn ProgramUniform4uiv(program: GLuint, location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(GL_API[ProgramUniform4uivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform4uivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: ActiveTextureARB
 pub unsafe fn ActiveTexture(texture: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[ActiveTextureIdx as usize])(texture)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(ActiveTextureIdx as usize))(texture)
 }
 pub unsafe fn GetProgramiv(program: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetProgramivIdx as usize])(program, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetProgramivIdx as usize))(program, pname, params)
 }
 pub unsafe fn VertexAttribIFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLuint) -> ()>(GL_API[VertexAttribIFormatIdx as usize])(attribindex, size, type_, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribIFormatIdx as usize))(attribindex, size, type_, relativeoffset)
 }
 /// Fallbacks: CopyTexSubImage3DEXT, CopyTexSubImage3DOES
 pub unsafe fn CopyTexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[CopyTexSubImage3DIdx as usize])(target, level, xoffset, yoffset, zoffset, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTexSubImage3DIdx as usize))(target, level, xoffset, yoffset, zoffset, x, y, width, height)
 }
 pub unsafe fn GetActiveAtomicCounterBufferiv(program: GLuint, bufferIndex: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetActiveAtomicCounterBufferivIdx as usize])(program, bufferIndex, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetActiveAtomicCounterBufferivIdx as usize))(program, bufferIndex, pname, params)
 }
 pub unsafe fn DrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const c_void) -> ()>(GL_API[DrawElementsIndirectIdx as usize])(mode, type_, indirect)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(DrawElementsIndirectIdx as usize))(mode, type_, indirect)
 }
 /// Fallbacks: ViewportIndexedfNV
 pub unsafe fn ViewportIndexedf(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat, h: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[ViewportIndexedfIdx as usize])(index, x, y, w, h)
+    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(ViewportIndexedfIdx as usize))(index, x, y, w, h)
 }
 /// Fallbacks: VertexAttrib4ubvARB
 pub unsafe fn VertexAttrib4ubv(index: GLuint, v: *const GLubyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(GL_API[VertexAttrib4ubvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLubyte) -> ()>(*GL_API.get_unchecked(VertexAttrib4ubvIdx as usize))(index, v)
 }
 pub unsafe fn ClearBufferfi(buffer: GLenum, drawbuffer: GLint, depth: GLfloat, stencil: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLfloat, GLint) -> ()>(GL_API[ClearBufferfiIdx as usize])(buffer, drawbuffer, depth, stencil)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLfloat, GLint) -> ()>(*GL_API.get_unchecked(ClearBufferfiIdx as usize))(buffer, drawbuffer, depth, stencil)
 }
 /// Fallbacks: VertexAttribI1uivEXT
 pub unsafe fn VertexAttribI1uiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttribI1uivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI1uivIdx as usize))(index, v)
 }
 /// Fallbacks: AttachObjectARB
 pub unsafe fn AttachShader(program: GLuint, shader: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[AttachShaderIdx as usize])(program, shader)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(AttachShaderIdx as usize))(program, shader)
 }
 /// Fallbacks: VertexAttrib3svARB, VertexAttrib3svNV
 pub unsafe fn VertexAttrib3sv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttrib3svIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib3svIdx as usize))(index, v)
 }
 pub unsafe fn BindTransformFeedback(target: GLenum, id: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BindTransformFeedbackIdx as usize])(target, id)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BindTransformFeedbackIdx as usize))(target, id)
 }
 /// Fallbacks: ProgramUniform3iEXT
 pub unsafe fn ProgramUniform3i(program: GLuint, location: GLint, v0: GLint, v1: GLint, v2: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint) -> ()>(GL_API[ProgramUniform3iIdx as usize])(program, location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform3iIdx as usize))(program, location, v0, v1, v2)
 }
 pub unsafe fn ClearBufferiv(buffer: GLenum, drawbuffer: GLint, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLint) -> ()>(GL_API[ClearBufferivIdx as usize])(buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, *const GLint) -> ()>(*GL_API.get_unchecked(ClearBufferivIdx as usize))(buffer, drawbuffer, value)
 }
 /// Fallbacks: ProgramUniform3ivEXT
 pub unsafe fn ProgramUniform3iv(program: GLuint, location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(GL_API[ProgramUniform3ivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform3ivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: GetCompressedTexImageARB
 pub unsafe fn GetCompressedTexImage(target: GLenum, level: GLint, img: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, *mut c_void) -> ()>(GL_API[GetCompressedTexImageIdx as usize])(target, level, img)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, *mut c_void) -> ()>(*GL_API.get_unchecked(GetCompressedTexImageIdx as usize))(target, level, img)
 }
 pub unsafe fn GetQueryBufferObjecti64v(id: GLuint, buffer: GLuint, pname: GLenum, offset: GLintptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(GL_API[GetQueryBufferObjecti64vIdx as usize])(id, buffer, pname, offset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(*GL_API.get_unchecked(GetQueryBufferObjecti64vIdx as usize))(id, buffer, pname, offset)
 }
 pub unsafe fn ProgramUniform4dv(program: GLuint, location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(GL_API[ProgramUniform4dvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform4dvIdx as usize))(program, location, count, value)
 }
 pub unsafe fn VertexArrayVertexBuffer(vaobj: GLuint, bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLintptr, GLsizei) -> ()>(GL_API[VertexArrayVertexBufferIdx as usize])(vaobj, bindingindex, buffer, offset, stride)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLintptr, GLsizei) -> ()>(*GL_API.get_unchecked(VertexArrayVertexBufferIdx as usize))(vaobj, bindingindex, buffer, offset, stride)
 }
 /// Fallbacks: Uniform2fARB
 pub unsafe fn Uniform2f(location: GLint, v0: GLfloat, v1: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat) -> ()>(GL_API[Uniform2fIdx as usize])(location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(Uniform2fIdx as usize))(location, v0, v1)
 }
 pub unsafe fn GetNamedRenderbufferParameteriv(renderbuffer: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetNamedRenderbufferParameterivIdx as usize])(renderbuffer, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetNamedRenderbufferParameterivIdx as usize))(renderbuffer, pname, params)
 }
 /// Fallbacks: VertexAttrib2svARB, VertexAttrib2svNV
 pub unsafe fn VertexAttrib2sv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttrib2svIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib2svIdx as usize))(index, v)
 }
 pub unsafe fn GetTextureSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetTextureSubImageIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetTextureSubImageIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, bufSize, pixels)
 }
 /// Fallbacks: VertexAttribI3uiEXT
 pub unsafe fn VertexAttribI3ui(index: GLuint, x: GLuint, y: GLuint, z: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLuint) -> ()>(GL_API[VertexAttribI3uiIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI3uiIdx as usize))(index, x, y, z)
 }
 /// Fallbacks: GetQueryivARB
 pub unsafe fn GetQueryiv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetQueryivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetQueryivIdx as usize))(target, pname, params)
 }
 pub unsafe fn MemoryBarrierByRegion(barriers: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(GL_API[MemoryBarrierByRegionIdx as usize])(barriers)
+    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(*GL_API.get_unchecked(MemoryBarrierByRegionIdx as usize))(barriers)
 }
 /// Fallbacks: ProgramUniformMatrix3fvEXT
 pub unsafe fn ProgramUniformMatrix3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix3fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3fvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: VertexAttrib1svARB, VertexAttrib1svNV
 pub unsafe fn VertexAttrib1sv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttrib1svIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib1svIdx as usize))(index, v)
 }
 /// Fallbacks: BindTextureEXT
 pub unsafe fn BindTexture(target: GLenum, texture: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BindTextureIdx as usize])(target, texture)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BindTextureIdx as usize))(target, texture)
 }
 pub unsafe fn TextureBufferRange(texture: GLuint, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[TextureBufferRangeIdx as usize])(texture, internalformat, buffer, offset, size)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(TextureBufferRangeIdx as usize))(texture, internalformat, buffer, offset, size)
 }
 /// Fallbacks: Uniform4fARB
 pub unsafe fn Uniform4f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[Uniform4fIdx as usize])(location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(Uniform4fIdx as usize))(location, v0, v1, v2, v3)
 }
 pub unsafe fn ClearDepth(depth: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLdouble) -> ()>(GL_API[ClearDepthIdx as usize])(depth)
+    mem::transmute::<_, extern "system" fn(GLdouble) -> ()>(*GL_API.get_unchecked(ClearDepthIdx as usize))(depth)
 }
 pub unsafe fn FrontFace(mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[FrontFaceIdx as usize])(mode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(FrontFaceIdx as usize))(mode)
 }
 pub unsafe fn GetTextureParameterfv(texture: GLuint, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(GL_API[GetTextureParameterfvIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetTextureParameterfvIdx as usize))(texture, pname, params)
 }
 /// Fallbacks: MemoryBarrierEXT
 pub unsafe fn MemoryBarrier(barriers: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(GL_API[MemoryBarrierIdx as usize])(barriers)
+    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(*GL_API.get_unchecked(MemoryBarrierIdx as usize))(barriers)
 }
 /// Fallbacks: ViewportArrayvNV
 pub unsafe fn ViewportArrayv(first: GLuint, count: GLsizei, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLfloat) -> ()>(GL_API[ViewportArrayvIdx as usize])(first, count, v)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(ViewportArrayvIdx as usize))(first, count, v)
 }
 pub unsafe fn BeginQueryIndexed(target: GLenum, index: GLuint, id: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(GL_API[BeginQueryIndexedIdx as usize])(target, index, id)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(BeginQueryIndexedIdx as usize))(target, index, id)
 }
 pub unsafe fn PatchParameterfv(pname: GLenum, values: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLfloat) -> ()>(GL_API[PatchParameterfvIdx as usize])(pname, values)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLfloat) -> ()>(*GL_API.get_unchecked(PatchParameterfvIdx as usize))(pname, values)
 }
 pub unsafe fn BindTextures(first: GLuint, count: GLsizei, textures: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(GL_API[BindTexturesIdx as usize])(first, count, textures)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(BindTexturesIdx as usize))(first, count, textures)
 }
 pub unsafe fn GetProgramPipelineInfoLog(pipeline: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetProgramPipelineInfoLogIdx as usize])(pipeline, bufSize, length, infoLog)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetProgramPipelineInfoLogIdx as usize))(pipeline, bufSize, length, infoLog)
 }
 /// Fallbacks: GetUniformuivEXT
 pub unsafe fn GetUniformuiv(program: GLuint, location: GLint, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLuint) -> ()>(GL_API[GetUniformuivIdx as usize])(program, location, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetUniformuivIdx as usize))(program, location, params)
 }
 /// Fallbacks: MultiDrawArraysEXT
 pub unsafe fn MultiDrawArrays(mode: GLenum, first: *const GLint, count: *const GLsizei, drawcount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLint, *const GLsizei, GLsizei) -> ()>(GL_API[MultiDrawArraysIdx as usize])(mode, first, count, drawcount)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLint, *const GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(MultiDrawArraysIdx as usize))(mode, first, count, drawcount)
 }
 /// Fallbacks: ProgramUniform1uiEXT
 pub unsafe fn ProgramUniform1ui(program: GLuint, location: GLint, v0: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint) -> ()>(GL_API[ProgramUniform1uiIdx as usize])(program, location, v0)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform1uiIdx as usize))(program, location, v0)
 }
 pub unsafe fn GetStringi(name: GLenum, index: GLuint) -> *const GLubyte {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> *const GLubyte>(GL_API[GetStringiIdx as usize])(name, index)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> *const GLubyte>(*GL_API.get_unchecked(GetStringiIdx as usize))(name, index)
 }
 /// Fallbacks: GetShaderSourceARB
 pub unsafe fn GetShaderSource(shader: GLuint, bufSize: GLsizei, length: *mut GLsizei, source: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetShaderSourceIdx as usize])(shader, bufSize, length, source)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetShaderSourceIdx as usize))(shader, bufSize, length, source)
 }
 /// Fallbacks: MapBufferRangeEXT
 pub unsafe fn MapBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr, access: GLbitfield) -> *mut c_void {
-    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, GLbitfield) -> *mut c_void>(GL_API[MapBufferRangeIdx as usize])(target, offset, length, access)
+    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, GLbitfield) -> *mut c_void>(*GL_API.get_unchecked(MapBufferRangeIdx as usize))(target, offset, length, access)
 }
 /// Fallbacks: VertexAttrib4NuivARB
 pub unsafe fn VertexAttrib4Nuiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttrib4NuivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttrib4NuivIdx as usize))(index, v)
 }
 pub unsafe fn ClearColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[ClearColorIdx as usize])(red, green, blue, alpha)
+    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(ClearColorIdx as usize))(red, green, blue, alpha)
 }
 /// Fallbacks: Uniform3uiEXT
 pub unsafe fn Uniform3ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint, GLuint) -> ()>(GL_API[Uniform3uiIdx as usize])(location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(Uniform3uiIdx as usize))(location, v0, v1, v2)
 }
 /// Fallbacks: CreateProgramObjectARB
 pub unsafe fn CreateProgram() -> GLuint {
-    mem::transmute::<_, extern "system" fn() -> GLuint>(GL_API[CreateProgramIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> GLuint>(*GL_API.get_unchecked(CreateProgramIdx as usize))()
 }
 pub unsafe fn IsProgramPipeline(pipeline: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsProgramPipelineIdx as usize])(pipeline)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsProgramPipelineIdx as usize))(pipeline)
 }
 /// Fallbacks: Uniform3fARB
 pub unsafe fn Uniform3f(location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[Uniform3fIdx as usize])(location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLint, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(Uniform3fIdx as usize))(location, v0, v1, v2)
 }
 pub unsafe fn CreateQueries(target: GLenum, n: GLsizei, ids: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(GL_API[CreateQueriesIdx as usize])(target, n, ids)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateQueriesIdx as usize))(target, n, ids)
 }
 pub unsafe fn GetNamedBufferParameteriv(buffer: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetNamedBufferParameterivIdx as usize])(buffer, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetNamedBufferParameterivIdx as usize))(buffer, pname, params)
 }
 pub unsafe fn GetShaderiv(shader: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetShaderivIdx as usize])(shader, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetShaderivIdx as usize))(shader, pname, params)
 }
 pub unsafe fn PointSize(size: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(GL_API[PointSizeIdx as usize])(size)
+    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(*GL_API.get_unchecked(PointSizeIdx as usize))(size)
 }
 pub unsafe fn DrawTransformFeedbackInstanced(mode: GLenum, id: GLuint, instancecount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei) -> ()>(GL_API[DrawTransformFeedbackInstancedIdx as usize])(mode, id, instancecount)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei) -> ()>(*GL_API.get_unchecked(DrawTransformFeedbackInstancedIdx as usize))(mode, id, instancecount)
 }
 /// Fallbacks: IsVertexArrayAPPLE, IsVertexArrayOES
 pub unsafe fn IsVertexArray(array: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsVertexArrayIdx as usize])(array)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsVertexArrayIdx as usize))(array)
 }
 pub unsafe fn GetCompressedTextureSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, *mut c_void) -> ()>(GL_API[GetCompressedTextureSubImageIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetCompressedTextureSubImageIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels)
 }
 pub unsafe fn GetnPixelMapusv(map: GLenum, bufSize: GLsizei, values: *mut GLushort) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLushort) -> ()>(GL_API[GetnPixelMapusvIdx as usize])(map, bufSize, values)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLushort) -> ()>(*GL_API.get_unchecked(GetnPixelMapusvIdx as usize))(map, bufSize, values)
 }
 /// Fallbacks: BeginTransformFeedbackEXT, BeginTransformFeedbackNV
 pub unsafe fn BeginTransformFeedback(primitiveMode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[BeginTransformFeedbackIdx as usize])(primitiveMode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(BeginTransformFeedbackIdx as usize))(primitiveMode)
 }
 /// Fallbacks: GetGraphicsResetStatusKHR
 pub unsafe fn GetGraphicsResetStatus() -> GLenum {
-    mem::transmute::<_, extern "system" fn() -> GLenum>(GL_API[GetGraphicsResetStatusIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> GLenum>(*GL_API.get_unchecked(GetGraphicsResetStatusIdx as usize))()
 }
 pub unsafe fn Clear(mask: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(GL_API[ClearIdx as usize])(mask)
+    mem::transmute::<_, extern "system" fn(GLbitfield) -> ()>(*GL_API.get_unchecked(ClearIdx as usize))(mask)
 }
 pub unsafe fn ColorP3ui(type_: GLenum, color: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[ColorP3uiIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(ColorP3uiIdx as usize))(type_, color)
 }
 pub unsafe fn CreateBuffers(n: GLsizei, buffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateBuffersIdx as usize])(n, buffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateBuffersIdx as usize))(n, buffers)
 }
 pub unsafe fn TexParameteri(target: GLenum, pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint) -> ()>(GL_API[TexParameteriIdx as usize])(target, pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint) -> ()>(*GL_API.get_unchecked(TexParameteriIdx as usize))(target, pname, param)
 }
 /// Fallbacks: Uniform2iARB
 pub unsafe fn Uniform2i(location: GLint, v0: GLint, v1: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint) -> ()>(GL_API[Uniform2iIdx as usize])(location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(Uniform2iIdx as usize))(location, v0, v1)
 }
 pub unsafe fn IsShader(shader: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsShaderIdx as usize])(shader)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsShaderIdx as usize))(shader)
 }
 /// Fallbacks: GetBufferParameterivARB
 pub unsafe fn GetBufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetBufferParameterivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetBufferParameterivIdx as usize))(target, pname, params)
 }
 pub unsafe fn GetCompressedTextureImage(texture: GLuint, level: GLint, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut c_void) -> ()>(GL_API[GetCompressedTextureImageIdx as usize])(texture, level, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetCompressedTextureImageIdx as usize))(texture, level, bufSize, pixels)
 }
 /// Fallbacks: Uniform1fARB
 pub unsafe fn Uniform1f(location: GLint, v0: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLfloat) -> ()>(GL_API[Uniform1fIdx as usize])(location, v0)
+    mem::transmute::<_, extern "system" fn(GLint, GLfloat) -> ()>(*GL_API.get_unchecked(Uniform1fIdx as usize))(location, v0)
 }
 pub unsafe fn ClearNamedFramebufferuiv(framebuffer: GLuint, buffer: GLenum, drawbuffer: GLint, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLuint) -> ()>(GL_API[ClearNamedFramebufferuivIdx as usize])(framebuffer, buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLuint) -> ()>(*GL_API.get_unchecked(ClearNamedFramebufferuivIdx as usize))(framebuffer, buffer, drawbuffer, value)
 }
 /// Fallbacks: BlendEquationIndexedAMD, BlendEquationiARB, BlendEquationiEXT, BlendEquationiOES
 pub unsafe fn BlendEquationi(buf: GLuint, mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(GL_API[BlendEquationiIdx as usize])(buf, mode)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(*GL_API.get_unchecked(BlendEquationiIdx as usize))(buf, mode)
 }
 /// Fallbacks: CopyBufferSubDataNV
 pub unsafe fn CopyBufferSubData(readTarget: GLenum, writeTarget: GLenum, readOffset: GLintptr, writeOffset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr) -> ()>(GL_API[CopyBufferSubDataIdx as usize])(readTarget, writeTarget, readOffset, writeOffset, size)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLintptr, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(CopyBufferSubDataIdx as usize))(readTarget, writeTarget, readOffset, writeOffset, size)
 }
 /// Fallbacks: PointParameterivNV
 pub unsafe fn PointParameteriv(pname: GLenum, params: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLint) -> ()>(GL_API[PointParameterivIdx as usize])(pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(PointParameterivIdx as usize))(pname, params)
 }
 /// Fallbacks: GetnUniformivKHR
 pub unsafe fn GetnUniformiv(program: GLuint, location: GLint, bufSize: GLsizei, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLint) -> ()>(GL_API[GetnUniformivIdx as usize])(program, location, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLint) -> ()>(*GL_API.get_unchecked(GetnUniformivIdx as usize))(program, location, bufSize, params)
 }
 pub unsafe fn GetActiveUniformsiv(program: GLuint, uniformCount: GLsizei, uniformIndices: *const GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetActiveUniformsivIdx as usize])(program, uniformCount, uniformIndices, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetActiveUniformsivIdx as usize))(program, uniformCount, uniformIndices, pname, params)
 }
 /// Fallbacks: BindBufferARB
 pub unsafe fn BindBuffer(target: GLenum, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BindBufferIdx as usize])(target, buffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BindBufferIdx as usize))(target, buffer)
 }
 pub unsafe fn DeleteProgram(program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[DeleteProgramIdx as usize])(program)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(DeleteProgramIdx as usize))(program)
 }
 /// Fallbacks: VertexAttrib2dvARB, VertexAttrib2dvNV
 pub unsafe fn VertexAttrib2dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttrib2dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib2dvIdx as usize))(index, v)
 }
 /// Fallbacks: ProgramUniformMatrix2x3fvEXT
 pub unsafe fn ProgramUniformMatrix2x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix2x3fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2x3fvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: BindAttribLocationARB
 pub unsafe fn BindAttribLocation(program: GLuint, index: GLuint, name: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, *const GLchar) -> ()>(GL_API[BindAttribLocationIdx as usize])(program, index, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, *const GLchar) -> ()>(*GL_API.get_unchecked(BindAttribLocationIdx as usize))(program, index, name)
 }
 /// Fallbacks: ProvokingVertexEXT
 pub unsafe fn ProvokingVertex(mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[ProvokingVertexIdx as usize])(mode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(ProvokingVertexIdx as usize))(mode)
 }
 pub unsafe fn GetTransformFeedbacki_v(xfb: GLuint, pname: GLenum, index: GLuint, param: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, *mut GLint) -> ()>(GL_API[GetTransformFeedbacki_vIdx as usize])(xfb, pname, index, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTransformFeedbacki_vIdx as usize))(xfb, pname, index, param)
 }
 /// Fallbacks: ProgramUniform4fEXT
 pub unsafe fn ProgramUniform4f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat, v3: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[ProgramUniform4fIdx as usize])(program, location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform4fIdx as usize))(program, location, v0, v1, v2, v3)
 }
 pub unsafe fn CompressedTextureSubImage1D(texture: GLuint, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTextureSubImage1DIdx as usize])(texture, level, xoffset, width, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTextureSubImage1DIdx as usize))(texture, level, xoffset, width, format, imageSize, data)
 }
 /// Fallbacks: TexStorage1DEXT
 pub unsafe fn TexStorage1D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei) -> ()>(GL_API[TexStorage1DIdx as usize])(target, levels, internalformat, width)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei) -> ()>(*GL_API.get_unchecked(TexStorage1DIdx as usize))(target, levels, internalformat, width)
 }
 /// Fallbacks: VertexAttribI4usvEXT
 pub unsafe fn VertexAttribI4usv(index: GLuint, v: *const GLushort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(GL_API[VertexAttribI4usvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(*GL_API.get_unchecked(VertexAttribI4usvIdx as usize))(index, v)
 }
 /// Fallbacks: IsRenderbufferEXT
 pub unsafe fn IsRenderbuffer(renderbuffer: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsRenderbufferIdx as usize])(renderbuffer)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsRenderbufferIdx as usize))(renderbuffer)
 }
 pub unsafe fn VertexAttribP1ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexAttribP1uiIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP1uiIdx as usize))(index, type_, normalized, value)
 }
 /// Fallbacks: Uniform3uivEXT
 pub unsafe fn Uniform3uiv(location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(GL_API[Uniform3uivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(Uniform3uivIdx as usize))(location, count, value)
 }
 /// Fallbacks: ProgramUniformMatrix4x3fvEXT
 pub unsafe fn ProgramUniformMatrix4x3fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix4x3fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4x3fvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn GetUniformIndices(program: GLuint, uniformCount: GLsizei, uniformNames: *const *const GLchar, uniformIndices: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, *mut GLuint) -> ()>(GL_API[GetUniformIndicesIdx as usize])(program, uniformCount, uniformNames, uniformIndices)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetUniformIndicesIdx as usize))(program, uniformCount, uniformNames, uniformIndices)
 }
 pub unsafe fn GenSamplers(count: GLsizei, samplers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenSamplersIdx as usize])(count, samplers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenSamplersIdx as usize))(count, samplers)
 }
 /// Fallbacks: ProgramUniformMatrix4fvEXT
 pub unsafe fn ProgramUniformMatrix4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix4fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4fvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn VertexArrayBindingDivisor(vaobj: GLuint, bindingindex: GLuint, divisor: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[VertexArrayBindingDivisorIdx as usize])(vaobj, bindingindex, divisor)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayBindingDivisorIdx as usize))(vaobj, bindingindex, divisor)
 }
 pub unsafe fn VertexP2uiv(type_: GLenum, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[VertexP2uivIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexP2uivIdx as usize))(type_, value)
 }
 /// Fallbacks: VertexAttrib4sARB, VertexAttrib4sNV
 pub unsafe fn VertexAttrib4s(index: GLuint, x: GLshort, y: GLshort, z: GLshort, w: GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort, GLshort, GLshort) -> ()>(GL_API[VertexAttrib4sIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort, GLshort, GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib4sIdx as usize))(index, x, y, z, w)
 }
 pub unsafe fn DeleteTextures(n: GLsizei, textures: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteTexturesIdx as usize])(n, textures)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteTexturesIdx as usize))(n, textures)
 }
 pub unsafe fn BindImageTextures(first: GLuint, count: GLsizei, textures: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(GL_API[BindImageTexturesIdx as usize])(first, count, textures)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(BindImageTexturesIdx as usize))(first, count, textures)
 }
 /// Fallbacks: WaitSyncAPPLE
 pub unsafe fn WaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLsync, GLbitfield, GLuint64) -> ()>(GL_API[WaitSyncIdx as usize])(sync, flags, timeout)
+    mem::transmute::<_, extern "system" fn(GLsync, GLbitfield, GLuint64) -> ()>(*GL_API.get_unchecked(WaitSyncIdx as usize))(sync, flags, timeout)
 }
 /// Fallbacks: BindVertexArrayOES
 pub unsafe fn BindVertexArray(array: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[BindVertexArrayIdx as usize])(array)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(BindVertexArrayIdx as usize))(array)
 }
 /// Fallbacks: GetActiveAttribARB
 pub unsafe fn GetActiveAttrib(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLint, *mut GLenum, *mut GLchar) -> ()>(GL_API[GetActiveAttribIdx as usize])(program, index, bufSize, length, size, type_, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLint, *mut GLenum, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveAttribIdx as usize))(program, index, bufSize, length, size, type_, name)
 }
 pub unsafe fn TextureStorage2DMultisample(texture: GLuint, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TextureStorage2DMultisampleIdx as usize])(texture, samples, internalformat, width, height, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TextureStorage2DMultisampleIdx as usize))(texture, samples, internalformat, width, height, fixedsamplelocations)
 }
 /// Fallbacks: DebugMessageInsertARB, DebugMessageInsertKHR
 pub unsafe fn DebugMessageInsert(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, length: GLsizei, buf: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLenum, GLsizei, *const GLchar) -> ()>(GL_API[DebugMessageInsertIdx as usize])(source, type_, id, severity, length, buf)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLenum, GLsizei, *const GLchar) -> ()>(*GL_API.get_unchecked(DebugMessageInsertIdx as usize))(source, type_, id, severity, length, buf)
 }
 /// Fallbacks: DeleteTransformFeedbacksNV
 pub unsafe fn DeleteTransformFeedbacks(n: GLsizei, ids: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteTransformFeedbacksIdx as usize])(n, ids)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteTransformFeedbacksIdx as usize))(n, ids)
 }
 pub unsafe fn TextureSubImage1D(texture: GLuint, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TextureSubImage1DIdx as usize])(texture, level, xoffset, width, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TextureSubImage1DIdx as usize))(texture, level, xoffset, width, format, type_, pixels)
 }
 /// Fallbacks: VertexAttribL1dvEXT
 pub unsafe fn VertexAttribL1dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttribL1dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL1dvIdx as usize))(index, v)
 }
 /// Fallbacks: VertexAttrib1fvARB, VertexAttrib1fvNV
 pub unsafe fn VertexAttrib1fv(index: GLuint, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(GL_API[VertexAttrib1fvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib1fvIdx as usize))(index, v)
 }
 pub unsafe fn GetBufferParameteri64v(target: GLenum, pname: GLenum, params: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint64) -> ()>(GL_API[GetBufferParameteri64vIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetBufferParameteri64vIdx as usize))(target, pname, params)
 }
 /// Fallbacks: DeleteRenderbuffersEXT
 pub unsafe fn DeleteRenderbuffers(n: GLsizei, renderbuffers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteRenderbuffersIdx as usize])(n, renderbuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteRenderbuffersIdx as usize))(n, renderbuffers)
 }
 /// Fallbacks: GetRenderbufferParameterivEXT
 pub unsafe fn GetRenderbufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetRenderbufferParameterivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetRenderbufferParameterivIdx as usize))(target, pname, params)
 }
 pub unsafe fn TextureParameterfv(texture: GLuint, pname: GLenum, param: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLfloat) -> ()>(GL_API[TextureParameterfvIdx as usize])(texture, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLfloat) -> ()>(*GL_API.get_unchecked(TextureParameterfvIdx as usize))(texture, pname, param)
 }
 /// Fallbacks: TexBufferRangeEXT, TexBufferRangeOES
 pub unsafe fn TexBufferRange(target: GLenum, internalformat: GLenum, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[TexBufferRangeIdx as usize])(target, internalformat, buffer, offset, size)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(TexBufferRangeIdx as usize))(target, internalformat, buffer, offset, size)
 }
 pub unsafe fn NamedBufferData(buffer: GLuint, size: GLsizeiptr, data: *const c_void, usage: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizeiptr, *const c_void, GLenum) -> ()>(GL_API[NamedBufferDataIdx as usize])(buffer, size, data, usage)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizeiptr, *const c_void, GLenum) -> ()>(*GL_API.get_unchecked(NamedBufferDataIdx as usize))(buffer, size, data, usage)
 }
 pub unsafe fn PixelStorei(pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(GL_API[PixelStoreiIdx as usize])(pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(*GL_API.get_unchecked(PixelStoreiIdx as usize))(pname, param)
 }
 pub unsafe fn GetActiveSubroutineUniformName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetActiveSubroutineUniformNameIdx as usize])(program, shadertype, index, bufsize, length, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveSubroutineUniformNameIdx as usize))(program, shadertype, index, bufsize, length, name)
 }
 /// Fallbacks: BlendEquationEXT
 pub unsafe fn BlendEquation(mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[BlendEquationIdx as usize])(mode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(BlendEquationIdx as usize))(mode)
 }
 /// Fallbacks: BufferDataARB
 pub unsafe fn BufferData(target: GLenum, size: GLsizeiptr, data: *const c_void, usage: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizeiptr, *const c_void, GLenum) -> ()>(GL_API[BufferDataIdx as usize])(target, size, data, usage)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizeiptr, *const c_void, GLenum) -> ()>(*GL_API.get_unchecked(BufferDataIdx as usize))(target, size, data, usage)
 }
 /// Fallbacks: CompressedTexSubImage2DARB
 pub unsafe fn CompressedTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexSubImage2DIdx as usize])(target, level, xoffset, yoffset, width, height, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexSubImage2DIdx as usize))(target, level, xoffset, yoffset, width, height, format, imageSize, data)
 }
 /// Fallbacks: FramebufferTexture3DEXT, FramebufferTexture3DOES
 pub unsafe fn FramebufferTexture3D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint, zoffset: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint, GLint) -> ()>(GL_API[FramebufferTexture3DIdx as usize])(target, attachment, textarget, texture, level, zoffset)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint, GLint) -> ()>(*GL_API.get_unchecked(FramebufferTexture3DIdx as usize))(target, attachment, textarget, texture, level, zoffset)
 }
 pub unsafe fn ProgramUniformMatrix4x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix4x3dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4x3dvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn GetnCompressedTexImage(target: GLenum, lod: GLint, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, *mut c_void) -> ()>(GL_API[GetnCompressedTexImageIdx as usize])(target, lod, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnCompressedTexImageIdx as usize))(target, lod, bufSize, pixels)
 }
 pub unsafe fn GetProgramStageiv(program: GLuint, shadertype: GLenum, pname: GLenum, values: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetProgramStageivIdx as usize])(program, shadertype, pname, values)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetProgramStageivIdx as usize))(program, shadertype, pname, values)
 }
 /// Fallbacks: ClampColorARB
 pub unsafe fn ClampColor(target: GLenum, clamp: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[ClampColorIdx as usize])(target, clamp)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(ClampColorIdx as usize))(target, clamp)
 }
 pub unsafe fn ValidateProgramPipeline(pipeline: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[ValidateProgramPipelineIdx as usize])(pipeline)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(ValidateProgramPipelineIdx as usize))(pipeline)
 }
 /// Fallbacks: GetVertexAttribfvARB, GetVertexAttribfvNV
 pub unsafe fn GetVertexAttribfv(index: GLuint, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(GL_API[GetVertexAttribfvIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetVertexAttribfvIdx as usize))(index, pname, params)
 }
 pub unsafe fn ProgramUniformMatrix2x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix2x4dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2x4dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: UniformMatrix4x3fvNV
 pub unsafe fn UniformMatrix4x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix4x3fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix4x3fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn MultiTexCoordP2uiv(texture: GLenum, type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(GL_API[MultiTexCoordP2uivIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP2uivIdx as usize))(texture, type_, coords)
 }
 pub unsafe fn DeleteShader(shader: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[DeleteShaderIdx as usize])(shader)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(DeleteShaderIdx as usize))(shader)
 }
 pub unsafe fn NamedFramebufferRenderbuffer(framebuffer: GLuint, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLuint) -> ()>(GL_API[NamedFramebufferRenderbufferIdx as usize])(framebuffer, attachment, renderbuffertarget, renderbuffer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(NamedFramebufferRenderbufferIdx as usize))(framebuffer, attachment, renderbuffertarget, renderbuffer)
 }
 /// Fallbacks: GetAttribLocationARB
 pub unsafe fn GetAttribLocation(program: GLuint, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(GL_API[GetAttribLocationIdx as usize])(program, name)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetAttribLocationIdx as usize))(program, name)
 }
 pub unsafe fn GetInteger64i_v(target: GLenum, index: GLuint, data: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLint64) -> ()>(GL_API[GetInteger64i_vIdx as usize])(target, index, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetInteger64i_vIdx as usize))(target, index, data)
 }
 /// Fallbacks: CopyTexImage1DEXT
 pub unsafe fn CopyTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, border: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> ()>(GL_API[CopyTexImage1DIdx as usize])(target, level, internalformat, x, y, width, border)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLint) -> ()>(*GL_API.get_unchecked(CopyTexImage1DIdx as usize))(target, level, internalformat, x, y, width, border)
 }
 /// Fallbacks: VertexAttrib2fARB, VertexAttrib2fNV
 pub unsafe fn VertexAttrib2f(index: GLuint, x: GLfloat, y: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat) -> ()>(GL_API[VertexAttrib2fIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib2fIdx as usize))(index, x, y)
 }
 /// Fallbacks: VertexAttribI4ivEXT
 pub unsafe fn VertexAttribI4iv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttribI4ivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI4ivIdx as usize))(index, v)
 }
 /// Fallbacks: ClearDepthfOES
 pub unsafe fn ClearDepthf(d: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(GL_API[ClearDepthfIdx as usize])(d)
+    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(*GL_API.get_unchecked(ClearDepthfIdx as usize))(d)
 }
 pub unsafe fn UniformMatrix2x3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix2x3dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix2x3dvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn GetTexLevelParameteriv(target: GLenum, level: GLint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, *mut GLint) -> ()>(GL_API[GetTexLevelParameterivIdx as usize])(target, level, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTexLevelParameterivIdx as usize))(target, level, pname, params)
 }
 /// Fallbacks: ReadnPixelsARB, ReadnPixelsEXT, ReadnPixelsKHR
 pub unsafe fn ReadnPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, bufSize: GLsizei, data: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[ReadnPixelsIdx as usize])(x, y, width, height, format, type_, bufSize, data)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(ReadnPixelsIdx as usize))(x, y, width, height, format, type_, bufSize, data)
 }
 /// Fallbacks: LinkProgramARB
 pub unsafe fn LinkProgram(program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[LinkProgramIdx as usize])(program)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(LinkProgramIdx as usize))(program)
 }
 pub unsafe fn EnableVertexArrayAttrib(vaobj: GLuint, index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[EnableVertexArrayAttribIdx as usize])(vaobj, index)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(EnableVertexArrayAttribIdx as usize))(vaobj, index)
 }
 /// Fallbacks: VertexAttribLPointerEXT
 pub unsafe fn VertexAttribLPointer(index: GLuint, size: GLint, type_: GLenum, stride: GLsizei, pointer: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLsizei, *const c_void) -> ()>(GL_API[VertexAttribLPointerIdx as usize])(index, size, type_, stride, pointer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(VertexAttribLPointerIdx as usize))(index, size, type_, stride, pointer)
 }
 /// Fallbacks: TextureViewEXT, TextureViewOES
 pub unsafe fn TextureView(texture: GLuint, target: GLenum, origtexture: GLuint, internalformat: GLenum, minlevel: GLuint, numlevels: GLuint, minlayer: GLuint, numlayers: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLenum, GLuint, GLuint, GLuint, GLuint) -> ()>(GL_API[TextureViewIdx as usize])(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLenum, GLuint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(TextureViewIdx as usize))(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers)
 }
 pub unsafe fn GetActiveSubroutineUniformiv(program: GLuint, shadertype: GLenum, index: GLuint, pname: GLenum, values: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetActiveSubroutineUniformivIdx as usize])(program, shadertype, index, pname, values)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetActiveSubroutineUniformivIdx as usize))(program, shadertype, index, pname, values)
 }
 pub unsafe fn GetQueryBufferObjectui64v(id: GLuint, buffer: GLuint, pname: GLenum, offset: GLintptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(GL_API[GetQueryBufferObjectui64vIdx as usize])(id, buffer, pname, offset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(*GL_API.get_unchecked(GetQueryBufferObjectui64vIdx as usize))(id, buffer, pname, offset)
 }
 /// Fallbacks: CompileShaderARB
 pub unsafe fn CompileShader(shader: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[CompileShaderIdx as usize])(shader)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(CompileShaderIdx as usize))(shader)
 }
 /// Fallbacks: Uniform2fvARB
 pub unsafe fn Uniform2fv(location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(GL_API[Uniform2fvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(Uniform2fvIdx as usize))(location, count, value)
 }
 /// Fallbacks: TexSubImage3DEXT, TexSubImage3DOES
 pub unsafe fn TexSubImage3D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexSubImage3DIdx as usize])(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexSubImage3DIdx as usize))(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels)
 }
 pub unsafe fn TexImage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TexImage2DMultisampleIdx as usize])(target, samples, internalformat, width, height, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TexImage2DMultisampleIdx as usize))(target, samples, internalformat, width, height, fixedsamplelocations)
 }
 pub unsafe fn Uniform4d(location: GLint, x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[Uniform4dIdx as usize])(location, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(Uniform4dIdx as usize))(location, x, y, z, w)
 }
 pub unsafe fn GetTransformFeedbacki64_v(xfb: GLuint, pname: GLenum, index: GLuint, param: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, *mut GLint64) -> ()>(GL_API[GetTransformFeedbacki64_vIdx as usize])(xfb, pname, index, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetTransformFeedbacki64_vIdx as usize))(xfb, pname, index, param)
 }
 /// Fallbacks: ProgramUniformMatrix3x2fvEXT
 pub unsafe fn ProgramUniformMatrix3x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix3x2fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3x2fvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: ProgramUniformMatrix2fvEXT
 pub unsafe fn ProgramUniformMatrix2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix2fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2fvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn CreateVertexArrays(n: GLsizei, arrays: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateVertexArraysIdx as usize])(n, arrays)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateVertexArraysIdx as usize))(n, arrays)
 }
 /// Fallbacks: BindBufferBaseEXT, BindBufferBaseNV
 pub unsafe fn BindBufferBase(target: GLenum, index: GLuint, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(GL_API[BindBufferBaseIdx as usize])(target, index, buffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(BindBufferBaseIdx as usize))(target, index, buffer)
 }
 pub unsafe fn GetSamplerParameteriv(sampler: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetSamplerParameterivIdx as usize])(sampler, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetSamplerParameterivIdx as usize))(sampler, pname, params)
 }
 pub unsafe fn ReadPixels(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *mut c_void) -> ()>(GL_API[ReadPixelsIdx as usize])(x, y, width, height, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *mut c_void) -> ()>(*GL_API.get_unchecked(ReadPixelsIdx as usize))(x, y, width, height, format, type_, pixels)
 }
 pub unsafe fn VertexAttribLFormat(attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLuint) -> ()>(GL_API[VertexAttribLFormatIdx as usize])(attribindex, size, type_, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribLFormatIdx as usize))(attribindex, size, type_, relativeoffset)
 }
 pub unsafe fn GetQueryBufferObjectuiv(id: GLuint, buffer: GLuint, pname: GLenum, offset: GLintptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(GL_API[GetQueryBufferObjectuivIdx as usize])(id, buffer, pname, offset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(*GL_API.get_unchecked(GetQueryBufferObjectuivIdx as usize))(id, buffer, pname, offset)
 }
 /// Fallbacks: FramebufferTextureARB, FramebufferTextureEXT, FramebufferTextureOES
 pub unsafe fn FramebufferTexture(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLint) -> ()>(GL_API[FramebufferTextureIdx as usize])(target, attachment, texture, level)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLint) -> ()>(*GL_API.get_unchecked(FramebufferTextureIdx as usize))(target, attachment, texture, level)
 }
 pub unsafe fn TexParameterf(target: GLenum, pname: GLenum, param: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLfloat) -> ()>(GL_API[TexParameterfIdx as usize])(target, pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLfloat) -> ()>(*GL_API.get_unchecked(TexParameterfIdx as usize))(target, pname, param)
 }
 pub unsafe fn FramebufferParameteri(target: GLenum, pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint) -> ()>(GL_API[FramebufferParameteriIdx as usize])(target, pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLint) -> ()>(*GL_API.get_unchecked(FramebufferParameteriIdx as usize))(target, pname, param)
 }
 pub unsafe fn TextureParameterIiv(texture: GLuint, pname: GLenum, params: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(GL_API[TextureParameterIivIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(TextureParameterIivIdx as usize))(texture, pname, params)
 }
 pub unsafe fn BindBuffersBase(target: GLenum, first: GLuint, count: GLsizei, buffers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLuint) -> ()>(GL_API[BindBuffersBaseIdx as usize])(target, first, count, buffers)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(BindBuffersBaseIdx as usize))(target, first, count, buffers)
 }
 /// Fallbacks: TexStorage3DMultisampleOES
 pub unsafe fn TexStorage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TexStorage3DMultisampleIdx as usize])(target, samples, internalformat, width, height, depth, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TexStorage3DMultisampleIdx as usize))(target, samples, internalformat, width, height, depth, fixedsamplelocations)
 }
 /// Fallbacks: VertexAttribI4iEXT
 pub unsafe fn VertexAttribI4i(index: GLuint, x: GLint, y: GLint, z: GLint, w: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint) -> ()>(GL_API[VertexAttribI4iIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI4iIdx as usize))(index, x, y, z, w)
 }
 /// Fallbacks: DrawRangeElementsEXT
 pub unsafe fn DrawRangeElements(mode: GLenum, start: GLuint, end: GLuint, count: GLsizei, type_: GLenum, indices: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei, GLenum, *const c_void) -> ()>(GL_API[DrawRangeElementsIdx as usize])(mode, start, end, count, type_, indices)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(DrawRangeElementsIdx as usize))(mode, start, end, count, type_, indices)
 }
 /// Fallbacks: TexImage3DEXT, TexImage3DOES
 pub unsafe fn TexImage3D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexImage3DIdx as usize])(target, level, internalformat, width, height, depth, border, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexImage3DIdx as usize))(target, level, internalformat, width, height, depth, border, format, type_, pixels)
 }
 pub unsafe fn TextureStorage2D(texture: GLuint, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(GL_API[TextureStorage2DIdx as usize])(texture, levels, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(TextureStorage2DIdx as usize))(texture, levels, internalformat, width, height)
 }
 pub unsafe fn TransformFeedbackBufferRange(xfb: GLuint, index: GLuint, buffer: GLuint, offset: GLintptr, size: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[TransformFeedbackBufferRangeIdx as usize])(xfb, index, buffer, offset, size)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(TransformFeedbackBufferRangeIdx as usize))(xfb, index, buffer, offset, size)
 }
 pub unsafe fn VertexP4ui(type_: GLenum, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[VertexP4uiIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexP4uiIdx as usize))(type_, value)
 }
 /// Fallbacks: BlendFuncSeparateEXT, BlendFuncSeparateINGR
 pub unsafe fn BlendFuncSeparate(sfactorRGB: GLenum, dfactorRGB: GLenum, sfactorAlpha: GLenum, dfactorAlpha: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum) -> ()>(GL_API[BlendFuncSeparateIdx as usize])(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendFuncSeparateIdx as usize))(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha)
 }
 /// Fallbacks: Uniform4fvARB
 pub unsafe fn Uniform4fv(location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(GL_API[Uniform4fvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(Uniform4fvIdx as usize))(location, count, value)
 }
 pub unsafe fn CreateShaderProgramv(type_: GLenum, count: GLsizei, strings: *const *const GLchar) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const *const GLchar) -> GLuint>(GL_API[CreateShaderProgramvIdx as usize])(type_, count, strings)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const *const GLchar) -> GLuint>(*GL_API.get_unchecked(CreateShaderProgramvIdx as usize))(type_, count, strings)
 }
 pub unsafe fn BindVertexBuffer(bindingindex: GLuint, buffer: GLuint, offset: GLintptr, stride: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLintptr, GLsizei) -> ()>(GL_API[BindVertexBufferIdx as usize])(bindingindex, buffer, offset, stride)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLintptr, GLsizei) -> ()>(*GL_API.get_unchecked(BindVertexBufferIdx as usize))(bindingindex, buffer, offset, stride)
 }
 pub unsafe fn TexStorage2DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TexStorage2DMultisampleIdx as usize])(target, samples, internalformat, width, height, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TexStorage2DMultisampleIdx as usize))(target, samples, internalformat, width, height, fixedsamplelocations)
 }
 pub unsafe fn ShaderStorageBlockBinding(program: GLuint, storageBlockIndex: GLuint, storageBlockBinding: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[ShaderStorageBlockBindingIdx as usize])(program, storageBlockIndex, storageBlockBinding)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(ShaderStorageBlockBindingIdx as usize))(program, storageBlockIndex, storageBlockBinding)
 }
 pub unsafe fn NamedRenderbufferStorageMultisample(renderbuffer: GLuint, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(GL_API[NamedRenderbufferStorageMultisampleIdx as usize])(renderbuffer, samples, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(NamedRenderbufferStorageMultisampleIdx as usize))(renderbuffer, samples, internalformat, width, height)
 }
 pub unsafe fn GetProgramResourceiv(program: GLuint, programInterface: GLenum, index: GLuint, propCount: GLsizei, props: *const GLenum, bufSize: GLsizei, length: *mut GLsizei, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *const GLenum, GLsizei, *mut GLsizei, *mut GLint) -> ()>(GL_API[GetProgramResourceivIdx as usize])(program, programInterface, index, propCount, props, bufSize, length, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *const GLenum, GLsizei, *mut GLsizei, *mut GLint) -> ()>(*GL_API.get_unchecked(GetProgramResourceivIdx as usize))(program, programInterface, index, propCount, props, bufSize, length, params)
 }
 /// Fallbacks: EnableVertexAttribArrayARB
 pub unsafe fn EnableVertexAttribArray(index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[EnableVertexAttribArrayIdx as usize])(index)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(EnableVertexAttribArrayIdx as usize))(index)
 }
 pub unsafe fn TexCoordP2ui(type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[TexCoordP2uiIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP2uiIdx as usize))(type_, coords)
 }
 /// Fallbacks: TexStorage2DEXT
 pub unsafe fn TexStorage2D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(GL_API[TexStorage2DIdx as usize])(target, levels, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(TexStorage2DIdx as usize))(target, levels, internalformat, width, height)
 }
 /// Fallbacks: VertexAttrib4NivARB
 pub unsafe fn VertexAttrib4Niv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttrib4NivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttrib4NivIdx as usize))(index, v)
 }
 pub unsafe fn VertexArrayVertexBuffers(vaobj: GLuint, first: GLuint, count: GLsizei, buffers: *const GLuint, offsets: *const GLintptr, strides: *const GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizei) -> ()>(GL_API[VertexArrayVertexBuffersIdx as usize])(vaobj, first, count, buffers, offsets, strides)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *const GLuint, *const GLintptr, *const GLsizei) -> ()>(*GL_API.get_unchecked(VertexArrayVertexBuffersIdx as usize))(vaobj, first, count, buffers, offsets, strides)
 }
 /// Fallbacks: ProgramUniform2ivEXT
 pub unsafe fn ProgramUniform2iv(program: GLuint, location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(GL_API[ProgramUniform2ivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform2ivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: UniformMatrix2fvARB
 pub unsafe fn UniformMatrix2fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix2fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix2fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn GetnMinmax(target: GLenum, reset: GLboolean, format: GLenum, type_: GLenum, bufSize: GLsizei, values: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLboolean, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetnMinmaxIdx as usize])(target, reset, format, type_, bufSize, values)
+    mem::transmute::<_, extern "system" fn(GLenum, GLboolean, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnMinmaxIdx as usize))(target, reset, format, type_, bufSize, values)
 }
 /// Fallbacks: UniformMatrix2x4fvNV
 pub unsafe fn UniformMatrix2x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix2x4fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix2x4fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn Finish() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[FinishIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(FinishIdx as usize))()
 }
 /// Fallbacks: MultiDrawElementsIndirectAMD, MultiDrawElementsIndirectEXT
 pub unsafe fn MultiDrawElementsIndirect(mode: GLenum, type_: GLenum, indirect: *const c_void, drawcount: GLsizei, stride: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const c_void, GLsizei, GLsizei) -> ()>(GL_API[MultiDrawElementsIndirectIdx as usize])(mode, type_, indirect, drawcount, stride)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const c_void, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(MultiDrawElementsIndirectIdx as usize))(mode, type_, indirect, drawcount, stride)
 }
 /// Fallbacks: DebugMessageCallbackARB, DebugMessageCallbackKHR
 pub unsafe fn DebugMessageCallback(callback: GLDEBUGPROC, userParam: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLDEBUGPROC, *const c_void) -> ()>(GL_API[DebugMessageCallbackIdx as usize])(callback, userParam)
+    mem::transmute::<_, extern "system" fn(GLDEBUGPROC, *const c_void) -> ()>(*GL_API.get_unchecked(DebugMessageCallbackIdx as usize))(callback, userParam)
 }
 /// Fallbacks: GetnUniformfvKHR
 pub unsafe fn GetnUniformfv(program: GLuint, location: GLint, bufSize: GLsizei, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLfloat) -> ()>(GL_API[GetnUniformfvIdx as usize])(program, location, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetnUniformfvIdx as usize))(program, location, bufSize, params)
 }
 /// Fallbacks: SamplerParameterIuivEXT, SamplerParameterIuivOES
 pub unsafe fn SamplerParameterIuiv(sampler: GLuint, pname: GLenum, param: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLuint) -> ()>(GL_API[SamplerParameterIuivIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(SamplerParameterIuivIdx as usize))(sampler, pname, param)
 }
 /// Fallbacks: CopyTexImage2DEXT
 pub unsafe fn CopyTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei, border: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> ()>(GL_API[CopyTexImage2DIdx as usize])(target, level, internalformat, x, y, width, height, border)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint) -> ()>(*GL_API.get_unchecked(CopyTexImage2DIdx as usize))(target, level, internalformat, x, y, width, height, border)
 }
 pub unsafe fn UniformMatrix2x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix2x4dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix2x4dvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: FramebufferTexture2DEXT
 pub unsafe fn FramebufferTexture2D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint) -> ()>(GL_API[FramebufferTexture2DIdx as usize])(target, attachment, textarget, texture, level)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint) -> ()>(*GL_API.get_unchecked(FramebufferTexture2DIdx as usize))(target, attachment, textarget, texture, level)
 }
 pub unsafe fn VertexAttribFormat(attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexAttribFormatIdx as usize])(attribindex, size, type_, normalized, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribFormatIdx as usize))(attribindex, size, type_, normalized, relativeoffset)
 }
 pub unsafe fn ClearNamedBufferData(buffer: GLuint, internalformat: GLenum, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearNamedBufferDataIdx as usize])(buffer, internalformat, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearNamedBufferDataIdx as usize))(buffer, internalformat, format, type_, data)
 }
 /// Fallbacks: CheckFramebufferStatusEXT
 pub unsafe fn CheckFramebufferStatus(target: GLenum) -> GLenum {
-    mem::transmute::<_, extern "system" fn(GLenum) -> GLenum>(GL_API[CheckFramebufferStatusIdx as usize])(target)
+    mem::transmute::<_, extern "system" fn(GLenum) -> GLenum>(*GL_API.get_unchecked(CheckFramebufferStatusIdx as usize))(target)
 }
 /// Fallbacks: VertexAttribI2uivEXT
 pub unsafe fn VertexAttribI2uiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttribI2uivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI2uivIdx as usize))(index, v)
 }
 /// Fallbacks: BufferStorageEXT
 pub unsafe fn BufferStorage(target: GLenum, size: GLsizeiptr, data: *const c_void, flags: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizeiptr, *const c_void, GLbitfield) -> ()>(GL_API[BufferStorageIdx as usize])(target, size, data, flags)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizeiptr, *const c_void, GLbitfield) -> ()>(*GL_API.get_unchecked(BufferStorageIdx as usize))(target, size, data, flags)
 }
 /// Fallbacks: PointParameterfARB, PointParameterfEXT, PointParameterfSGIS
 pub unsafe fn PointParameterf(pname: GLenum, param: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLfloat) -> ()>(GL_API[PointParameterfIdx as usize])(pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLfloat) -> ()>(*GL_API.get_unchecked(PointParameterfIdx as usize))(pname, param)
 }
 pub unsafe fn GetnColorTable(target: GLenum, format: GLenum, type_: GLenum, bufSize: GLsizei, table: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetnColorTableIdx as usize])(target, format, type_, bufSize, table)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnColorTableIdx as usize))(target, format, type_, bufSize, table)
 }
 pub unsafe fn GetnTexImage(target: GLenum, level: GLint, format: GLenum, type_: GLenum, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetnTexImageIdx as usize])(target, level, format, type_, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnTexImageIdx as usize))(target, level, format, type_, bufSize, pixels)
 }
 /// Fallbacks: DeleteQueriesARB
 pub unsafe fn DeleteQueries(n: GLsizei, ids: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteQueriesIdx as usize])(n, ids)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteQueriesIdx as usize))(n, ids)
 }
 pub unsafe fn CreateTransformFeedbacks(n: GLsizei, ids: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateTransformFeedbacksIdx as usize])(n, ids)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateTransformFeedbacksIdx as usize))(n, ids)
 }
 /// Fallbacks: ProgramUniform3fvEXT
 pub unsafe fn ProgramUniform3fv(program: GLuint, location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(GL_API[ProgramUniform3fvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform3fvIdx as usize))(program, location, count, value)
 }
 pub unsafe fn TransformFeedbackBufferBase(xfb: GLuint, index: GLuint, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[TransformFeedbackBufferBaseIdx as usize])(xfb, index, buffer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(TransformFeedbackBufferBaseIdx as usize))(xfb, index, buffer)
 }
 pub unsafe fn UnmapNamedBuffer(buffer: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[UnmapNamedBufferIdx as usize])(buffer)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(UnmapNamedBufferIdx as usize))(buffer)
 }
 pub unsafe fn GetUniformdv(program: GLuint, location: GLint, params: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLdouble) -> ()>(GL_API[GetUniformdvIdx as usize])(program, location, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetUniformdvIdx as usize))(program, location, params)
 }
 /// Fallbacks: CompressedTexImage3DARB, CompressedTexImage3DOES
 pub unsafe fn CompressedTexImage3D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, border: GLint, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexImage3DIdx as usize])(target, level, internalformat, width, height, depth, border, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexImage3DIdx as usize))(target, level, internalformat, width, height, depth, border, imageSize, data)
 }
 /// Fallbacks: DrawElementsInstancedANGLE, DrawElementsInstancedARB, DrawElementsInstancedEXT, DrawElementsInstancedNV
 pub unsafe fn DrawElementsInstanced(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void, instancecount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei) -> ()>(GL_API[DrawElementsInstancedIdx as usize])(mode, count, type_, indices, instancecount)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei) -> ()>(*GL_API.get_unchecked(DrawElementsInstancedIdx as usize))(mode, count, type_, indices, instancecount)
 }
 /// Fallbacks: GenQueriesARB
 pub unsafe fn GenQueries(n: GLsizei, ids: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenQueriesIdx as usize])(n, ids)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenQueriesIdx as usize))(n, ids)
 }
 /// Fallbacks: CopyTexSubImage2DEXT
 pub unsafe fn CopyTexSubImage2D(target: GLenum, level: GLint, xoffset: GLint, yoffset: GLint, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[CopyTexSubImage2DIdx as usize])(target, level, xoffset, yoffset, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTexSubImage2DIdx as usize))(target, level, xoffset, yoffset, x, y, width, height)
 }
 /// Fallbacks: DrawArraysInstancedBaseInstanceEXT
 pub unsafe fn DrawArraysInstancedBaseInstance(mode: GLenum, first: GLint, count: GLsizei, instancecount: GLsizei, baseinstance: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, GLsizei, GLuint) -> ()>(GL_API[DrawArraysInstancedBaseInstanceIdx as usize])(mode, first, count, instancecount, baseinstance)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei, GLsizei, GLuint) -> ()>(*GL_API.get_unchecked(DrawArraysInstancedBaseInstanceIdx as usize))(mode, first, count, instancecount, baseinstance)
 }
 pub unsafe fn TexCoordP4ui(type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[TexCoordP4uiIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP4uiIdx as usize))(type_, coords)
 }
 pub unsafe fn VertexAttribP2ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexAttribP2uiIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP2uiIdx as usize))(index, type_, normalized, value)
 }
 /// Fallbacks: VertexAttrib4dvARB, VertexAttrib4dvNV
 pub unsafe fn VertexAttrib4dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttrib4dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib4dvIdx as usize))(index, v)
 }
 pub unsafe fn ColorP4uiv(type_: GLenum, color: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[ColorP4uivIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(ColorP4uivIdx as usize))(type_, color)
 }
 pub unsafe fn GetActiveSubroutineName(program: GLuint, shadertype: GLenum, index: GLuint, bufsize: GLsizei, length: *mut GLsizei, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetActiveSubroutineNameIdx as usize])(program, shadertype, index, bufsize, length, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveSubroutineNameIdx as usize))(program, shadertype, index, bufsize, length, name)
 }
 pub unsafe fn TexCoordP4uiv(type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[TexCoordP4uivIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP4uivIdx as usize))(type_, coords)
 }
 /// Fallbacks: ProgramUniform3fEXT
 pub unsafe fn ProgramUniform3f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[ProgramUniform3fIdx as usize])(program, location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform3fIdx as usize))(program, location, v0, v1, v2)
 }
 /// Fallbacks: ProgramUniform1ivEXT
 pub unsafe fn ProgramUniform1iv(program: GLuint, location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(GL_API[ProgramUniform1ivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform1ivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: VertexAttrib1fARB, VertexAttrib1fNV
 pub unsafe fn VertexAttrib1f(index: GLuint, x: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLfloat) -> ()>(GL_API[VertexAttrib1fIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib1fIdx as usize))(index, x)
 }
 pub unsafe fn Uniform1d(location: GLint, x: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLdouble) -> ()>(GL_API[Uniform1dIdx as usize])(location, x)
+    mem::transmute::<_, extern "system" fn(GLint, GLdouble) -> ()>(*GL_API.get_unchecked(Uniform1dIdx as usize))(location, x)
 }
 /// Fallbacks: Uniform2ivARB
 pub unsafe fn Uniform2iv(location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(GL_API[Uniform2ivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(Uniform2ivIdx as usize))(location, count, value)
 }
 /// Fallbacks: CompressedTexImage2DARB
 pub unsafe fn CompressedTexImage2D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, height: GLsizei, border: GLint, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexImage2DIdx as usize])(target, level, internalformat, width, height, border, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexImage2DIdx as usize))(target, level, internalformat, width, height, border, imageSize, data)
 }
 pub unsafe fn DrawBuffer(buf: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[DrawBufferIdx as usize])(buf)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(DrawBufferIdx as usize))(buf)
 }
 pub unsafe fn ClearNamedFramebufferiv(framebuffer: GLuint, buffer: GLenum, drawbuffer: GLint, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLint) -> ()>(GL_API[ClearNamedFramebufferivIdx as usize])(framebuffer, buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLint) -> ()>(*GL_API.get_unchecked(ClearNamedFramebufferivIdx as usize))(framebuffer, buffer, drawbuffer, value)
 }
 pub unsafe fn Hint(target: GLenum, mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[HintIdx as usize])(target, mode)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(HintIdx as usize))(target, mode)
 }
 /// Fallbacks: DeleteBuffersARB
 pub unsafe fn DeleteBuffers(n: GLsizei, buffers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteBuffersIdx as usize])(n, buffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteBuffersIdx as usize))(n, buffers)
 }
 pub unsafe fn VertexArrayAttribFormat(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexArrayAttribFormatIdx as usize])(vaobj, attribindex, size, type_, normalized, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayAttribFormatIdx as usize))(vaobj, attribindex, size, type_, normalized, relativeoffset)
 }
 /// Fallbacks: GenTransformFeedbacksNV
 pub unsafe fn GenTransformFeedbacks(n: GLsizei, ids: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenTransformFeedbacksIdx as usize])(n, ids)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenTransformFeedbacksIdx as usize))(n, ids)
 }
 /// Fallbacks: IsBufferARB
 pub unsafe fn IsBuffer(buffer: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsBufferIdx as usize])(buffer)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsBufferIdx as usize))(buffer)
 }
 /// Fallbacks: DrawElementsInstancedBaseVertexEXT, DrawElementsInstancedBaseVertexOES
 pub unsafe fn DrawElementsInstancedBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void, instancecount: GLsizei, basevertex: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLint) -> ()>(GL_API[DrawElementsInstancedBaseVertexIdx as usize])(mode, count, type_, indices, instancecount, basevertex)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLint) -> ()>(*GL_API.get_unchecked(DrawElementsInstancedBaseVertexIdx as usize))(mode, count, type_, indices, instancecount, basevertex)
 }
 /// Fallbacks: Uniform3iARB
 pub unsafe fn Uniform3i(location: GLint, v0: GLint, v1: GLint, v2: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint) -> ()>(GL_API[Uniform3iIdx as usize])(location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(Uniform3iIdx as usize))(location, v0, v1, v2)
 }
 /// Fallbacks: GetProgramBinaryOES
 pub unsafe fn GetProgramBinary(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, binaryFormat: *mut GLenum, binary: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLenum, *mut c_void) -> ()>(GL_API[GetProgramBinaryIdx as usize])(program, bufSize, length, binaryFormat, binary)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLenum, *mut c_void) -> ()>(*GL_API.get_unchecked(GetProgramBinaryIdx as usize))(program, bufSize, length, binaryFormat, binary)
 }
 /// Fallbacks: GetVertexAttribPointervARB, GetVertexAttribPointervNV
 pub unsafe fn GetVertexAttribPointerv(index: GLuint, pname: GLenum, pointer: *const *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const *mut c_void) -> ()>(GL_API[GetVertexAttribPointervIdx as usize])(index, pname, pointer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const *mut c_void) -> ()>(*GL_API.get_unchecked(GetVertexAttribPointervIdx as usize))(index, pname, pointer)
 }
 pub unsafe fn GetActiveUniformBlockiv(program: GLuint, uniformBlockIndex: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetActiveUniformBlockivIdx as usize])(program, uniformBlockIndex, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetActiveUniformBlockivIdx as usize))(program, uniformBlockIndex, pname, params)
 }
 pub unsafe fn ProgramUniform3dv(program: GLuint, location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(GL_API[ProgramUniform3dvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform3dvIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: TexStorage3DEXT
 pub unsafe fn TexStorage3D(target: GLenum, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> ()>(GL_API[TexStorage3DIdx as usize])(target, levels, internalformat, width, height, depth)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(TexStorage3DIdx as usize))(target, levels, internalformat, width, height, depth)
 }
 pub unsafe fn GetQueryBufferObjectiv(id: GLuint, buffer: GLuint, pname: GLenum, offset: GLintptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(GL_API[GetQueryBufferObjectivIdx as usize])(id, buffer, pname, offset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, GLintptr) -> ()>(*GL_API.get_unchecked(GetQueryBufferObjectivIdx as usize))(id, buffer, pname, offset)
 }
 /// Fallbacks: DepthRangefOES
 pub unsafe fn DepthRangef(n: GLfloat, f: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat) -> ()>(GL_API[DepthRangefIdx as usize])(n, f)
+    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(DepthRangefIdx as usize))(n, f)
 }
 pub unsafe fn DeleteProgramPipelines(n: GLsizei, pipelines: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteProgramPipelinesIdx as usize])(n, pipelines)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteProgramPipelinesIdx as usize))(n, pipelines)
 }
 /// Fallbacks: VertexAttrib4NusvARB
 pub unsafe fn VertexAttrib4Nusv(index: GLuint, v: *const GLushort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(GL_API[VertexAttrib4NusvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(*GL_API.get_unchecked(VertexAttrib4NusvIdx as usize))(index, v)
 }
 pub unsafe fn ClearTexSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearTexSubImageIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearTexSubImageIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, data)
 }
 pub unsafe fn MultiTexCoordP3ui(texture: GLenum, type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(GL_API[MultiTexCoordP3uiIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP3uiIdx as usize))(texture, type_, coords)
 }
 /// Fallbacks: ProgramUniform2fEXT
 pub unsafe fn ProgramUniform2f(program: GLuint, location: GLint, v0: GLfloat, v1: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat) -> ()>(GL_API[ProgramUniform2fIdx as usize])(program, location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform2fIdx as usize))(program, location, v0, v1)
 }
 /// Fallbacks: IsQueryARB
 pub unsafe fn IsQuery(id: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsQueryIdx as usize])(id)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsQueryIdx as usize))(id)
 }
 pub unsafe fn GetnSeparableFilter(target: GLenum, format: GLenum, type_: GLenum, rowBufSize: GLsizei, row: *mut c_void, columnBufSize: GLsizei, column: *mut c_void, span: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void, GLsizei, *mut c_void, *mut c_void) -> ()>(GL_API[GetnSeparableFilterIdx as usize])(target, format, type_, rowBufSize, row, columnBufSize, column, span)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void, GLsizei, *mut c_void, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnSeparableFilterIdx as usize))(target, format, type_, rowBufSize, row, columnBufSize, column, span)
 }
 pub unsafe fn GetProgramInfoLog(program: GLuint, bufSize: GLsizei, length: *mut GLsizei, infoLog: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetProgramInfoLogIdx as usize])(program, bufSize, length, infoLog)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetProgramInfoLogIdx as usize))(program, bufSize, length, infoLog)
 }
 pub unsafe fn BindRenderbuffer(target: GLenum, renderbuffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BindRenderbufferIdx as usize])(target, renderbuffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BindRenderbufferIdx as usize))(target, renderbuffer)
 }
 /// Fallbacks: RenderbufferStorageEXT
 pub unsafe fn RenderbufferStorage(target: GLenum, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, GLsizei) -> ()>(GL_API[RenderbufferStorageIdx as usize])(target, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(RenderbufferStorageIdx as usize))(target, internalformat, width, height)
 }
 /// Fallbacks: DebugMessageControlARB, DebugMessageControlKHR
 pub unsafe fn DebugMessageControl(source: GLenum, type_: GLenum, severity: GLenum, count: GLsizei, ids: *const GLuint, enabled: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *const GLuint, GLboolean) -> ()>(GL_API[DebugMessageControlIdx as usize])(source, type_, severity, count, ids, enabled)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *const GLuint, GLboolean) -> ()>(*GL_API.get_unchecked(DebugMessageControlIdx as usize))(source, type_, severity, count, ids, enabled)
 }
 /// Fallbacks: GetnUniformuivKHR
 pub unsafe fn GetnUniformuiv(program: GLuint, location: GLint, bufSize: GLsizei, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLuint) -> ()>(GL_API[GetnUniformuivIdx as usize])(program, location, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetnUniformuivIdx as usize))(program, location, bufSize, params)
 }
 pub unsafe fn PolygonOffset(factor: GLfloat, units: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat) -> ()>(GL_API[PolygonOffsetIdx as usize])(factor, units)
+    mem::transmute::<_, extern "system" fn(GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(PolygonOffsetIdx as usize))(factor, units)
 }
 /// Fallbacks: MultiDrawElementsBaseVertexEXT, MultiDrawElementsBaseVertexOES
 pub unsafe fn MultiDrawElementsBaseVertex(mode: GLenum, count: *const GLsizei, type_: GLenum, indices: *const *const c_void, drawcount: GLsizei, basevertex: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLsizei, GLenum, *const *const c_void, GLsizei, *const GLint) -> ()>(GL_API[MultiDrawElementsBaseVertexIdx as usize])(mode, count, type_, indices, drawcount, basevertex)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLsizei, GLenum, *const *const c_void, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(MultiDrawElementsBaseVertexIdx as usize))(mode, count, type_, indices, drawcount, basevertex)
 }
 pub unsafe fn NamedFramebufferDrawBuffer(framebuffer: GLuint, buf: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(GL_API[NamedFramebufferDrawBufferIdx as usize])(framebuffer, buf)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(*GL_API.get_unchecked(NamedFramebufferDrawBufferIdx as usize))(framebuffer, buf)
 }
 /// Fallbacks: VertexAttrib2dARB, VertexAttrib2dNV
 pub unsafe fn VertexAttrib2d(index: GLuint, x: GLdouble, y: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(GL_API[VertexAttrib2dIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib2dIdx as usize))(index, x, y)
 }
 pub unsafe fn CreateTextures(target: GLenum, n: GLsizei, textures: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(GL_API[CreateTexturesIdx as usize])(target, n, textures)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateTexturesIdx as usize))(target, n, textures)
 }
 pub unsafe fn GetUniformSubroutineuiv(shadertype: GLenum, location: GLint, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, *mut GLuint) -> ()>(GL_API[GetUniformSubroutineuivIdx as usize])(shadertype, location, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetUniformSubroutineuivIdx as usize))(shadertype, location, params)
 }
 pub unsafe fn ClearNamedFramebufferfv(framebuffer: GLuint, buffer: GLenum, drawbuffer: GLint, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLfloat) -> ()>(GL_API[ClearNamedFramebufferfvIdx as usize])(framebuffer, buffer, drawbuffer, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, *const GLfloat) -> ()>(*GL_API.get_unchecked(ClearNamedFramebufferfvIdx as usize))(framebuffer, buffer, drawbuffer, value)
 }
 pub unsafe fn CreateRenderbuffers(n: GLsizei, renderbuffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateRenderbuffersIdx as usize])(n, renderbuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateRenderbuffersIdx as usize))(n, renderbuffers)
 }
 pub unsafe fn IsSampler(sampler: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsSamplerIdx as usize])(sampler)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsSamplerIdx as usize))(sampler)
 }
 pub unsafe fn MultiTexCoordP4uiv(texture: GLenum, type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(GL_API[MultiTexCoordP4uivIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP4uivIdx as usize))(texture, type_, coords)
 }
 /// Fallbacks: GetSyncivAPPLE
 pub unsafe fn GetSynciv(sync: GLsync, pname: GLenum, bufSize: GLsizei, length: *mut GLsizei, values: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsync, GLenum, GLsizei, *mut GLsizei, *mut GLint) -> ()>(GL_API[GetSyncivIdx as usize])(sync, pname, bufSize, length, values)
+    mem::transmute::<_, extern "system" fn(GLsync, GLenum, GLsizei, *mut GLsizei, *mut GLint) -> ()>(*GL_API.get_unchecked(GetSyncivIdx as usize))(sync, pname, bufSize, length, values)
 }
 /// Fallbacks: UnmapBufferARB, UnmapBufferOES
 pub unsafe fn UnmapBuffer(target: GLenum) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLenum) -> GLboolean>(GL_API[UnmapBufferIdx as usize])(target)
+    mem::transmute::<_, extern "system" fn(GLenum) -> GLboolean>(*GL_API.get_unchecked(UnmapBufferIdx as usize))(target)
 }
 /// Fallbacks: GetBufferPointervARB, GetBufferPointervOES
 pub unsafe fn GetBufferPointerv(target: GLenum, pname: GLenum, params: *const *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const *mut c_void) -> ()>(GL_API[GetBufferPointervIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const *mut c_void) -> ()>(*GL_API.get_unchecked(GetBufferPointervIdx as usize))(target, pname, params)
 }
 /// Fallbacks: GenVertexArraysAPPLE, GenVertexArraysOES
 pub unsafe fn GenVertexArrays(n: GLsizei, arrays: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenVertexArraysIdx as usize])(n, arrays)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenVertexArraysIdx as usize))(n, arrays)
 }
 pub unsafe fn SampleMaski(maskNumber: GLuint, mask: GLbitfield) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLbitfield) -> ()>(GL_API[SampleMaskiIdx as usize])(maskNumber, mask)
+    mem::transmute::<_, extern "system" fn(GLuint, GLbitfield) -> ()>(*GL_API.get_unchecked(SampleMaskiIdx as usize))(maskNumber, mask)
 }
 pub unsafe fn ClearStencil(s: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint) -> ()>(GL_API[ClearStencilIdx as usize])(s)
+    mem::transmute::<_, extern "system" fn(GLint) -> ()>(*GL_API.get_unchecked(ClearStencilIdx as usize))(s)
 }
 /// Fallbacks: BlendFuncSeparateIndexedAMD, BlendFuncSeparateiARB, BlendFuncSeparateiEXT, BlendFuncSeparateiOES
 pub unsafe fn BlendFuncSeparatei(buf: GLuint, srcRGB: GLenum, dstRGB: GLenum, srcAlpha: GLenum, dstAlpha: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLenum, GLenum) -> ()>(GL_API[BlendFuncSeparateiIdx as usize])(buf, srcRGB, dstRGB, srcAlpha, dstAlpha)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendFuncSeparateiIdx as usize))(buf, srcRGB, dstRGB, srcAlpha, dstAlpha)
 }
 /// Fallbacks: VertexAttrib4NubARB, VertexAttrib4ubNV
 pub unsafe fn VertexAttrib4Nub(index: GLuint, x: GLubyte, y: GLubyte, z: GLubyte, w: GLubyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLubyte, GLubyte, GLubyte, GLubyte) -> ()>(GL_API[VertexAttrib4NubIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLubyte, GLubyte, GLubyte, GLubyte) -> ()>(*GL_API.get_unchecked(VertexAttrib4NubIdx as usize))(index, x, y, z, w)
 }
 pub unsafe fn ShaderBinary(count: GLsizei, shaders: *const GLuint, binaryformat: GLenum, binary: *const c_void, length: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint, GLenum, *const c_void, GLsizei) -> ()>(GL_API[ShaderBinaryIdx as usize])(count, shaders, binaryformat, binary, length)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint, GLenum, *const c_void, GLsizei) -> ()>(*GL_API.get_unchecked(ShaderBinaryIdx as usize))(count, shaders, binaryformat, binary, length)
 }
 pub unsafe fn TextureSubImage3D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TextureSubImage3DIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TextureSubImage3DIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type_, pixels)
 }
 /// Fallbacks: GetUniformivARB
 pub unsafe fn GetUniformiv(program: GLuint, location: GLint, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLint) -> ()>(GL_API[GetUniformivIdx as usize])(program, location, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, *mut GLint) -> ()>(*GL_API.get_unchecked(GetUniformivIdx as usize))(program, location, params)
 }
 /// Fallbacks: Uniform1uivEXT
 pub unsafe fn Uniform1uiv(location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(GL_API[Uniform1uivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(Uniform1uivIdx as usize))(location, count, value)
 }
 /// Fallbacks: VertexAttribI4svEXT
 pub unsafe fn VertexAttribI4sv(index: GLuint, v: *const GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(GL_API[VertexAttribI4svIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLshort) -> ()>(*GL_API.get_unchecked(VertexAttribI4svIdx as usize))(index, v)
 }
 pub unsafe fn BlitNamedFramebuffer(readFramebuffer: GLuint, drawFramebuffer: GLuint, srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> ()>(GL_API[BlitNamedFramebufferIdx as usize])(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> ()>(*GL_API.get_unchecked(BlitNamedFramebufferIdx as usize))(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter)
 }
 pub unsafe fn GetAttachedShaders(program: GLuint, maxCount: GLsizei, count: *mut GLsizei, shaders: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLuint) -> ()>(GL_API[GetAttachedShadersIdx as usize])(program, maxCount, count, shaders)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetAttachedShadersIdx as usize))(program, maxCount, count, shaders)
 }
 pub unsafe fn InvalidateBufferSubData(buffer: GLuint, offset: GLintptr, length: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[InvalidateBufferSubDataIdx as usize])(buffer, offset, length)
+    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(InvalidateBufferSubDataIdx as usize))(buffer, offset, length)
 }
 pub unsafe fn InvalidateFramebuffer(target: GLenum, numAttachments: GLsizei, attachments: *const GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLenum) -> ()>(GL_API[InvalidateFramebufferIdx as usize])(target, numAttachments, attachments)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, *const GLenum) -> ()>(*GL_API.get_unchecked(InvalidateFramebufferIdx as usize))(target, numAttachments, attachments)
 }
 pub unsafe fn TextureStorage1D(texture: GLuint, levels: GLsizei, internalformat: GLenum, width: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei) -> ()>(GL_API[TextureStorage1DIdx as usize])(texture, levels, internalformat, width)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei) -> ()>(*GL_API.get_unchecked(TextureStorage1DIdx as usize))(texture, levels, internalformat, width)
 }
 /// Fallbacks: FramebufferTexture1DEXT
 pub unsafe fn FramebufferTexture1D(target: GLenum, attachment: GLenum, textarget: GLenum, texture: GLuint, level: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint) -> ()>(GL_API[FramebufferTexture1DIdx as usize])(target, attachment, textarget, texture, level)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint, GLint) -> ()>(*GL_API.get_unchecked(FramebufferTexture1DIdx as usize))(target, attachment, textarget, texture, level)
 }
 pub unsafe fn GetnMapiv(target: GLenum, query: GLenum, bufSize: GLsizei, v: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLint) -> ()>(GL_API[GetnMapivIdx as usize])(target, query, bufSize, v)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLint) -> ()>(*GL_API.get_unchecked(GetnMapivIdx as usize))(target, query, bufSize, v)
 }
 /// Fallbacks: GetQueryObjectuivARB
 pub unsafe fn GetQueryObjectuiv(id: GLuint, pname: GLenum, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(GL_API[GetQueryObjectuivIdx as usize])(id, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetQueryObjectuivIdx as usize))(id, pname, params)
 }
 /// Fallbacks: DetachObjectARB
 pub unsafe fn DetachShader(program: GLuint, shader: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[DetachShaderIdx as usize])(program, shader)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(DetachShaderIdx as usize))(program, shader)
 }
 pub unsafe fn GetActiveUniformBlockName(program: GLuint, uniformBlockIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformBlockName: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetActiveUniformBlockNameIdx as usize])(program, uniformBlockIndex, bufSize, length, uniformBlockName)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveUniformBlockNameIdx as usize))(program, uniformBlockIndex, bufSize, length, uniformBlockName)
 }
 /// Fallbacks: IsSyncAPPLE
 pub unsafe fn IsSync(sync: GLsync) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLsync) -> GLboolean>(GL_API[IsSyncIdx as usize])(sync)
+    mem::transmute::<_, extern "system" fn(GLsync) -> GLboolean>(*GL_API.get_unchecked(IsSyncIdx as usize))(sync)
 }
 pub unsafe fn GetBooleanv(pname: GLenum, data: *mut GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *mut GLboolean) -> ()>(GL_API[GetBooleanvIdx as usize])(pname, data)
+    mem::transmute::<_, extern "system" fn(GLenum, *mut GLboolean) -> ()>(*GL_API.get_unchecked(GetBooleanvIdx as usize))(pname, data)
 }
 /// Fallbacks: QueryCounterEXT
 pub unsafe fn QueryCounter(id: GLuint, target: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(GL_API[QueryCounterIdx as usize])(id, target)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(*GL_API.get_unchecked(QueryCounterIdx as usize))(id, target)
 }
 pub unsafe fn InvalidateNamedFramebufferData(framebuffer: GLuint, numAttachments: GLsizei, attachments: *const GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum) -> ()>(GL_API[InvalidateNamedFramebufferDataIdx as usize])(framebuffer, numAttachments, attachments)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum) -> ()>(*GL_API.get_unchecked(InvalidateNamedFramebufferDataIdx as usize))(framebuffer, numAttachments, attachments)
 }
 /// Fallbacks: TexSubImage1DEXT
 pub unsafe fn TexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexSubImage1DIdx as usize])(target, level, xoffset, width, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexSubImage1DIdx as usize))(target, level, xoffset, width, format, type_, pixels)
 }
 pub unsafe fn CopyTextureSubImage1D(texture: GLuint, level: GLint, xoffset: GLint, x: GLint, y: GLint, width: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei) -> ()>(GL_API[CopyTextureSubImage1DIdx as usize])(texture, level, xoffset, x, y, width)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei) -> ()>(*GL_API.get_unchecked(CopyTextureSubImage1DIdx as usize))(texture, level, xoffset, x, y, width)
 }
 /// Fallbacks: GetIntegerIndexedvEXT
 pub unsafe fn GetIntegeri_v(target: GLenum, index: GLuint, data: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLint) -> ()>(GL_API[GetIntegeri_vIdx as usize])(target, index, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLint) -> ()>(*GL_API.get_unchecked(GetIntegeri_vIdx as usize))(target, index, data)
 }
 /// Fallbacks: Uniform3fvARB
 pub unsafe fn Uniform3fv(location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(GL_API[Uniform3fvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(Uniform3fvIdx as usize))(location, count, value)
 }
 /// Fallbacks: VertexAttrib1dvARB, VertexAttrib1dvNV
 pub unsafe fn VertexAttrib1dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttrib1dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib1dvIdx as usize))(index, v)
 }
 /// Fallbacks: DisableIndexedEXT, DisableiEXT, DisableiNV, DisableiOES
 pub unsafe fn Disablei(target: GLenum, index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[DisableiIdx as usize])(target, index)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(DisableiIdx as usize))(target, index)
 }
 /// Fallbacks: ViewportIndexedfvNV
 pub unsafe fn ViewportIndexedfv(index: GLuint, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(GL_API[ViewportIndexedfvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(*GL_API.get_unchecked(ViewportIndexedfvIdx as usize))(index, v)
 }
 /// Fallbacks: PatchParameteriEXT, PatchParameteriOES
 pub unsafe fn PatchParameteri(pname: GLenum, value: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(GL_API[PatchParameteriIdx as usize])(pname, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(*GL_API.get_unchecked(PatchParameteriIdx as usize))(pname, value)
 }
 /// Fallbacks: VertexAttribI2iEXT
 pub unsafe fn VertexAttribI2i(index: GLuint, x: GLint, y: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint) -> ()>(GL_API[VertexAttribI2iIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI2iIdx as usize))(index, x, y)
 }
 /// Fallbacks: Uniform1iARB
 pub unsafe fn Uniform1i(location: GLint, v0: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint) -> ()>(GL_API[Uniform1iIdx as usize])(location, v0)
+    mem::transmute::<_, extern "system" fn(GLint, GLint) -> ()>(*GL_API.get_unchecked(Uniform1iIdx as usize))(location, v0)
 }
 pub unsafe fn UniformMatrix3x4dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix3x4dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix3x4dvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: VertexAttribL4dvEXT
 pub unsafe fn VertexAttribL4dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttribL4dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL4dvIdx as usize))(index, v)
 }
 pub unsafe fn SamplerParameterfv(sampler: GLuint, pname: GLenum, param: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLfloat) -> ()>(GL_API[SamplerParameterfvIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLfloat) -> ()>(*GL_API.get_unchecked(SamplerParameterfvIdx as usize))(sampler, pname, param)
 }
 /// Fallbacks: VertexAttrib3dvARB, VertexAttrib3dvNV
 pub unsafe fn VertexAttrib3dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttrib3dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib3dvIdx as usize))(index, v)
 }
 pub unsafe fn ColorMask(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLboolean, GLboolean, GLboolean, GLboolean) -> ()>(GL_API[ColorMaskIdx as usize])(red, green, blue, alpha)
+    mem::transmute::<_, extern "system" fn(GLboolean, GLboolean, GLboolean, GLboolean) -> ()>(*GL_API.get_unchecked(ColorMaskIdx as usize))(red, green, blue, alpha)
 }
 pub unsafe fn GetUniformBlockIndex(program: GLuint, uniformBlockName: *const GLchar) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLuint>(GL_API[GetUniformBlockIndexIdx as usize])(program, uniformBlockName)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLuint>(*GL_API.get_unchecked(GetUniformBlockIndexIdx as usize))(program, uniformBlockName)
 }
 pub unsafe fn TextureParameterf(texture: GLuint, pname: GLenum, param: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat) -> ()>(GL_API[TextureParameterfIdx as usize])(texture, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat) -> ()>(*GL_API.get_unchecked(TextureParameterfIdx as usize))(texture, pname, param)
 }
 /// Fallbacks: GetMultisamplefvNV
 pub unsafe fn GetMultisamplefv(pname: GLenum, index: GLuint, val: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLfloat) -> ()>(GL_API[GetMultisamplefvIdx as usize])(pname, index, val)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetMultisamplefvIdx as usize))(pname, index, val)
 }
 /// Fallbacks: ProgramParameteriARB, ProgramParameteriEXT
 pub unsafe fn ProgramParameteri(program: GLuint, pname: GLenum, value: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(GL_API[ProgramParameteriIdx as usize])(program, pname, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(*GL_API.get_unchecked(ProgramParameteriIdx as usize))(program, pname, value)
 }
 pub unsafe fn MapNamedBuffer(buffer: GLuint, access: GLenum) -> *mut c_void {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> *mut c_void>(GL_API[MapNamedBufferIdx as usize])(buffer, access)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> *mut c_void>(*GL_API.get_unchecked(MapNamedBufferIdx as usize))(buffer, access)
 }
 pub unsafe fn TextureBuffer(texture: GLuint, internalformat: GLenum, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint) -> ()>(GL_API[TextureBufferIdx as usize])(texture, internalformat, buffer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TextureBufferIdx as usize))(texture, internalformat, buffer)
 }
 pub unsafe fn NormalP3uiv(type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[NormalP3uivIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(NormalP3uivIdx as usize))(type_, coords)
 }
 /// Fallbacks: BlendFuncIndexedAMD, BlendFunciARB, BlendFunciEXT, BlendFunciOES
 pub unsafe fn BlendFunci(buf: GLuint, src: GLenum, dst: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum) -> ()>(GL_API[BlendFunciIdx as usize])(buf, src, dst)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendFunciIdx as usize))(buf, src, dst)
 }
 /// Fallbacks: VertexAttrib2sARB, VertexAttrib2sNV
 pub unsafe fn VertexAttrib2s(index: GLuint, x: GLshort, y: GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort) -> ()>(GL_API[VertexAttrib2sIdx as usize])(index, x, y)
+    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib2sIdx as usize))(index, x, y)
 }
 pub unsafe fn VertexAttribP3ui(index: GLuint, type_: GLenum, normalized: GLboolean, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(GL_API[VertexAttribP3uiIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP3uiIdx as usize))(index, type_, normalized, value)
 }
 pub unsafe fn GetNamedFramebufferAttachmentParameteriv(framebuffer: GLuint, attachment: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetNamedFramebufferAttachmentParameterivIdx as usize])(framebuffer, attachment, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetNamedFramebufferAttachmentParameterivIdx as usize))(framebuffer, attachment, pname, params)
 }
 pub unsafe fn NamedRenderbufferStorage(renderbuffer: GLuint, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLsizei, GLsizei) -> ()>(GL_API[NamedRenderbufferStorageIdx as usize])(renderbuffer, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(NamedRenderbufferStorageIdx as usize))(renderbuffer, internalformat, width, height)
 }
 /// Fallbacks: ProgramUniform1fvEXT
 pub unsafe fn ProgramUniform1fv(program: GLuint, location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(GL_API[ProgramUniform1fvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform1fvIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: BlendEquationSeparateEXT
 pub unsafe fn BlendEquationSeparate(modeRGB: GLenum, modeAlpha: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[BlendEquationSeparateIdx as usize])(modeRGB, modeAlpha)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendEquationSeparateIdx as usize))(modeRGB, modeAlpha)
 }
 /// Fallbacks: TexBufferARB, TexBufferEXT, TexBufferOES
 pub unsafe fn TexBuffer(target: GLenum, internalformat: GLenum, buffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(GL_API[TexBufferIdx as usize])(target, internalformat, buffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TexBufferIdx as usize))(target, internalformat, buffer)
 }
 pub unsafe fn TexImage1D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexImage1DIdx as usize])(target, level, internalformat, width, border, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexImage1DIdx as usize))(target, level, internalformat, width, border, format, type_, pixels)
 }
 /// Fallbacks: TexParameterIuivEXT, TexParameterIuivOES
 pub unsafe fn TexParameterIuiv(target: GLenum, pname: GLenum, params: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(GL_API[TexParameterIuivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TexParameterIuivIdx as usize))(target, pname, params)
 }
 pub unsafe fn VertexP2ui(type_: GLenum, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[VertexP2uiIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexP2uiIdx as usize))(type_, value)
 }
 /// Fallbacks: GenRenderbuffersEXT
 pub unsafe fn GenRenderbuffers(n: GLsizei, renderbuffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenRenderbuffersIdx as usize])(n, renderbuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenRenderbuffersIdx as usize))(n, renderbuffers)
 }
 pub unsafe fn VertexBindingDivisor(bindingindex: GLuint, divisor: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[VertexBindingDivisorIdx as usize])(bindingindex, divisor)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexBindingDivisorIdx as usize))(bindingindex, divisor)
 }
 /// Fallbacks: ProgramUniform2iEXT
 pub unsafe fn ProgramUniform2i(program: GLuint, location: GLint, v0: GLint, v1: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint) -> ()>(GL_API[ProgramUniform2iIdx as usize])(program, location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform2iIdx as usize))(program, location, v0, v1)
 }
 /// Fallbacks: EnableIndexedEXT, EnableiEXT, EnableiNV, EnableiOES
 pub unsafe fn Enablei(target: GLenum, index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[EnableiIdx as usize])(target, index)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(EnableiIdx as usize))(target, index)
 }
 pub unsafe fn GetnMapfv(target: GLenum, query: GLenum, bufSize: GLsizei, v: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLfloat) -> ()>(GL_API[GetnMapfvIdx as usize])(target, query, bufSize, v)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetnMapfvIdx as usize))(target, query, bufSize, v)
 }
 /// Fallbacks: IsEnabledIndexedEXT, IsEnablediEXT, IsEnablediNV, IsEnablediOES
 pub unsafe fn IsEnabledi(target: GLenum, index: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> GLboolean>(GL_API[IsEnablediIdx as usize])(target, index)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> GLboolean>(*GL_API.get_unchecked(IsEnablediIdx as usize))(target, index)
 }
 pub unsafe fn CompressedTextureSubImage3D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTextureSubImage3DIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTextureSubImage3DIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data)
 }
 pub unsafe fn GetShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum, range: *mut GLint, precision: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint, *mut GLint) -> ()>(GL_API[GetShaderPrecisionFormatIdx as usize])(shadertype, precisiontype, range, precision)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint, *mut GLint) -> ()>(*GL_API.get_unchecked(GetShaderPrecisionFormatIdx as usize))(shadertype, precisiontype, range, precision)
 }
 pub unsafe fn GetTextureImage(texture: GLuint, level: GLint, format: GLenum, type_: GLenum, bufSize: GLsizei, pixels: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetTextureImageIdx as usize])(texture, level, format, type_, bufSize, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetTextureImageIdx as usize))(texture, level, format, type_, bufSize, pixels)
 }
 /// Fallbacks: UniformMatrix3x4fvNV
 pub unsafe fn UniformMatrix3x4fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix3x4fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix3x4fvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: Uniform2uivEXT
 pub unsafe fn Uniform2uiv(location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(GL_API[Uniform2uivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(Uniform2uivIdx as usize))(location, count, value)
 }
 pub unsafe fn GetInternalformati64v(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut GLint64) -> ()>(GL_API[GetInternalformati64vIdx as usize])(target, internalformat, pname, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetInternalformati64vIdx as usize))(target, internalformat, pname, bufSize, params)
 }
 pub unsafe fn ProgramUniform2dv(program: GLuint, location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(GL_API[ProgramUniform2dvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform2dvIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: VertexAttrib3sARB, VertexAttrib3sNV
 pub unsafe fn VertexAttrib3s(index: GLuint, x: GLshort, y: GLshort, z: GLshort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort, GLshort) -> ()>(GL_API[VertexAttrib3sIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLshort, GLshort, GLshort) -> ()>(*GL_API.get_unchecked(VertexAttrib3sIdx as usize))(index, x, y, z)
 }
 /// Fallbacks: FlushMappedBufferRangeAPPLE, FlushMappedBufferRangeEXT
 pub unsafe fn FlushMappedBufferRange(target: GLenum, offset: GLintptr, length: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr) -> ()>(GL_API[FlushMappedBufferRangeIdx as usize])(target, offset, length)
+    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(FlushMappedBufferRangeIdx as usize))(target, offset, length)
 }
 pub unsafe fn InvalidateTexImage(texture: GLuint, level: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint) -> ()>(GL_API[InvalidateTexImageIdx as usize])(texture, level)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint) -> ()>(*GL_API.get_unchecked(InvalidateTexImageIdx as usize))(texture, level)
 }
 pub unsafe fn GetProgramInterfaceiv(program: GLuint, programInterface: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetProgramInterfaceivIdx as usize])(program, programInterface, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetProgramInterfaceivIdx as usize))(program, programInterface, pname, params)
 }
 pub unsafe fn CullFace(mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[CullFaceIdx as usize])(mode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(CullFaceIdx as usize))(mode)
 }
 pub unsafe fn GetFramebufferParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetFramebufferParameterivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetFramebufferParameterivIdx as usize))(target, pname, params)
 }
 /// Fallbacks: CreateShaderObjectARB
 pub unsafe fn CreateShader(type_: GLenum) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLenum) -> GLuint>(GL_API[CreateShaderIdx as usize])(type_)
+    mem::transmute::<_, extern "system" fn(GLenum) -> GLuint>(*GL_API.get_unchecked(CreateShaderIdx as usize))(type_)
 }
 pub unsafe fn ProgramUniformMatrix3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix3dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: PointParameterfvARB, PointParameterfvEXT, PointParameterfvSGIS
 pub unsafe fn PointParameterfv(pname: GLenum, params: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLfloat) -> ()>(GL_API[PointParameterfvIdx as usize])(pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLfloat) -> ()>(*GL_API.get_unchecked(PointParameterfvIdx as usize))(pname, params)
 }
 pub unsafe fn DrawArraysIndirect(mode: GLenum, indirect: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const c_void) -> ()>(GL_API[DrawArraysIndirectIdx as usize])(mode, indirect)
+    mem::transmute::<_, extern "system" fn(GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(DrawArraysIndirectIdx as usize))(mode, indirect)
 }
 /// Fallbacks: UseProgramObjectARB
 pub unsafe fn UseProgram(program: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[UseProgramIdx as usize])(program)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(UseProgramIdx as usize))(program)
 }
 pub unsafe fn ProgramUniformMatrix3x2dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix3x2dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3x2dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: SampleCoverageARB
 pub unsafe fn SampleCoverage(value: GLfloat, invert: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat, GLboolean) -> ()>(GL_API[SampleCoverageIdx as usize])(value, invert)
+    mem::transmute::<_, extern "system" fn(GLfloat, GLboolean) -> ()>(*GL_API.get_unchecked(SampleCoverageIdx as usize))(value, invert)
 }
 /// Fallbacks: Uniform3ivARB
 pub unsafe fn Uniform3iv(location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(GL_API[Uniform3ivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(Uniform3ivIdx as usize))(location, count, value)
 }
 /// Fallbacks: VertexAttribI3ivEXT
 pub unsafe fn VertexAttribI3iv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttribI3ivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI3ivIdx as usize))(index, v)
 }
 pub unsafe fn ProgramUniform1dv(program: GLuint, location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(GL_API[ProgramUniform1dvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform1dvIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: BlendEquationSeparateIndexedAMD, BlendEquationSeparateiARB, BlendEquationSeparateiEXT, BlendEquationSeparateiOES
 pub unsafe fn BlendEquationSeparatei(buf: GLuint, modeRGB: GLenum, modeAlpha: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum) -> ()>(GL_API[BlendEquationSeparateiIdx as usize])(buf, modeRGB, modeAlpha)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLenum) -> ()>(*GL_API.get_unchecked(BlendEquationSeparateiIdx as usize))(buf, modeRGB, modeAlpha)
 }
 /// Fallbacks: GetFloatIndexedvEXT, GetFloati_vEXT, GetFloati_vNV
 pub unsafe fn GetFloati_v(target: GLenum, index: GLuint, data: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLfloat) -> ()>(GL_API[GetFloati_vIdx as usize])(target, index, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetFloati_vIdx as usize))(target, index, data)
 }
 /// Fallbacks: ProgramUniform4ivEXT
 pub unsafe fn ProgramUniform4iv(program: GLuint, location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(GL_API[ProgramUniform4ivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(ProgramUniform4ivIdx as usize))(program, location, count, value)
 }
 pub unsafe fn SecondaryColorP3ui(type_: GLenum, color: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[SecondaryColorP3uiIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(SecondaryColorP3uiIdx as usize))(type_, color)
 }
 /// Fallbacks: VertexAttribI1uiEXT
 pub unsafe fn VertexAttribI1ui(index: GLuint, x: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[VertexAttribI1uiIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI1uiIdx as usize))(index, x)
 }
 /// Fallbacks: Uniform1ivARB
 pub unsafe fn Uniform1iv(location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(GL_API[Uniform1ivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(Uniform1ivIdx as usize))(location, count, value)
 }
 pub unsafe fn GetVertexArrayiv(vaobj: GLuint, pname: GLenum, param: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetVertexArrayivIdx as usize])(vaobj, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetVertexArrayivIdx as usize))(vaobj, pname, param)
 }
 pub unsafe fn IsProgram(program: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsProgramIdx as usize])(program)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsProgramIdx as usize))(program)
 }
 pub unsafe fn BindTextureUnit(unit: GLuint, texture: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[BindTextureUnitIdx as usize])(unit, texture)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(BindTextureUnitIdx as usize))(unit, texture)
 }
 pub unsafe fn GetnPolygonStipple(bufSize: GLsizei, pattern: *mut GLubyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLubyte) -> ()>(GL_API[GetnPolygonStippleIdx as usize])(bufSize, pattern)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLubyte) -> ()>(*GL_API.get_unchecked(GetnPolygonStippleIdx as usize))(bufSize, pattern)
 }
 pub unsafe fn GetIntegerv(pname: GLenum, data: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *mut GLint) -> ()>(GL_API[GetIntegervIdx as usize])(pname, data)
+    mem::transmute::<_, extern "system" fn(GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetIntegervIdx as usize))(pname, data)
 }
 pub unsafe fn NamedFramebufferParameteri(framebuffer: GLuint, pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(GL_API[NamedFramebufferParameteriIdx as usize])(framebuffer, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint) -> ()>(*GL_API.get_unchecked(NamedFramebufferParameteriIdx as usize))(framebuffer, pname, param)
 }
 pub unsafe fn VertexP3uiv(type_: GLenum, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[VertexP3uivIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexP3uivIdx as usize))(type_, value)
 }
 /// Fallbacks: VertexAttrib4usvARB
 pub unsafe fn VertexAttrib4usv(index: GLuint, v: *const GLushort) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(GL_API[VertexAttrib4usvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLushort) -> ()>(*GL_API.get_unchecked(VertexAttrib4usvIdx as usize))(index, v)
 }
 /// Fallbacks: UniformMatrix2x3fvNV
 pub unsafe fn UniformMatrix2x3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix2x3fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix2x3fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn GetnMapdv(target: GLenum, query: GLenum, bufSize: GLsizei, v: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLdouble) -> ()>(GL_API[GetnMapdvIdx as usize])(target, query, bufSize, v)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLsizei, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetnMapdvIdx as usize))(target, query, bufSize, v)
 }
 pub unsafe fn TexCoordP1uiv(type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[TexCoordP1uivIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP1uivIdx as usize))(type_, coords)
 }
 /// Fallbacks: Uniform1fvARB
 pub unsafe fn Uniform1fv(location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(GL_API[Uniform1fvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(Uniform1fvIdx as usize))(location, count, value)
 }
 pub unsafe fn GetNamedBufferSubData(buffer: GLuint, offset: GLintptr, size: GLsizeiptr, data: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, *mut c_void) -> ()>(GL_API[GetNamedBufferSubDataIdx as usize])(buffer, offset, size, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr, *mut c_void) -> ()>(*GL_API.get_unchecked(GetNamedBufferSubDataIdx as usize))(buffer, offset, size, data)
 }
 /// Fallbacks: TransformFeedbackVaryingsEXT
 pub unsafe fn TransformFeedbackVaryings(program: GLuint, count: GLsizei, varyings: *const *const GLchar, bufferMode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, GLenum) -> ()>(GL_API[TransformFeedbackVaryingsIdx as usize])(program, count, varyings, bufferMode)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const *const GLchar, GLenum) -> ()>(*GL_API.get_unchecked(TransformFeedbackVaryingsIdx as usize))(program, count, varyings, bufferMode)
 }
 pub unsafe fn InvalidateNamedFramebufferSubData(framebuffer: GLuint, numAttachments: GLsizei, attachments: *const GLenum, x: GLint, y: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[InvalidateNamedFramebufferSubDataIdx as usize])(framebuffer, numAttachments, attachments, x, y, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(InvalidateNamedFramebufferSubDataIdx as usize))(framebuffer, numAttachments, attachments, x, y, width, height)
 }
 /// Fallbacks: PointParameteriNV
 pub unsafe fn PointParameteri(pname: GLenum, param: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(GL_API[PointParameteriIdx as usize])(pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint) -> ()>(*GL_API.get_unchecked(PointParameteriIdx as usize))(pname, param)
 }
 pub unsafe fn GetTexParameterfv(target: GLenum, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLfloat) -> ()>(GL_API[GetTexParameterfvIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetTexParameterfvIdx as usize))(target, pname, params)
 }
 /// Fallbacks: IsTransformFeedbackNV
 pub unsafe fn IsTransformFeedback(id: GLuint) -> GLboolean {
-    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(GL_API[IsTransformFeedbackIdx as usize])(id)
+    mem::transmute::<_, extern "system" fn(GLuint) -> GLboolean>(*GL_API.get_unchecked(IsTransformFeedbackIdx as usize))(id)
 }
 pub unsafe fn TextureStorage3D(texture: GLuint, levels: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> ()>(GL_API[TextureStorage3DIdx as usize])(texture, levels, internalformat, width, height, depth)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(TextureStorage3DIdx as usize))(texture, levels, internalformat, width, height, depth)
 }
 pub unsafe fn ClearNamedBufferSubData(buffer: GLuint, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearNamedBufferSubDataIdx as usize])(buffer, internalformat, offset, size, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearNamedBufferSubDataIdx as usize))(buffer, internalformat, offset, size, format, type_, data)
 }
 /// Fallbacks: GetBufferSubDataARB
 pub unsafe fn GetBufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, *mut c_void) -> ()>(GL_API[GetBufferSubDataIdx as usize])(target, offset, size, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, *mut c_void) -> ()>(*GL_API.get_unchecked(GetBufferSubDataIdx as usize))(target, offset, size, data)
 }
 /// Fallbacks: VertexAttrib4fvARB, VertexAttrib4fvNV
 pub unsafe fn VertexAttrib4fv(index: GLuint, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(GL_API[VertexAttrib4fvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib4fvIdx as usize))(index, v)
 }
 /// Fallbacks: GetVertexAttribIivEXT
 pub unsafe fn GetVertexAttribIiv(index: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetVertexAttribIivIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetVertexAttribIivIdx as usize))(index, pname, params)
 }
 /// Fallbacks: GetDebugMessageLogARB, GetDebugMessageLogKHR
 pub unsafe fn GetDebugMessageLog(count: GLuint, bufSize: GLsizei, sources: *mut GLenum, types: *mut GLenum, ids: *mut GLuint, severities: *mut GLenum, lengths: *mut GLsizei, messageLog: *mut GLchar) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLenum, *mut GLenum, *mut GLuint, *mut GLenum, *mut GLsizei, *mut GLchar) -> GLuint>(GL_API[GetDebugMessageLogIdx as usize])(count, bufSize, sources, types, ids, severities, lengths, messageLog)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *mut GLenum, *mut GLenum, *mut GLuint, *mut GLenum, *mut GLsizei, *mut GLchar) -> GLuint>(*GL_API.get_unchecked(GetDebugMessageLogIdx as usize))(count, bufSize, sources, types, ids, severities, lengths, messageLog)
 }
 pub unsafe fn UniformBlockBinding(program: GLuint, uniformBlockIndex: GLuint, uniformBlockBinding: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(GL_API[UniformBlockBindingIdx as usize])(program, uniformBlockIndex, uniformBlockBinding)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(UniformBlockBindingIdx as usize))(program, uniformBlockIndex, uniformBlockBinding)
 }
 /// Fallbacks: MapBufferARB, MapBufferOES
 pub unsafe fn MapBuffer(target: GLenum, access: GLenum) -> *mut c_void {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> *mut c_void>(GL_API[MapBufferIdx as usize])(target, access)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> *mut c_void>(*GL_API.get_unchecked(MapBufferIdx as usize))(target, access)
 }
 pub unsafe fn NamedFramebufferDrawBuffers(framebuffer: GLuint, n: GLsizei, bufs: *const GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum) -> ()>(GL_API[NamedFramebufferDrawBuffersIdx as usize])(framebuffer, n, bufs)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLenum) -> ()>(*GL_API.get_unchecked(NamedFramebufferDrawBuffersIdx as usize))(framebuffer, n, bufs)
 }
 pub unsafe fn VertexAttribP1uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(GL_API[VertexAttribP1uivIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP1uivIdx as usize))(index, type_, normalized, value)
 }
 /// Fallbacks: ClientWaitSyncAPPLE
 pub unsafe fn ClientWaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> GLenum {
-    mem::transmute::<_, extern "system" fn(GLsync, GLbitfield, GLuint64) -> GLenum>(GL_API[ClientWaitSyncIdx as usize])(sync, flags, timeout)
+    mem::transmute::<_, extern "system" fn(GLsync, GLbitfield, GLuint64) -> GLenum>(*GL_API.get_unchecked(ClientWaitSyncIdx as usize))(sync, flags, timeout)
 }
 /// Fallbacks: GetSamplerParameterIuivEXT, GetSamplerParameterIuivOES
 pub unsafe fn GetSamplerParameterIuiv(sampler: GLuint, pname: GLenum, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(GL_API[GetSamplerParameterIuivIdx as usize])(sampler, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetSamplerParameterIuivIdx as usize))(sampler, pname, params)
 }
 /// Fallbacks: ProgramUniformMatrix4x2fvEXT
 pub unsafe fn ProgramUniformMatrix4x2fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix4x2fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4x2fvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: VertexAttribI4bvEXT
 pub unsafe fn VertexAttribI4bv(index: GLuint, v: *const GLbyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(GL_API[VertexAttribI4bvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(*GL_API.get_unchecked(VertexAttribI4bvIdx as usize))(index, v)
 }
 /// Fallbacks: GenFramebuffersEXT
 pub unsafe fn GenFramebuffers(n: GLsizei, framebuffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenFramebuffersIdx as usize])(n, framebuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenFramebuffersIdx as usize))(n, framebuffers)
 }
 /// Fallbacks: GetVertexAttribIuivEXT
 pub unsafe fn GetVertexAttribIuiv(index: GLuint, pname: GLenum, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(GL_API[GetVertexAttribIuivIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetVertexAttribIuivIdx as usize))(index, pname, params)
 }
 pub unsafe fn ProgramUniformMatrix2x3dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix2x3dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2x3dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: BufferSubDataARB
 pub unsafe fn BufferSubData(target: GLenum, offset: GLintptr, size: GLsizeiptr, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, *const c_void) -> ()>(GL_API[BufferSubDataIdx as usize])(target, offset, size, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLintptr, GLsizeiptr, *const c_void) -> ()>(*GL_API.get_unchecked(BufferSubDataIdx as usize))(target, offset, size, data)
 }
 /// Fallbacks: VertexAttrib3fARB, VertexAttrib3fNV
 pub unsafe fn VertexAttrib3f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[VertexAttrib3fIdx as usize])(index, x, y, z)
+    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib3fIdx as usize))(index, x, y, z)
 }
 pub unsafe fn TexImage3DMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei, depth: GLsizei, fixedsamplelocations: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(GL_API[TexImage3DMultisampleIdx as usize])(target, samples, internalformat, width, height, depth, fixedsamplelocations)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean) -> ()>(*GL_API.get_unchecked(TexImage3DMultisampleIdx as usize))(target, samples, internalformat, width, height, depth, fixedsamplelocations)
 }
 pub unsafe fn GetTexParameteriv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetTexParameterivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTexParameterivIdx as usize))(target, pname, params)
 }
 pub unsafe fn GetnConvolutionFilter(target: GLenum, format: GLenum, type_: GLenum, bufSize: GLsizei, image: *mut c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(GL_API[GetnConvolutionFilterIdx as usize])(target, format, type_, bufSize, image)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut c_void) -> ()>(*GL_API.get_unchecked(GetnConvolutionFilterIdx as usize))(target, format, type_, bufSize, image)
 }
 /// Fallbacks: VertexAttrib4bvARB
 pub unsafe fn VertexAttrib4bv(index: GLuint, v: *const GLbyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(GL_API[VertexAttrib4bvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(*GL_API.get_unchecked(VertexAttrib4bvIdx as usize))(index, v)
 }
 /// Fallbacks: GetDoubleIndexedvEXT, GetDoublei_vEXT
 pub unsafe fn GetDoublei_v(target: GLenum, index: GLuint, data: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLdouble) -> ()>(GL_API[GetDoublei_vIdx as usize])(target, index, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetDoublei_vIdx as usize))(target, index, data)
 }
 /// Fallbacks: DeleteSyncAPPLE
 pub unsafe fn DeleteSync(sync: GLsync) -> () {
-    mem::transmute::<_, extern "system" fn(GLsync) -> ()>(GL_API[DeleteSyncIdx as usize])(sync)
+    mem::transmute::<_, extern "system" fn(GLsync) -> ()>(*GL_API.get_unchecked(DeleteSyncIdx as usize))(sync)
 }
 pub unsafe fn FlushMappedNamedBufferRange(buffer: GLuint, offset: GLintptr, length: GLsizeiptr) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr) -> ()>(GL_API[FlushMappedNamedBufferRangeIdx as usize])(buffer, offset, length)
+    mem::transmute::<_, extern "system" fn(GLuint, GLintptr, GLsizeiptr) -> ()>(*GL_API.get_unchecked(FlushMappedNamedBufferRangeIdx as usize))(buffer, offset, length)
 }
 pub unsafe fn GetActiveUniformName(program: GLuint, uniformIndex: GLuint, bufSize: GLsizei, length: *mut GLsizei, uniformName: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetActiveUniformNameIdx as usize])(program, uniformIndex, bufSize, length, uniformName)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveUniformNameIdx as usize))(program, uniformIndex, bufSize, length, uniformName)
 }
 /// Fallbacks: ProgramUniform1uivEXT
 pub unsafe fn ProgramUniform1uiv(program: GLuint, location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(GL_API[ProgramUniform1uivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform1uivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: ProgramBinaryOES
 pub unsafe fn ProgramBinary(program: GLuint, binaryFormat: GLenum, binary: *const c_void, length: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const c_void, GLsizei) -> ()>(GL_API[ProgramBinaryIdx as usize])(program, binaryFormat, binary, length)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const c_void, GLsizei) -> ()>(*GL_API.get_unchecked(ProgramBinaryIdx as usize))(program, binaryFormat, binary, length)
 }
 pub unsafe fn GenerateTextureMipmap(texture: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[GenerateTextureMipmapIdx as usize])(texture)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(GenerateTextureMipmapIdx as usize))(texture)
 }
 pub unsafe fn DepthRangeArrayv(first: GLuint, count: GLsizei, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLdouble) -> ()>(GL_API[DepthRangeArrayvIdx as usize])(first, count, v)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(DepthRangeArrayvIdx as usize))(first, count, v)
 }
 pub unsafe fn ProgramUniform2d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble) -> ()>(GL_API[ProgramUniform2dIdx as usize])(program, location, v0, v1)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform2dIdx as usize))(program, location, v0, v1)
 }
 pub unsafe fn CheckNamedFramebufferStatus(framebuffer: GLuint, target: GLenum) -> GLenum {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> GLenum>(GL_API[CheckNamedFramebufferStatusIdx as usize])(framebuffer, target)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> GLenum>(*GL_API.get_unchecked(CheckNamedFramebufferStatusIdx as usize))(framebuffer, target)
 }
 /// Fallbacks: ResumeTransformFeedbackNV
 pub unsafe fn ResumeTransformFeedback() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[ResumeTransformFeedbackIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(ResumeTransformFeedbackIdx as usize))()
 }
 pub unsafe fn VertexAttribBinding(attribindex: GLuint, bindingindex: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[VertexAttribBindingIdx as usize])(attribindex, bindingindex)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribBindingIdx as usize))(attribindex, bindingindex)
 }
 pub unsafe fn PixelStoref(pname: GLenum, param: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLfloat) -> ()>(GL_API[PixelStorefIdx as usize])(pname, param)
+    mem::transmute::<_, extern "system" fn(GLenum, GLfloat) -> ()>(*GL_API.get_unchecked(PixelStorefIdx as usize))(pname, param)
 }
 pub unsafe fn MultiTexCoordP1ui(texture: GLenum, type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(GL_API[MultiTexCoordP1uiIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP1uiIdx as usize))(texture, type_, coords)
 }
 pub unsafe fn GetSamplerParameterfv(sampler: GLuint, pname: GLenum, params: *mut GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(GL_API[GetSamplerParameterfvIdx as usize])(sampler, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLfloat) -> ()>(*GL_API.get_unchecked(GetSamplerParameterfvIdx as usize))(sampler, pname, params)
 }
 /// Fallbacks: GetTexParameterIuivEXT, GetTexParameterIuivOES
 pub unsafe fn GetTexParameterIuiv(target: GLenum, pname: GLenum, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLuint) -> ()>(GL_API[GetTexParameterIuivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetTexParameterIuivIdx as usize))(target, pname, params)
 }
 pub unsafe fn ClipControl(origin: GLenum, depth: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(GL_API[ClipControlIdx as usize])(origin, depth)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum) -> ()>(*GL_API.get_unchecked(ClipControlIdx as usize))(origin, depth)
 }
 pub unsafe fn GetSubroutineIndex(program: GLuint, shadertype: GLenum, name: *const GLchar) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLuint>(GL_API[GetSubroutineIndexIdx as usize])(program, shadertype, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLuint>(*GL_API.get_unchecked(GetSubroutineIndexIdx as usize))(program, shadertype, name)
 }
 /// Fallbacks: GenBuffersARB
 pub unsafe fn GenBuffers(n: GLsizei, buffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenBuffersIdx as usize])(n, buffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenBuffersIdx as usize))(n, buffers)
 }
 /// Fallbacks: GetSamplerParameterIivEXT, GetSamplerParameterIivOES
 pub unsafe fn GetSamplerParameterIiv(sampler: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetSamplerParameterIivIdx as usize])(sampler, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetSamplerParameterIivIdx as usize))(sampler, pname, params)
 }
 pub unsafe fn Uniform3dv(location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(GL_API[Uniform3dvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(Uniform3dvIdx as usize))(location, count, value)
 }
 /// Fallbacks: ProgramUniformMatrix3x4fvEXT
 pub unsafe fn ProgramUniformMatrix3x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix3x4fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3x4fvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn LineWidth(width: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(GL_API[LineWidthIdx as usize])(width)
+    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(*GL_API.get_unchecked(LineWidthIdx as usize))(width)
 }
 pub unsafe fn VertexArrayAttribLFormat(vaobj: GLuint, attribindex: GLuint, size: GLint, type_: GLenum, relativeoffset: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLuint) -> ()>(GL_API[VertexArrayAttribLFormatIdx as usize])(vaobj, attribindex, size, type_, relativeoffset)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLint, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexArrayAttribLFormatIdx as usize))(vaobj, attribindex, size, type_, relativeoffset)
 }
 pub unsafe fn DepthRangeIndexed(index: GLuint, n: GLdouble, f: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(GL_API[DepthRangeIndexedIdx as usize])(index, n, f)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(DepthRangeIndexedIdx as usize))(index, n, f)
 }
 pub unsafe fn ProgramUniformMatrix3x4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix3x4dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix3x4dvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn GetTextureParameteriv(texture: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetTextureParameterivIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTextureParameterivIdx as usize))(texture, pname, params)
 }
 /// Fallbacks: DrawElementsInstancedBaseInstanceEXT
 pub unsafe fn DrawElementsInstancedBaseInstance(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void, instancecount: GLsizei, baseinstance: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLuint) -> ()>(GL_API[DrawElementsInstancedBaseInstanceIdx as usize])(mode, count, type_, indices, instancecount, baseinstance)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLsizei, GLuint) -> ()>(*GL_API.get_unchecked(DrawElementsInstancedBaseInstanceIdx as usize))(mode, count, type_, indices, instancecount, baseinstance)
 }
 /// Fallbacks: GetVertexAttribLdvEXT
 pub unsafe fn GetVertexAttribLdv(index: GLuint, pname: GLenum, params: *mut GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLdouble) -> ()>(GL_API[GetVertexAttribLdvIdx as usize])(index, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLdouble) -> ()>(*GL_API.get_unchecked(GetVertexAttribLdvIdx as usize))(index, pname, params)
 }
 pub unsafe fn VertexP3ui(type_: GLenum, value: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[VertexP3uiIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(VertexP3uiIdx as usize))(type_, value)
 }
 pub unsafe fn ClearNamedFramebufferfi(framebuffer: GLuint, buffer: GLenum, depth: GLfloat, stencil: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat, GLint) -> ()>(GL_API[ClearNamedFramebufferfiIdx as usize])(framebuffer, buffer, depth, stencil)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLfloat, GLint) -> ()>(*GL_API.get_unchecked(ClearNamedFramebufferfiIdx as usize))(framebuffer, buffer, depth, stencil)
 }
 pub unsafe fn DrawTransformFeedbackStreamInstanced(mode: GLenum, id: GLuint, stream: GLuint, instancecount: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei) -> ()>(GL_API[DrawTransformFeedbackStreamInstancedIdx as usize])(mode, id, stream, instancecount)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLuint, GLsizei) -> ()>(*GL_API.get_unchecked(DrawTransformFeedbackStreamInstancedIdx as usize))(mode, id, stream, instancecount)
 }
 /// Fallbacks: ProgramUniform3uiEXT
 pub unsafe fn ProgramUniform3ui(program: GLuint, location: GLint, v0: GLuint, v1: GLuint, v2: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint, GLuint) -> ()>(GL_API[ProgramUniform3uiIdx as usize])(program, location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform3uiIdx as usize))(program, location, v0, v1, v2)
 }
 pub unsafe fn GetTextureLevelParameteriv(texture: GLuint, level: GLint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, *mut GLint) -> ()>(GL_API[GetTextureLevelParameterivIdx as usize])(texture, level, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTextureLevelParameterivIdx as usize))(texture, level, pname, params)
 }
 pub unsafe fn Uniform2dv(location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(GL_API[Uniform2dvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(Uniform2dvIdx as usize))(location, count, value)
 }
 /// Fallbacks: GetQueryObjectui64vEXT
 pub unsafe fn GetQueryObjectui64v(id: GLuint, pname: GLenum, params: *mut GLuint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint64) -> ()>(GL_API[GetQueryObjectui64vIdx as usize])(id, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint64) -> ()>(*GL_API.get_unchecked(GetQueryObjectui64vIdx as usize))(id, pname, params)
 }
 /// Fallbacks: ProgramUniform2fvEXT
 pub unsafe fn ProgramUniform2fv(program: GLuint, location: GLint, count: GLsizei, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(GL_API[ProgramUniform2fvIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform2fvIdx as usize))(program, location, count, value)
 }
 pub unsafe fn MultiTexCoordP1uiv(texture: GLenum, type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(GL_API[MultiTexCoordP1uivIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP1uivIdx as usize))(texture, type_, coords)
 }
 /// Fallbacks: RenderbufferStorageMultisampleEXT, RenderbufferStorageMultisampleNV
 pub unsafe fn RenderbufferStorageMultisample(target: GLenum, samples: GLsizei, internalformat: GLenum, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(GL_API[RenderbufferStorageMultisampleIdx as usize])(target, samples, internalformat, width, height)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(RenderbufferStorageMultisampleIdx as usize))(target, samples, internalformat, width, height)
 }
 pub unsafe fn ColorP3uiv(type_: GLenum, color: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[ColorP3uivIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(ColorP3uivIdx as usize))(type_, color)
 }
 pub unsafe fn MultiTexCoordP2ui(texture: GLenum, type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(GL_API[MultiTexCoordP2uiIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP2uiIdx as usize))(texture, type_, coords)
 }
 /// Fallbacks: BindFragDataLocationEXT
 pub unsafe fn BindFragDataLocation(program: GLuint, color: GLuint, name: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, *const GLchar) -> ()>(GL_API[BindFragDataLocationIdx as usize])(program, color, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, *const GLchar) -> ()>(*GL_API.get_unchecked(BindFragDataLocationIdx as usize))(program, color, name)
 }
 /// Fallbacks: Uniform4uivEXT
 pub unsafe fn Uniform4uiv(location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(GL_API[Uniform4uivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(Uniform4uivIdx as usize))(location, count, value)
 }
 /// Fallbacks: GetFramebufferAttachmentParameterivEXT
 pub unsafe fn GetFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetFramebufferAttachmentParameterivIdx as usize])(target, attachment, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetFramebufferAttachmentParameterivIdx as usize))(target, attachment, pname, params)
 }
 pub unsafe fn GetVertexArrayIndexediv(vaobj: GLuint, index: GLuint, pname: GLenum, param: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetVertexArrayIndexedivIdx as usize])(vaobj, index, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetVertexArrayIndexedivIdx as usize))(vaobj, index, pname, param)
 }
 /// Fallbacks: TexParameterIivEXT, TexParameterIivOES
 pub unsafe fn TexParameterIiv(target: GLenum, pname: GLenum, params: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLint) -> ()>(GL_API[TexParameterIivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(TexParameterIivIdx as usize))(target, pname, params)
 }
 pub unsafe fn GetNamedBufferParameteri64v(buffer: GLuint, pname: GLenum, params: *mut GLint64) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint64) -> ()>(GL_API[GetNamedBufferParameteri64vIdx as usize])(buffer, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint64) -> ()>(*GL_API.get_unchecked(GetNamedBufferParameteri64vIdx as usize))(buffer, pname, params)
 }
 /// Fallbacks: UniformMatrix3fvARB
 pub unsafe fn UniformMatrix3fv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[UniformMatrix3fvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(UniformMatrix3fvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn ClearBufferData(target: GLenum, internalformat: GLenum, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearBufferDataIdx as usize])(target, internalformat, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearBufferDataIdx as usize))(target, internalformat, format, type_, data)
 }
 pub unsafe fn VertexP4uiv(type_: GLenum, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[VertexP4uivIdx as usize])(type_, value)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexP4uivIdx as usize))(type_, value)
 }
 /// Fallbacks: CopyImageSubDataEXT, CopyImageSubDataOES
 pub unsafe fn CopyImageSubData(srcName: GLuint, srcTarget: GLenum, srcLevel: GLint, srcX: GLint, srcY: GLint, srcZ: GLint, dstName: GLuint, dstTarget: GLenum, dstLevel: GLint, dstX: GLint, dstY: GLint, dstZ: GLint, srcWidth: GLsizei, srcHeight: GLsizei, srcDepth: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> ()>(GL_API[CopyImageSubDataIdx as usize])(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(CopyImageSubDataIdx as usize))(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth)
 }
 pub unsafe fn Uniform4dv(location: GLint, count: GLsizei, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(GL_API[Uniform4dvIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLdouble) -> ()>(*GL_API.get_unchecked(Uniform4dvIdx as usize))(location, count, value)
 }
 pub unsafe fn GenTextures(n: GLsizei, textures: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[GenTexturesIdx as usize])(n, textures)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(GenTexturesIdx as usize))(n, textures)
 }
 pub unsafe fn TexCoordP2uiv(type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(GL_API[TexCoordP2uivIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP2uivIdx as usize))(type_, coords)
 }
 /// Fallbacks: VertexAttribL3dvEXT
 pub unsafe fn VertexAttribL3dv(index: GLuint, v: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(GL_API[VertexAttribL3dvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL3dvIdx as usize))(index, v)
 }
 /// Fallbacks: CompressedTexImage1DARB
 pub unsafe fn CompressedTexImage1D(target: GLenum, level: GLint, internalformat: GLenum, width: GLsizei, border: GLint, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexImage1DIdx as usize])(target, level, internalformat, width, border, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexImage1DIdx as usize))(target, level, internalformat, width, border, imageSize, data)
 }
 pub unsafe fn GetTextureParameterIuiv(texture: GLuint, pname: GLenum, params: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(GL_API[GetTextureParameterIuivIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLuint) -> ()>(*GL_API.get_unchecked(GetTextureParameterIuivIdx as usize))(texture, pname, params)
 }
 pub unsafe fn InvalidateTexSubImage(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, zoffset: GLint, width: GLsizei, height: GLsizei, depth: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> ()>(GL_API[InvalidateTexSubImageIdx as usize])(texture, level, xoffset, yoffset, zoffset, width, height, depth)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(InvalidateTexSubImageIdx as usize))(texture, level, xoffset, yoffset, zoffset, width, height, depth)
 }
 /// Fallbacks: FenceSyncAPPLE
 pub unsafe fn FenceSync(condition: GLenum, flags: GLbitfield) -> GLsync {
-    mem::transmute::<_, extern "system" fn(GLenum, GLbitfield) -> GLsync>(GL_API[FenceSyncIdx as usize])(condition, flags)
+    mem::transmute::<_, extern "system" fn(GLenum, GLbitfield) -> GLsync>(*GL_API.get_unchecked(FenceSyncIdx as usize))(condition, flags)
 }
 /// Fallbacks: VertexAttribL1dEXT
 pub unsafe fn VertexAttribL1d(index: GLuint, x: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble) -> ()>(GL_API[VertexAttribL1dIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttribL1dIdx as usize))(index, x)
 }
 pub unsafe fn UniformMatrix4x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix4x2dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix4x2dvIdx as usize))(location, count, transpose, value)
 }
 /// Fallbacks: PauseTransformFeedbackNV
 pub unsafe fn PauseTransformFeedback() -> () {
-    mem::transmute::<_, extern "system" fn() -> ()>(GL_API[PauseTransformFeedbackIdx as usize])()
+    mem::transmute::<_, extern "system" fn() -> ()>(*GL_API.get_unchecked(PauseTransformFeedbackIdx as usize))()
 }
 /// Fallbacks: VertexAttrib4ivARB
 pub unsafe fn VertexAttrib4iv(index: GLuint, v: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(GL_API[VertexAttrib4ivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLint) -> ()>(*GL_API.get_unchecked(VertexAttrib4ivIdx as usize))(index, v)
 }
 /// Fallbacks: FramebufferTextureLayerARB, FramebufferTextureLayerEXT
 pub unsafe fn FramebufferTextureLayer(target: GLenum, attachment: GLenum, texture: GLuint, level: GLint, layer: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLint, GLint) -> ()>(GL_API[FramebufferTextureLayerIdx as usize])(target, attachment, texture, level, layer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint, GLint, GLint) -> ()>(*GL_API.get_unchecked(FramebufferTextureLayerIdx as usize))(target, attachment, texture, level, layer)
 }
 pub unsafe fn TextureSubImage2D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(GL_API[TextureSubImage2DIdx as usize])(texture, level, xoffset, yoffset, width, height, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TextureSubImage2DIdx as usize))(texture, level, xoffset, yoffset, width, height, format, type_, pixels)
 }
 pub unsafe fn ColorP4ui(type_: GLenum, color: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[ColorP4uiIdx as usize])(type_, color)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(ColorP4uiIdx as usize))(type_, color)
 }
 pub unsafe fn TexParameterfv(target: GLenum, pname: GLenum, params: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLfloat) -> ()>(GL_API[TexParameterfvIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLfloat) -> ()>(*GL_API.get_unchecked(TexParameterfvIdx as usize))(target, pname, params)
 }
 /// Fallbacks: PushDebugGroupKHR
 pub unsafe fn PushDebugGroup(source: GLenum, id: GLuint, length: GLsizei, message: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLchar) -> ()>(GL_API[PushDebugGroupIdx as usize])(source, id, length, message)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLchar) -> ()>(*GL_API.get_unchecked(PushDebugGroupIdx as usize))(source, id, length, message)
 }
 /// Fallbacks: MinSampleShadingARB, MinSampleShadingOES
 pub unsafe fn MinSampleShading(value: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(GL_API[MinSampleShadingIdx as usize])(value)
+    mem::transmute::<_, extern "system" fn(GLfloat) -> ()>(*GL_API.get_unchecked(MinSampleShadingIdx as usize))(value)
 }
 pub unsafe fn BindFragDataLocationIndexed(program: GLuint, colorNumber: GLuint, index: GLuint, name: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, *const GLchar) -> ()>(GL_API[BindFragDataLocationIndexedIdx as usize])(program, colorNumber, index, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLuint, *const GLchar) -> ()>(*GL_API.get_unchecked(BindFragDataLocationIndexedIdx as usize))(program, colorNumber, index, name)
 }
 /// Fallbacks: ScissorIndexedNV
 pub unsafe fn ScissorIndexed(index: GLuint, left: GLint, bottom: GLint, width: GLsizei, height: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLsizei) -> ()>(GL_API[ScissorIndexedIdx as usize])(index, left, bottom, width, height)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLsizei, GLsizei) -> ()>(*GL_API.get_unchecked(ScissorIndexedIdx as usize))(index, left, bottom, width, height)
 }
 /// Fallbacks: VertexAttrib1dARB, VertexAttrib1dNV
 pub unsafe fn VertexAttrib1d(index: GLuint, x: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLdouble) -> ()>(GL_API[VertexAttrib1dIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLdouble) -> ()>(*GL_API.get_unchecked(VertexAttrib1dIdx as usize))(index, x)
 }
 pub unsafe fn LogicOp(opcode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[LogicOpIdx as usize])(opcode)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(LogicOpIdx as usize))(opcode)
 }
 /// Fallbacks: GetBooleanIndexedvEXT
 pub unsafe fn GetBooleani_v(target: GLenum, index: GLuint, data: *mut GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLboolean) -> ()>(GL_API[GetBooleani_vIdx as usize])(target, index, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, *mut GLboolean) -> ()>(*GL_API.get_unchecked(GetBooleani_vIdx as usize))(target, index, data)
 }
 /// Fallbacks: GetActiveUniformARB
 pub unsafe fn GetActiveUniform(program: GLuint, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, size: *mut GLint, type_: *mut GLenum, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLint, *mut GLenum, *mut GLchar) -> ()>(GL_API[GetActiveUniformIdx as usize])(program, index, bufSize, length, size, type_, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint, GLsizei, *mut GLsizei, *mut GLint, *mut GLenum, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetActiveUniformIdx as usize))(program, index, bufSize, length, size, type_, name)
 }
 /// Fallbacks: VertexAttrib2fvARB, VertexAttrib2fvNV
 pub unsafe fn VertexAttrib2fv(index: GLuint, v: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(GL_API[VertexAttrib2fvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib2fvIdx as usize))(index, v)
 }
 /// Fallbacks: Uniform4uiEXT
 pub unsafe fn Uniform4ui(location: GLint, v0: GLuint, v1: GLuint, v2: GLuint, v3: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint, GLuint, GLuint) -> ()>(GL_API[Uniform4uiIdx as usize])(location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLint, GLuint, GLuint, GLuint, GLuint) -> ()>(*GL_API.get_unchecked(Uniform4uiIdx as usize))(location, v0, v1, v2, v3)
 }
 pub unsafe fn ProgramUniform3d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[ProgramUniform3dIdx as usize])(program, location, v0, v1, v2)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform3dIdx as usize))(program, location, v0, v1, v2)
 }
 /// Fallbacks: VertexAttribI1iEXT
 pub unsafe fn VertexAttribI1i(index: GLuint, x: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint) -> ()>(GL_API[VertexAttribI1iIdx as usize])(index, x)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint) -> ()>(*GL_API.get_unchecked(VertexAttribI1iIdx as usize))(index, x)
 }
 /// Fallbacks: VertexAttribPointerARB
 pub unsafe fn VertexAttribPointer(index: GLuint, size: GLint, type_: GLenum, normalized: GLboolean, stride: GLsizei, pointer: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLboolean, GLsizei, *const c_void) -> ()>(GL_API[VertexAttribPointerIdx as usize])(index, size, type_, normalized, stride, pointer)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLenum, GLboolean, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(VertexAttribPointerIdx as usize))(index, size, type_, normalized, stride, pointer)
 }
 /// Fallbacks: GetUniformLocationARB
 pub unsafe fn GetUniformLocation(program: GLuint, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(GL_API[GetUniformLocationIdx as usize])(program, name)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetUniformLocationIdx as usize))(program, name)
 }
 pub unsafe fn CreateFramebuffers(n: GLsizei, framebuffers: *mut GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(GL_API[CreateFramebuffersIdx as usize])(n, framebuffers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *mut GLuint) -> ()>(*GL_API.get_unchecked(CreateFramebuffersIdx as usize))(n, framebuffers)
 }
 pub unsafe fn BindSamplers(first: GLuint, count: GLsizei, samplers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(GL_API[BindSamplersIdx as usize])(first, count, samplers)
+    mem::transmute::<_, extern "system" fn(GLuint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(BindSamplersIdx as usize))(first, count, samplers)
 }
 pub unsafe fn GetProgramResourceIndex(program: GLuint, programInterface: GLenum, name: *const GLchar) -> GLuint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLuint>(GL_API[GetProgramResourceIndexIdx as usize])(program, programInterface, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLuint>(*GL_API.get_unchecked(GetProgramResourceIndexIdx as usize))(program, programInterface, name)
 }
 /// Fallbacks: GetTexParameterIivEXT, GetTexParameterIivOES
 pub unsafe fn GetTexParameterIiv(target: GLenum, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(GL_API[GetTexParameterIivIdx as usize])(target, pname, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTexParameterIivIdx as usize))(target, pname, params)
 }
 /// Fallbacks: GetQueryObjectivARB, GetQueryObjectivEXT
 pub unsafe fn GetQueryObjectiv(id: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetQueryObjectivIdx as usize])(id, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetQueryObjectivIdx as usize))(id, pname, params)
 }
 /// Fallbacks: VertexAttrib4NbvARB
 pub unsafe fn VertexAttrib4Nbv(index: GLuint, v: *const GLbyte) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(GL_API[VertexAttrib4NbvIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLbyte) -> ()>(*GL_API.get_unchecked(VertexAttrib4NbvIdx as usize))(index, v)
 }
 pub unsafe fn GetString(name: GLenum) -> *const GLubyte {
-    mem::transmute::<_, extern "system" fn(GLenum) -> *const GLubyte>(GL_API[GetStringIdx as usize])(name)
+    mem::transmute::<_, extern "system" fn(GLenum) -> *const GLubyte>(*GL_API.get_unchecked(GetStringIdx as usize))(name)
 }
 pub unsafe fn MultiTexCoordP4ui(texture: GLenum, type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(GL_API[MultiTexCoordP4uiIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP4uiIdx as usize))(texture, type_, coords)
 }
 pub unsafe fn ProgramUniformMatrix4dv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[ProgramUniformMatrix4dvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix4dvIdx as usize))(program, location, count, transpose, value)
 }
 /// Fallbacks: ColorMaskIndexedEXT, ColorMaskiEXT, ColorMaskiOES
 pub unsafe fn ColorMaski(index: GLuint, r: GLboolean, g: GLboolean, b: GLboolean, a: GLboolean) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLboolean, GLboolean, GLboolean, GLboolean) -> ()>(GL_API[ColorMaskiIdx as usize])(index, r, g, b, a)
+    mem::transmute::<_, extern "system" fn(GLuint, GLboolean, GLboolean, GLboolean, GLboolean) -> ()>(*GL_API.get_unchecked(ColorMaskiIdx as usize))(index, r, g, b, a)
 }
 pub unsafe fn BindFramebuffer(target: GLenum, framebuffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BindFramebufferIdx as usize])(target, framebuffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BindFramebufferIdx as usize))(target, framebuffer)
 }
 pub unsafe fn GetSubroutineUniformLocation(program: GLuint, shadertype: GLenum, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(GL_API[GetSubroutineUniformLocationIdx as usize])(program, shadertype, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetSubroutineUniformLocationIdx as usize))(program, shadertype, name)
 }
 pub unsafe fn NamedFramebufferTexture(framebuffer: GLuint, attachment: GLenum, texture: GLuint, level: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLint) -> ()>(GL_API[NamedFramebufferTextureIdx as usize])(framebuffer, attachment, texture, level)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLint) -> ()>(*GL_API.get_unchecked(NamedFramebufferTextureIdx as usize))(framebuffer, attachment, texture, level)
 }
 /// Fallbacks: SamplerParameterIivEXT, SamplerParameterIivOES
 pub unsafe fn SamplerParameterIiv(sampler: GLuint, pname: GLenum, param: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(GL_API[SamplerParameterIivIdx as usize])(sampler, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLint) -> ()>(*GL_API.get_unchecked(SamplerParameterIivIdx as usize))(sampler, pname, param)
 }
 pub unsafe fn TexCoordP3ui(type_: GLenum, coords: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[TexCoordP3uiIdx as usize])(type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(TexCoordP3uiIdx as usize))(type_, coords)
 }
 /// Fallbacks: FramebufferRenderbufferEXT
 pub unsafe fn FramebufferRenderbuffer(target: GLenum, attachment: GLenum, renderbuffertarget: GLenum, renderbuffer: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint) -> ()>(GL_API[FramebufferRenderbufferIdx as usize])(target, attachment, renderbuffertarget, renderbuffer)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLuint) -> ()>(*GL_API.get_unchecked(FramebufferRenderbufferIdx as usize))(target, attachment, renderbuffertarget, renderbuffer)
 }
 pub unsafe fn GetProgramResourceName(program: GLuint, programInterface: GLenum, index: GLuint, bufSize: GLsizei, length: *mut GLsizei, name: *mut GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(GL_API[GetProgramResourceNameIdx as usize])(program, programInterface, index, bufSize, length, name)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLuint, GLsizei, *mut GLsizei, *mut GLchar) -> ()>(*GL_API.get_unchecked(GetProgramResourceNameIdx as usize))(program, programInterface, index, bufSize, length, name)
 }
 /// Fallbacks: ProgramUniform3uivEXT
 pub unsafe fn ProgramUniform3uiv(program: GLuint, location: GLint, count: GLsizei, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(GL_API[ProgramUniform3uivIdx as usize])(program, location, count, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(ProgramUniform3uivIdx as usize))(program, location, count, value)
 }
 /// Fallbacks: CompressedTexSubImage1DARB
 pub unsafe fn CompressedTexSubImage1D(target: GLenum, level: GLint, xoffset: GLint, width: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTexSubImage1DIdx as usize])(target, level, xoffset, width, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTexSubImage1DIdx as usize))(target, level, xoffset, width, format, imageSize, data)
 }
 pub unsafe fn TextureParameterIuiv(texture: GLuint, pname: GLenum, params: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLuint) -> ()>(GL_API[TextureParameterIuivIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(TextureParameterIuivIdx as usize))(texture, pname, params)
 }
 pub unsafe fn UniformMatrix3x2dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix3x2dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix3x2dvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn GetTextureParameterIiv(texture: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetTextureParameterIivIdx as usize])(texture, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTextureParameterIivIdx as usize))(texture, pname, params)
 }
 pub unsafe fn PrimitiveRestartIndex(index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(GL_API[PrimitiveRestartIndexIdx as usize])(index)
+    mem::transmute::<_, extern "system" fn(GLuint) -> ()>(*GL_API.get_unchecked(PrimitiveRestartIndexIdx as usize))(index)
 }
 pub unsafe fn StencilMaskSeparate(face: GLenum, mask: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[StencilMaskSeparateIdx as usize])(face, mask)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(StencilMaskSeparateIdx as usize))(face, mask)
 }
 pub unsafe fn ProgramUniform4d(program: GLuint, location: GLint, v0: GLdouble, v1: GLdouble, v2: GLdouble, v3: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(GL_API[ProgramUniform4dIdx as usize])(program, location, v0, v1, v2, v3)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble, GLdouble, GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform4dIdx as usize))(program, location, v0, v1, v2, v3)
 }
 pub unsafe fn DepthRange(near: GLdouble, far: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLdouble, GLdouble) -> ()>(GL_API[DepthRangeIdx as usize])(near, far)
+    mem::transmute::<_, extern "system" fn(GLdouble, GLdouble) -> ()>(*GL_API.get_unchecked(DepthRangeIdx as usize))(near, far)
 }
 pub unsafe fn StencilFunc(func: GLenum, ref_: GLint, mask: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLuint) -> ()>(GL_API[StencilFuncIdx as usize])(func, ref_, mask)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLuint) -> ()>(*GL_API.get_unchecked(StencilFuncIdx as usize))(func, ref_, mask)
 }
 /// Fallbacks: DrawElementsBaseVertexEXT, DrawElementsBaseVertexOES
 pub unsafe fn DrawElementsBaseVertex(mode: GLenum, count: GLsizei, type_: GLenum, indices: *const c_void, basevertex: GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLint) -> ()>(GL_API[DrawElementsBaseVertexIdx as usize])(mode, count, type_, indices, basevertex)
+    mem::transmute::<_, extern "system" fn(GLenum, GLsizei, GLenum, *const c_void, GLint) -> ()>(*GL_API.get_unchecked(DrawElementsBaseVertexIdx as usize))(mode, count, type_, indices, basevertex)
 }
 /// Fallbacks: Uniform4ivARB
 pub unsafe fn Uniform4iv(location: GLint, count: GLsizei, value: *const GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(GL_API[Uniform4ivIdx as usize])(location, count, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, *const GLint) -> ()>(*GL_API.get_unchecked(Uniform4ivIdx as usize))(location, count, value)
 }
 /// Fallbacks: ProgramUniform1fEXT
 pub unsafe fn ProgramUniform1f(program: GLuint, location: GLint, v0: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat) -> ()>(GL_API[ProgramUniform1fIdx as usize])(program, location, v0)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniform1fIdx as usize))(program, location, v0)
 }
 /// Fallbacks: VertexAttribI3uivEXT
 pub unsafe fn VertexAttribI3uiv(index: GLuint, v: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(GL_API[VertexAttribI3uivIdx as usize])(index, v)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribI3uivIdx as usize))(index, v)
 }
 pub unsafe fn CompressedTextureSubImage2D(texture: GLuint, level: GLint, xoffset: GLint, yoffset: GLint, width: GLsizei, height: GLsizei, format: GLenum, imageSize: GLsizei, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(GL_API[CompressedTextureSubImage2DIdx as usize])(texture, level, xoffset, yoffset, width, height, format, imageSize, data)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, *const c_void) -> ()>(*GL_API.get_unchecked(CompressedTextureSubImage2DIdx as usize))(texture, level, xoffset, yoffset, width, height, format, imageSize, data)
 }
 /// Fallbacks: BlitFramebufferEXT, BlitFramebufferNV
 pub unsafe fn BlitFramebuffer(srcX0: GLint, srcY0: GLint, srcX1: GLint, srcY1: GLint, dstX0: GLint, dstY0: GLint, dstX1: GLint, dstY1: GLint, mask: GLbitfield, filter: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> ()>(GL_API[BlitFramebufferIdx as usize])(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter)
+    mem::transmute::<_, extern "system" fn(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum) -> ()>(*GL_API.get_unchecked(BlitFramebufferIdx as usize))(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter)
 }
 /// Fallbacks: BeginQueryARB
 pub unsafe fn BeginQuery(target: GLenum, id: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(GL_API[BeginQueryIdx as usize])(target, id)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint) -> ()>(*GL_API.get_unchecked(BeginQueryIdx as usize))(target, id)
 }
 pub unsafe fn UniformMatrix3dv(location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(GL_API[UniformMatrix3dvIdx as usize])(location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLint, GLsizei, GLboolean, *const GLdouble) -> ()>(*GL_API.get_unchecked(UniformMatrix3dvIdx as usize))(location, count, transpose, value)
 }
 pub unsafe fn DisableVertexArrayAttrib(vaobj: GLuint, index: GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(GL_API[DisableVertexArrayAttribIdx as usize])(vaobj, index)
+    mem::transmute::<_, extern "system" fn(GLuint, GLuint) -> ()>(*GL_API.get_unchecked(DisableVertexArrayAttribIdx as usize))(vaobj, index)
 }
 /// Fallbacks: VertexAttrib4fARB, VertexAttrib4fNV
 pub unsafe fn VertexAttrib4f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(GL_API[VertexAttrib4fIdx as usize])(index, x, y, z, w)
+    mem::transmute::<_, extern "system" fn(GLuint, GLfloat, GLfloat, GLfloat, GLfloat) -> ()>(*GL_API.get_unchecked(VertexAttrib4fIdx as usize))(index, x, y, z, w)
 }
 /// Fallbacks: ObjectLabelKHR
 pub unsafe fn ObjectLabel(identifier: GLenum, name: GLuint, length: GLsizei, label: *const GLchar) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLchar) -> ()>(GL_API[ObjectLabelIdx as usize])(identifier, name, length, label)
+    mem::transmute::<_, extern "system" fn(GLenum, GLuint, GLsizei, *const GLchar) -> ()>(*GL_API.get_unchecked(ObjectLabelIdx as usize))(identifier, name, length, label)
 }
 pub unsafe fn MultiTexCoordP3uiv(texture: GLenum, type_: GLenum, coords: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(GL_API[MultiTexCoordP3uivIdx as usize])(texture, type_, coords)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, *const GLuint) -> ()>(*GL_API.get_unchecked(MultiTexCoordP3uivIdx as usize))(texture, type_, coords)
 }
 pub unsafe fn GetNamedFramebufferParameteriv(framebuffer: GLuint, pname: GLenum, param: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetNamedFramebufferParameterivIdx as usize])(framebuffer, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetNamedFramebufferParameterivIdx as usize))(framebuffer, pname, param)
 }
 /// Fallbacks: EndQueryARB
 pub unsafe fn EndQuery(target: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(GL_API[EndQueryIdx as usize])(target)
+    mem::transmute::<_, extern "system" fn(GLenum) -> ()>(*GL_API.get_unchecked(EndQueryIdx as usize))(target)
 }
 pub unsafe fn ProgramUniform1d(program: GLuint, location: GLint, v0: GLdouble) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble) -> ()>(GL_API[ProgramUniform1dIdx as usize])(program, location, v0)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLdouble) -> ()>(*GL_API.get_unchecked(ProgramUniform1dIdx as usize))(program, location, v0)
 }
 pub unsafe fn VertexAttribP3uiv(index: GLuint, type_: GLenum, normalized: GLboolean, value: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(GL_API[VertexAttribP3uivIdx as usize])(index, type_, normalized, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, GLboolean, *const GLuint) -> ()>(*GL_API.get_unchecked(VertexAttribP3uivIdx as usize))(index, type_, normalized, value)
 }
 pub unsafe fn GetInternalformativ(target: GLenum, internalformat: GLenum, pname: GLenum, bufSize: GLsizei, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut GLint) -> ()>(GL_API[GetInternalformativIdx as usize])(target, internalformat, pname, bufSize, params)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLenum, GLsizei, *mut GLint) -> ()>(*GL_API.get_unchecked(GetInternalformativIdx as usize))(target, internalformat, pname, bufSize, params)
 }
 pub unsafe fn ClearBufferSubData(target: GLenum, internalformat: GLenum, offset: GLintptr, size: GLsizeiptr, format: GLenum, type_: GLenum, data: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, *const c_void) -> ()>(GL_API[ClearBufferSubDataIdx as usize])(target, internalformat, offset, size, format, type_, data)
+    mem::transmute::<_, extern "system" fn(GLenum, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(ClearBufferSubDataIdx as usize))(target, internalformat, offset, size, format, type_, data)
 }
 /// Fallbacks: BeginConditionalRenderNV
 pub unsafe fn BeginConditionalRender(id: GLuint, mode: GLenum) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(GL_API[BeginConditionalRenderIdx as usize])(id, mode)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum) -> ()>(*GL_API.get_unchecked(BeginConditionalRenderIdx as usize))(id, mode)
 }
 /// Fallbacks: DrawArraysEXT
 pub unsafe fn DrawArrays(mode: GLenum, first: GLint, count: GLsizei) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei) -> ()>(GL_API[DrawArraysIdx as usize])(mode, first, count)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLsizei) -> ()>(*GL_API.get_unchecked(DrawArraysIdx as usize))(mode, first, count)
 }
 pub unsafe fn TexImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type_: GLenum, pixels: *const c_void) -> () {
-    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(GL_API[TexImage2DIdx as usize])(target, level, internalformat, width, height, border, format, type_, pixels)
+    mem::transmute::<_, extern "system" fn(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, *const c_void) -> ()>(*GL_API.get_unchecked(TexImage2DIdx as usize))(target, level, internalformat, width, height, border, format, type_, pixels)
 }
 pub unsafe fn DeleteSamplers(count: GLsizei, samplers: *const GLuint) -> () {
-    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(GL_API[DeleteSamplersIdx as usize])(count, samplers)
+    mem::transmute::<_, extern "system" fn(GLsizei, *const GLuint) -> ()>(*GL_API.get_unchecked(DeleteSamplersIdx as usize))(count, samplers)
 }
 /// Fallbacks: ProgramUniformMatrix2x4fvEXT
 pub unsafe fn ProgramUniformMatrix2x4fv(program: GLuint, location: GLint, count: GLsizei, transpose: GLboolean, value: *const GLfloat) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(GL_API[ProgramUniformMatrix2x4fvIdx as usize])(program, location, count, transpose, value)
+    mem::transmute::<_, extern "system" fn(GLuint, GLint, GLsizei, GLboolean, *const GLfloat) -> ()>(*GL_API.get_unchecked(ProgramUniformMatrix2x4fvIdx as usize))(program, location, count, transpose, value)
 }
 pub unsafe fn GetTransformFeedbackiv(xfb: GLuint, pname: GLenum, param: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetTransformFeedbackivIdx as usize])(xfb, pname, param)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetTransformFeedbackivIdx as usize))(xfb, pname, param)
 }
 pub unsafe fn GetFragDataIndex(program: GLuint, name: *const GLchar) -> GLint {
-    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(GL_API[GetFragDataIndexIdx as usize])(program, name)
+    mem::transmute::<_, extern "system" fn(GLuint, *const GLchar) -> GLint>(*GL_API.get_unchecked(GetFragDataIndexIdx as usize))(program, name)
 }
 pub unsafe fn GetProgramPipelineiv(pipeline: GLuint, pname: GLenum, params: *mut GLint) -> () {
-    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(GL_API[GetProgramPipelineivIdx as usize])(pipeline, pname, params)
+    mem::transmute::<_, extern "system" fn(GLuint, GLenum, *mut GLint) -> ()>(*GL_API.get_unchecked(GetProgramPipelineivIdx as usize))(pipeline, pname, params)
 }
 
 static mut GL_API: [usize; 695] = [0; 695];
@@ -4585,7 +4585,7 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = unsafe { &[
 pub fn init() {
     for &(index, ref name) in LOAD_DESC {
         unsafe {
-            GL_API[index as usize] = win32::wgl_get_proc_address(name) as usize;
+            (*GL_API.get_unchecked_mut(index as usize)) = win32::wgl_get_proc_address(name) as usize;
         }
     }
 }

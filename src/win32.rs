@@ -187,7 +187,7 @@ static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
-        mem::transmute::<_, MessageBoxATy>(API[0])(ptr::null_mut(), &text[0], &caption[0], box_type);
+        mem::transmute::<_, MessageBoxATy>(*API.get_unchecked(0))(ptr::null_mut(), &text[0], &caption[0], box_type);
     }
 }
 
@@ -205,12 +205,12 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         class_name: &name[0],
     };
 
-    unsafe { mem::transmute::<_, RegisterClassATy>(API[1])(&window_class) != 0 }
+    unsafe { mem::transmute::<_, RegisterClassATy>(*API.get_unchecked(1))(&window_class) != 0 }
 }
 
 pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
-        mem::transmute::<_, CreateWindowExATy>(API[2])(
+        mem::transmute::<_, CreateWindowExATy>(*API.get_unchecked(2))(
             0,
             &class_name[0],
             &name[0],
@@ -227,15 +227,15 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
 }
 
 pub fn destroy_window(window: WindowHandle) -> i32 {
-    unsafe { mem::transmute::<_, DestroyWindowTy>(API[3])(window) }
+    unsafe { mem::transmute::<_, DestroyWindowTy>(*API.get_unchecked(3))(window) }
 }
 
 pub fn get_dc(window: WindowHandle) -> DcHandle {
-    unsafe { mem::transmute::<_, GetDCTy>(API[4])(window) }
+    unsafe { mem::transmute::<_, GetDCTy>(*API.get_unchecked(4))(window) }
 }
 
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
-    unsafe { mem::transmute::<_, ReleaseDCTy>(API[5])(window, dc) }
+    unsafe { mem::transmute::<_, ReleaseDCTy>(*API.get_unchecked(5))(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
@@ -248,26 +248,26 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(API[6])(&mut msg, ptr::null_mut(), 0, 0, 1) };
+    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(*API.get_unchecked(6))(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
     unsafe {
-        mem::transmute::<_, TranslateMessageTy>(API[7])(msg as *const Msg);
-        mem::transmute::<_, DispatchMessageATy>(API[8])(msg as *const Msg);
+        mem::transmute::<_, TranslateMessageTy>(*API.get_unchecked(7))(msg as *const Msg);
+        mem::transmute::<_, DispatchMessageATy>(*API.get_unchecked(8))(msg as *const Msg);
     }
 }
 
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
-    unsafe { mem::transmute::<_, DefWindowProcATy>(API[9])(window, message, wparam, lparam) }
+    unsafe { mem::transmute::<_, DefWindowProcATy>(*API.get_unchecked(9))(window, message, wparam, lparam) }
 }
 
 pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
 
-    unsafe { mem::transmute::<_, LoadCursorA>(API[10])(instance, name) }
+    unsafe { mem::transmute::<_, LoadCursorA>(*API.get_unchecked(10))(instance, name) }
 }
 
 const GDI_FUNCTION_COUNT: usize = 4;
@@ -291,7 +291,7 @@ static GDI_FUNCTION_ORDINALS: [u16; GDI_FUNCTION_COUNT] = [
 
 pub fn choose_pixel_format(dc: DcHandle, descriptor: &PixelFormatDescriptor) -> i32 {
 
-    unsafe { mem::transmute::<_, ChoosePixelFormatTy>(GDI_API[0])(dc, descriptor as *const PixelFormatDescriptor) }
+    unsafe { mem::transmute::<_, ChoosePixelFormatTy>(*GDI_API.get_unchecked(0))(dc, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn describe_pixel_format(dc: DcHandle,
@@ -301,7 +301,7 @@ pub fn describe_pixel_format(dc: DcHandle,
                              -> i32 {
 
     unsafe {
-        mem::transmute::<_, DescribePixelFormatTy>(GDI_API[1])(
+        mem::transmute::<_, DescribePixelFormatTy>(*GDI_API.get_unchecked(1))(
             dc,
             pixel_format,
             bytes,
@@ -314,12 +314,12 @@ pub fn set_pixel_format(dc: DcHandle,
                         descriptor: *const PixelFormatDescriptor)
                         -> i32 {
 
-    unsafe { mem::transmute::<_, SetPixelFormatTy>(GDI_API[2])(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+    unsafe { mem::transmute::<_, SetPixelFormatTy>(*GDI_API.get_unchecked(2))(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn swap_buffers(dc: DcHandle) -> bool {
 
-    unsafe { mem::transmute::<_, SwapBuffersTy>(GDI_API[3])(dc) != 0 }
+    unsafe { mem::transmute::<_, SwapBuffersTy>(*GDI_API.get_unchecked(3))(dc) != 0 }
 }
 
 const GL_FUNCTION_COUNT: usize = 4;
@@ -343,22 +343,22 @@ static GL_FUNCTION_ORDINALS: [u16; GL_FUNCTION_COUNT] = [
 
 pub fn wgl_create_context(dc: DcHandle) -> GlrcHandle {
 
-    unsafe { mem::transmute::<_, WglCreateContextTy>(GL_API[0])(dc) }
+    unsafe { mem::transmute::<_, WglCreateContextTy>(*GL_API.get_unchecked(0))(dc) }
 }
 
 pub fn wgl_delete_context(glrc: GlrcHandle) -> i32 {
 
-    unsafe { mem::transmute::<_, WglDeleteContextTy>(GL_API[1])(glrc) }
+    unsafe { mem::transmute::<_, WglDeleteContextTy>(*GL_API.get_unchecked(1))(glrc) }
 }
 
 pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
 
-    unsafe { mem::transmute::<_, WglMakeCurrentTy>(GL_API[2])(dc, context) }
+    unsafe { mem::transmute::<_, WglMakeCurrentTy>(*GL_API.get_unchecked(2))(dc, context) }
 }
 
 pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
 
-    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(GL_API[3])(&name[0]) };
+    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&name[0]) };
 
     if ptr == ptr::null_mut() {
         debug_break();
@@ -388,7 +388,7 @@ static GL_EXT_NAMES: [&'static [u8]; GL_EXT_FUNCTION_COUNT] = [
 
 pub fn wgl_get_extensions_string() -> *const u8 {
 
-    unsafe { mem::transmute::<_, WglGetExtensionsStringEXTTy>(GL_EXT_API[0])() }
+    unsafe { mem::transmute::<_, WglGetExtensionsStringEXTTy>(*GL_EXT_API.get_unchecked(0))() }
 }
 
 pub fn wgl_choose_pixel_format(dc: DcHandle,
@@ -399,7 +399,7 @@ pub fn wgl_choose_pixel_format(dc: DcHandle,
                            -> i32 {
 
     unsafe {
-        mem::transmute::<_, WglChoosePixelFormatARBTy>(GL_EXT_API[1])(
+        mem::transmute::<_, WglChoosePixelFormatARBTy>(*GL_EXT_API.get_unchecked(1))(
                 dc,
                 if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
                 if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
@@ -414,13 +414,13 @@ pub fn wgl_create_context_attribs(dc: DcHandle,
                               attrib_list: &[i32])
                               -> GlrcHandle {
 
-    unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(GL_EXT_API[2])(dc, shared_context, &attrib_list[0]) }
+    unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(*GL_EXT_API.get_unchecked(2))(dc, shared_context, &attrib_list[0]) }
 }
 
 #[allow(dead_code)]
 pub fn wgl_swap_interval(interval: i32) -> i32 {
 
-    unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(GL_EXT_API[3])(interval) }
+    unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(*GL_EXT_API.get_unchecked(3))(interval) }
 }
 
 pub fn init() {
@@ -429,7 +429,7 @@ pub fn init() {
 
         for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
             unsafe {
-                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
+                (*API.get_unchecked_mut(i)) = user32.get_proc_address(*ordinal as isize) as usize;
             }
         }
     }
@@ -438,7 +438,7 @@ pub fn init() {
 
         for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
             unsafe {
-                GDI_API[i] = gdi32.get_proc_address(*ordinal as isize) as usize;
+                (*GDI_API.get_unchecked_mut(i)) = gdi32.get_proc_address(*ordinal as isize) as usize;
             }
         }
     }
@@ -447,7 +447,7 @@ pub fn init() {
 
         for (ordinal, i) in GL_FUNCTION_ORDINALS.iter().zip(0..) {
             unsafe {
-                GL_API[i] = opengl32.get_proc_address(*ordinal as isize) as usize;
+                (*GL_API.get_unchecked_mut(i)) = opengl32.get_proc_address(*ordinal as isize) as usize;
             }
         }
     }
@@ -456,7 +456,7 @@ pub fn init() {
 pub fn wgl_load_extensions() {
     for (name, i) in GL_EXT_NAMES.iter().zip(0..) {
         unsafe {
-        GL_EXT_API[i] = wgl_get_proc_address(*name) as usize;
+        (*GL_EXT_API.get_unchecked_mut(i)) = wgl_get_proc_address(*name) as usize;
     }
 }
 }
