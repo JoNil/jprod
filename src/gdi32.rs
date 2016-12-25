@@ -27,7 +27,6 @@ struct Api {
     SwapBuffers: unsafe extern "system" fn(dc: DcHandle) -> i32,
 }
 
-#[inline]
 fn api() -> &'static Api {
     unsafe {
         if let Some(ref api) = API {

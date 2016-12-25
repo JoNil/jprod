@@ -42,7 +42,6 @@ struct Api {
     ext: Option<ExtApi>,
 }
 
-#[inline]
 fn api() -> &'static Api {
     unsafe {
         if let Some(ref api) = API {
@@ -53,7 +52,6 @@ fn api() -> &'static Api {
     }
 }
 
-#[inline]
 fn ext_api() -> &'static ExtApi {
     if let Some(ref api) = api().ext {
         api

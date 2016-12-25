@@ -201,7 +201,6 @@ struct Api {
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
 }
 
-#[inline]
 fn api() -> &'static Api {
     unsafe {
         if let Some(ref api) = API {
