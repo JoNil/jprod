@@ -92,7 +92,7 @@ impl Mesh {
 
         unsafe { gl::BufferData(gl::ARRAY_BUFFER,
                 (3 * data.len() * mem::size_of::<f32>()) as isize,
-                &data[0][0] as *const f32 as *const c_void,
+                &*(*data.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
                 gl::STATIC_DRAW); }
 
         unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }

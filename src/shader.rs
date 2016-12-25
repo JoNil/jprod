@@ -67,7 +67,7 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
     let vertex = RawShader::new(gl::VERTEX_SHADER);
 
     {
-        let frag_pointer: *const u8 = &fragment_source[0];
+        let frag_pointer: *const u8 = unsafe { &*fragment_source.get_unchecked(0) };
         let frag_size: i32 = fragment_source.len() as i32;
         unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
         unsafe { gl::CompileShader(fragment.handle) };
@@ -82,7 +82,7 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
     }
 
     {
-        let vert_pointer: *const u8 = &vertex_source[0];
+        let vert_pointer: *const u8 = unsafe { &*vertex_source.get_unchecked(0) };
         let vert_size: i32 = vertex_source.len() as i32;
         unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
         unsafe { gl::CompileShader(vertex.handle) };
@@ -177,7 +177,7 @@ impl Shader {
                 (File::open(self.source.fragment_path), File::open(self.source.vertex_path)) {
 
                 let vertex_source = vertex_file.read_entire_file(&local_allocator);
-                let fragment_source = fragment_file.read_entire_file(&local_allocator);    
+                let fragment_source = fragment_file.read_entire_file(&local_allocator);
 
                 self.source.vertex_filetime = vertex_file_attributes.last_write_time;
                 self.source.fragment_filetime = fragment_file_attributes.last_write_time;
@@ -203,7 +203,7 @@ fn print_shader_error(shader: u32) {
 
     let mut info: [u8; SIZE as usize] = [0; SIZE as usize];
 
-    unsafe { gl::GetShaderInfoLog(shader, SIZE, ptr::null_mut(), &mut info[0]) };
+    unsafe { gl::GetShaderInfoLog(shader, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
 
     win32::output_debug_string(&info);
 }
@@ -214,7 +214,7 @@ fn print_program_error(program: u32) {
 
     let mut info: [u8; SIZE as usize] = [0; SIZE as usize];
 
-    unsafe { gl::GetProgramInfoLog(program, SIZE, ptr::null_mut(), &mut info[0]) };
+    unsafe { gl::GetProgramInfoLog(program, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
 
     win32::output_debug_string(&info);
 }

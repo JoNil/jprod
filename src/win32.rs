@@ -43,7 +43,7 @@ extern "system" {
 
 pub fn output_debug_string(string: &[u8]) {
 
-    unsafe { OutputDebugStringA(&string[0]); }
+    unsafe { OutputDebugStringA(&*string.get_unchecked(0)); }
 }
 
 pub fn output_debug_string_raw(string: *const u8) {
@@ -58,12 +58,12 @@ pub fn exit_process(exit_code: u32) -> ! {
 
 pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
 
-    unsafe { GetModuleHandleA(&module_name[0]) }
+    unsafe { GetModuleHandleA(&*module_name.get_unchecked(0)) }
 }
 
 pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
-    unsafe { LoadLibraryA(&file_name[0]) }
+    unsafe { LoadLibraryA(&*file_name.get_unchecked(0)) }
 }
 
 pub fn free_library(module: ModuleHandle) {
@@ -78,13 +78,13 @@ pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
 
 pub fn get_file_attributes(file_name: &[u8], info_level_id: i32, file_information: &mut FileAttributeData) -> i32 {
 
-    unsafe { GetFileAttributesExA(&file_name[0], info_level_id, file_information as *mut _) }
+    unsafe { GetFileAttributesExA(&*file_name.get_unchecked(0), info_level_id, file_information as *mut _) }
 }
 
 pub fn open_file(file_name: &[u8]) -> Handle {
     unsafe {
         CreateFileA(
-            &file_name[0],
+            &*file_name.get_unchecked(0),
             GENERIC_READ | GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
             ptr::null_mut(),
@@ -109,7 +109,7 @@ pub fn get_file_size(handle: Handle) -> u64 {
 
 pub fn read_file(handle: Handle, buffer: &mut [u8]) -> i32 {
 
-    unsafe { ReadFile(handle, &mut buffer[0] as *mut u8 as *mut c_void, buffer.len() as u32, ptr::null_mut(), ptr::null_mut()) }
+    unsafe { ReadFile(handle, &mut *buffer.get_unchecked_mut(0) as *mut u8 as *mut c_void, buffer.len() as u32, ptr::null_mut(), ptr::null_mut()) }
 }
 
 pub fn compare_file_time(file_time_1: &Filetime, file_time_2: &Filetime) -> isize {
@@ -187,7 +187,7 @@ static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
-        mem::transmute::<_, MessageBoxATy>(*API.get_unchecked(0))(ptr::null_mut(), &text[0], &caption[0], box_type);
+        mem::transmute::<_, MessageBoxATy>(*API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), box_type);
     }
 }
 
@@ -202,7 +202,7 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         cursor: load_cursor(ptr::null_mut(), IDC_ARROW),
         background: ptr::null_mut(),
         menu_name: ptr::null(),
-        class_name: &name[0],
+        class_name: unsafe { &*name.get_unchecked(0) },
     };
 
     unsafe { mem::transmute::<_, RegisterClassATy>(*API.get_unchecked(1))(&window_class) != 0 }
@@ -212,8 +212,8 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
     unsafe {
         mem::transmute::<_, CreateWindowExATy>(*API.get_unchecked(2))(
             0,
-            &class_name[0],
-            &name[0],
+            &*class_name.get_unchecked(0),
+            &*name.get_unchecked(0),
             WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
             CW_USEDEFAULT,
             CW_USEDEFAULT,
@@ -358,7 +358,7 @@ pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
 
 pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
 
-    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&name[0]) };
+    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
 
     if ptr == ptr::null_mut() {
         debug_break();
@@ -401,8 +401,8 @@ pub fn wgl_choose_pixel_format(dc: DcHandle,
     unsafe {
         mem::transmute::<_, WglChoosePixelFormatARBTy>(*GL_EXT_API.get_unchecked(1))(
                 dc,
-                if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
-                if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
+                if let Some(i_attrib) = attrib_i_list { &*i_attrib.get_unchecked(0) } else { ptr::null() },
+                if let Some(f_attrib) = attrib_f_list { &*f_attrib.get_unchecked(0) } else { ptr::null() },
                 1,
                 pixel_formats as *mut _,
                 num_formats as *mut _)
@@ -414,7 +414,7 @@ pub fn wgl_create_context_attribs(dc: DcHandle,
                               attrib_list: &[i32])
                               -> GlrcHandle {
 
-    unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(*GL_EXT_API.get_unchecked(2))(dc, shared_context, &attrib_list[0]) }
+    unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(*GL_EXT_API.get_unchecked(2))(dc, shared_context, &*attrib_list.get_unchecked(0)) }
 }
 
 #[allow(dead_code)]

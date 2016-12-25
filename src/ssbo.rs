@@ -27,7 +27,7 @@ impl Ssbo {
 
         unsafe { gl::BufferData(gl::SHADER_STORAGE_BUFFER,
             (data.len() * mem::size_of::<T>()) as isize,
-            &data[0] as *const T as *const c_void,
+            &*data.get_unchecked(0) as *const T as *const c_void,
             gl::STATIC_DRAW); }
 
         unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
