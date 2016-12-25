@@ -152,7 +152,7 @@ impl Window {
 
         context.make_current();
 
-        gl_init();
+        gl::init();
 
         Window { context: context }
     }
@@ -280,46 +280,5 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
     }
 }
 
-fn gl_init() {
-    // Program functions
-    gl::CreateProgram::load_with(|s| opengl32::get_proc_address(s));
-    gl::DeleteProgram::load_with(|s| opengl32::get_proc_address(s));
 
-    gl::AttachShader::load_with(|s| opengl32::get_proc_address(s));
-    gl::LinkProgram::load_with(|s| opengl32::get_proc_address(s));
-    gl::GetProgramInfoLog::load_with(|s| opengl32::get_proc_address(s));
-    gl::ValidateProgram::load_with(|s| opengl32::get_proc_address(s));
-    gl::GetProgramiv::load_with(|s| opengl32::get_proc_address(s));
-    gl::UseProgram::load_with(|s| opengl32::get_proc_address(s));
 
-    // Shader functions
-    gl::CreateShader::load_with(|s| opengl32::get_proc_address(s));
-    gl::DeleteShader::load_with(|s| opengl32::get_proc_address(s));
-
-    gl::ShaderSource::load_with(|s| opengl32::get_proc_address(s));
-    gl::CompileShader::load_with(|s| opengl32::get_proc_address(s));
-    gl::GetShaderInfoLog::load_with(|s| opengl32::get_proc_address(s));
-    gl::GetShaderiv::load_with(|s| opengl32::get_proc_address(s));
-
-    // Vertex Buffer Object functions
-    gl::GenBuffers::load_with(|s| opengl32::get_proc_address(s));
-    gl::DeleteBuffers::load_with(|s| opengl32::get_proc_address(s));
-    gl::BindBuffer::load_with(|s| opengl32::get_proc_address(s));
-    gl::BindBufferBase::load_with(|s| opengl32::get_proc_address(s));
-
-    gl::BufferData::load_with(|s| opengl32::get_proc_address(s));
-
-    // Vertex Array Object functions
-    gl::GenVertexArrays::load_with(|s| opengl32::get_proc_address(s));
-    gl::DeleteVertexArrays::load_with(|s| opengl32::get_proc_address(s));
-    gl::BindVertexArray::load_with(|s| opengl32::get_proc_address(s));
-
-    gl::EnableVertexAttribArray::load_with(|s| opengl32::get_proc_address(s));
-    gl::VertexAttribPointer::load_with(|s| opengl32::get_proc_address(s));
-
-    gl::DrawArrays::load_with(|s| opengl32::get_proc_address(s));
-    gl::DrawArraysInstanced::load_with(|s| opengl32::get_proc_address(s));
-
-    // Misc
-    gl::ClearBufferfv::load_with(|s| opengl32::get_proc_address(s));
-}
