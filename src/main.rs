@@ -5,6 +5,7 @@
 
 
 // TODO:
+// Load kernal32 stuff by ordinal
 // Figure out a way to test -C relocation-model=static
 // Do something about the static Option<Api> things 
 

@@ -12,12 +12,20 @@ layout(std430, binding = 0) buffer instance_data
 
 layout(std430, binding = 1) buffer uniforms
 {
-	float time;
+    float time;
 };
 
 void main()
 {
-    frag_uv = vertex_pos.xy/2.0 + 0.5;
+    mat4 rot = mat4(
+        sin(time), cos(time), 0.0, 0.0,
+        cos(time), -sin(time), 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0);
+    
+    vec4 rotated_vec = rot * vec4(vertex_pos, 1.0);
 
-    gl_Position = mvp[gl_InstanceID] * vec4(vertex_pos.x + sin(time), vertex_pos.yz, 1.0);
+    frag_uv = rotated_vec.xy/2.0 + 0.5;
+
+    gl_Position = mvp[gl_InstanceID] * rotated_vec;
 }
