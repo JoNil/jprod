@@ -12,7 +12,7 @@ impl Pool {
 
     pub fn new(size: usize) -> Pool {
         Pool {
-            memory: win32::virtual_alloc(size) as *mut u8 ,
+            memory: win32::virtual_alloc(size) as *mut u8,
             size: size,
         }
     }
