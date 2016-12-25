@@ -3,7 +3,7 @@
 #![feature(link_args)]
 #![no_std]
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
 extern "C" {}
 
 extern crate rlibc;
