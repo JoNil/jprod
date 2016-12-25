@@ -6584,8 +6584,13 @@ pub struct FnPtr {
 }
 
 impl FnPtr {
-    /// Creates a `FnPtr` from a load attempt.
-    pub fn new(ptr: *const c_void) -> FnPtr {
+    
+    pub fn load(symbol: &[u8]) -> FnPtr {
+        let ptr = opengl32::get_proc_address(symbol);
+        if ptr.is_null() {
+            win32::debug_break();
+        }
+
         FnPtr { f: ptr }
     }
 }
@@ -7293,56 +7298,48 @@ mod storage {
     pub static mut GetProgramPipelineiv: FnPtr = FnPtr { f: 0 as *const c_void };
 }
 
-fn gl_load_function(symbol: &[u8]) -> *const c_void {
-    let ptr = opengl32::get_proc_address(symbol);
-    if ptr.is_null() {
-        win32::debug_break();
-    }
-    ptr
-}
-
 pub fn init() {
     // Program functions
     unsafe {
-        storage::CreateProgram = FnPtr::new(gl_load_function(b"glCreateProgram\0"));
-        storage::DeleteProgram = FnPtr::new(gl_load_function(b"glDeleteProgram\0"));
+        storage::CreateProgram = FnPtr::load(b"glCreateProgram\0");
+        storage::DeleteProgram = FnPtr::load(b"glDeleteProgram\0");
 
-        storage::AttachShader = FnPtr::new(gl_load_function(b"glAttachShader\0"));
-        storage::LinkProgram = FnPtr::new(gl_load_function(b"glLinkProgram\0"));
-        storage::GetProgramInfoLog = FnPtr::new(gl_load_function(b"glGetProgramInfoLog\0"));
-        storage::ValidateProgram = FnPtr::new(gl_load_function(b"glValidateProgram\0"));
-        storage::GetProgramiv = FnPtr::new(gl_load_function(b"glGetProgramiv\0"));
-        storage::UseProgram = FnPtr::new(gl_load_function(b"glUseProgram\0"));
+        storage::AttachShader = FnPtr::load(b"glAttachShader\0");
+        storage::LinkProgram = FnPtr::load(b"glLinkProgram\0");
+        storage::GetProgramInfoLog = FnPtr::load(b"glGetProgramInfoLog\0");
+        storage::ValidateProgram = FnPtr::load(b"glValidateProgram\0");
+        storage::GetProgramiv = FnPtr::load(b"glGetProgramiv\0");
+        storage::UseProgram = FnPtr::load(b"glUseProgram\0");
 
         // Shader functions
-        storage::CreateShader = FnPtr::new(gl_load_function(b"glCreateShader\0"));
-        storage::DeleteShader = FnPtr::new(gl_load_function(b"glDeleteShader\0"));
+        storage::CreateShader = FnPtr::load(b"glCreateShader\0");
+        storage::DeleteShader = FnPtr::load(b"glDeleteShader\0");
 
-        storage::ShaderSource = FnPtr::new(gl_load_function(b"glShaderSource\0"));
-        storage::CompileShader = FnPtr::new(gl_load_function(b"glCompileShader\0"));
-        storage::GetShaderInfoLog = FnPtr::new(gl_load_function(b"glGetShaderInfoLog\0"));
-        storage::GetShaderiv = FnPtr::new(gl_load_function(b"glGetShaderiv\0"));
+        storage::ShaderSource = FnPtr::load(b"glShaderSource\0");
+        storage::CompileShader = FnPtr::load(b"glCompileShader\0");
+        storage::GetShaderInfoLog = FnPtr::load(b"glGetShaderInfoLog\0");
+        storage::GetShaderiv = FnPtr::load(b"glGetShaderiv\0");
 
         // Vertex Buffer Object functions
-        storage::GenBuffers = FnPtr::new(gl_load_function(b"glGenBuffers\0"));
-        storage::DeleteBuffers = FnPtr::new(gl_load_function(b"glDeleteBuffers\0"));
-        storage::BindBuffer = FnPtr::new(gl_load_function(b"glBindBuffer\0"));
-        storage::BindBufferBase = FnPtr::new(gl_load_function(b"glBindBufferBase\0"));
+        storage::GenBuffers = FnPtr::load(b"glGenBuffers\0");
+        storage::DeleteBuffers = FnPtr::load(b"glDeleteBuffers\0");
+        storage::BindBuffer = FnPtr::load(b"glBindBuffer\0");
+        storage::BindBufferBase = FnPtr::load(b"glBindBufferBase\0");
 
-        storage::BufferData = FnPtr::new(gl_load_function(b"glBufferData\0"));
+        storage::BufferData = FnPtr::load(b"glBufferData\0");
 
         // Vertex Array Object functions
-        storage::GenVertexArrays = FnPtr::new(gl_load_function(b"glGenVertexArrays\0"));
-        storage::DeleteVertexArrays = FnPtr::new(gl_load_function(b"glDeleteVertexArrays\0"));
-        storage::BindVertexArray = FnPtr::new(gl_load_function(b"glBindVertexArray\0"));
+        storage::GenVertexArrays = FnPtr::load(b"glGenVertexArrays\0");
+        storage::DeleteVertexArrays = FnPtr::load(b"glDeleteVertexArrays\0");
+        storage::BindVertexArray = FnPtr::load(b"glBindVertexArray\0");
 
-        storage::EnableVertexAttribArray = FnPtr::new(gl_load_function(b"glEnableVertexAttribArray\0"));
-        storage::VertexAttribPointer = FnPtr::new(gl_load_function(b"glVertexAttribPointer\0"));
+        storage::EnableVertexAttribArray = FnPtr::load(b"glEnableVertexAttribArray\0");
+        storage::VertexAttribPointer = FnPtr::load(b"glVertexAttribPointer\0");
 
-        storage::DrawArrays = FnPtr::new(gl_load_function(b"glDrawArrays\0"));
-        storage::DrawArraysInstanced = FnPtr::new(gl_load_function(b"glDrawArraysInstanced\0"));
+        storage::DrawArrays = FnPtr::load(b"glDrawArrays\0");
+        storage::DrawArraysInstanced = FnPtr::load(b"glDrawArraysInstanced\0");
 
         // Misc
-        storage::ClearBufferfv = FnPtr::new(gl_load_function(b"glClearBufferfv\0"));
+        storage::ClearBufferfv = FnPtr::load(b"glClearBufferfv\0");
     }
 }
