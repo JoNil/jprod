@@ -28,6 +28,7 @@ mod time;
 mod win32_types;
 mod window;
 
+use c_types::c_void;
 use mesh::Mesh;
 use pool::Pool;
 use shader::Shader;
@@ -132,15 +133,15 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
                                    _line: u32)
                                    -> ! {
 
-    win32::exit_process(1);
+    win32::debug_break();
 }
 
-// #[cfg(not(test))]
-// #[allow(non_snake_case)]
-// #[no_mangle]
-// pub extern "system" fn __CxxFrameHandler3(_: usize, _: usize, _: usize, _: usize) {
-// win32::exit_process(1);
-// }
+//#[cfg(not(test))]
+//#[allow(non_snake_case)]
+//#[no_mangle]
+//pub extern "C" fn __CxxFrameHandler3(_: *mut c_void, _: *mut c_void, _: *mut c_void, _: *mut c_void) {
+//    win32::debug_break();
+//}
 
 #[allow(non_upper_case_globals)]
 #[no_mangle]
