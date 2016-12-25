@@ -7339,11 +7339,9 @@ fn gl_load(symbol: &[u8]) -> usize {
 
 #[allow(mutable_transmutes)]
 pub fn init() {
-    unsafe {
-        for &(location, ref name) in LOAD_DESC {
-            unsafe {
-                mem::transmute::<&FnPtr, &mut FnPtr>(location).f = gl_load(name);
-            }
+    for &(location, ref name) in LOAD_DESC {
+        unsafe {
+            mem::transmute::<&FnPtr, &mut FnPtr>(location).f = gl_load(name);
         }
     }
 }
