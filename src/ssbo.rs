@@ -21,16 +21,25 @@ impl Ssbo {
         Ssbo { handle: handle, marker: PhantomData }
     }
 
-    pub fn upload<T>(&mut self, data: &[T]) {
-
+    fn upload_inner(&mut self, data: *const c_void, size: isize) {
         unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.handle); }
 
         unsafe { gl::BufferData(gl::SHADER_STORAGE_BUFFER,
-            (data.len() * mem::size_of::<T>()) as isize,
-            &*data.get_unchecked(0) as *const T as *const c_void,
+            size,
+            data,
             gl::STATIC_DRAW); }
 
         unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
+    }
+
+    pub fn upload<T: Copy>(&mut self, data: &T) {
+
+        self.upload_inner(data as *const T as *const c_void, mem::size_of::<T>() as isize);
+    }
+
+    pub fn upload_slice<T: Copy>(&mut self, data: &[T]) {
+
+        unsafe { self.upload_inner(&*data.get_unchecked(0) as *const T as *const c_void, (data.len() * mem::size_of::<T>()) as isize) };
     }
 
     // TODO(jonil): Should not be public! Make module for raw gl abstractions

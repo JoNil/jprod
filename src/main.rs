@@ -83,7 +83,7 @@ fn main() {
         ],
     ];
 
-    instance_data.upload(&mvps);
+    instance_data.upload_slice(&mvps);
 
     let mut uniform_data = Ssbo::new(&window);
 
@@ -96,7 +96,7 @@ fn main() {
 
         shader.reload_if_changed(&allocator);
 
-        let time: [f32; 1] = [ (time::now_s() - start) as f32 ];
+        let time = (time::now_s() - start) as f32;
         uniform_data.upload(&time);
 
         window.clear();
