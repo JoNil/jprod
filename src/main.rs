@@ -1,14 +1,14 @@
 #![cfg_attr(not(test), no_main)]
 #![feature(lang_items)]
 #![feature(link_args)]
-#![no_std]
 
+#![no_std]
 
 // TODO:
 // Load kernal32 stuff by ordinal
 // Figure out a way to test -C relocation-model=static
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
 
 extern crate rlibc;
@@ -28,7 +28,6 @@ mod time;
 mod win32_types;
 mod window;
 
-use c_types::c_void;
 use mesh::Mesh;
 use pool::Pool;
 use shader::Shader;
@@ -121,11 +120,6 @@ pub extern "system" fn WinMainCRTStartup() {
 }
 
 #[cfg(not(test))]
-#[lang = "eh_personality"]
-#[no_mangle]
-pub extern "C" fn eh_personality() {}
-
-#[cfg(not(test))]
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
@@ -135,13 +129,6 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
 
     win32::debug_break();
 }
-
-//#[cfg(not(test))]
-//#[allow(non_snake_case)]
-//#[no_mangle]
-//pub extern "C" fn __CxxFrameHandler3(_: *mut c_void, _: *mut c_void, _: *mut c_void, _: *mut c_void) {
-//    win32::debug_break();
-//}
 
 #[allow(non_upper_case_globals)]
 #[no_mangle]

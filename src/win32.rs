@@ -92,7 +92,6 @@ pub fn open_file(file_name: &[u8]) -> Handle {
             FILE_ATTRIBUTE_NORMAL,
             ptr::null_mut())
     }
-
 }
 
 pub fn close_file(handle: Handle) {
