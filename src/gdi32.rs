@@ -2,8 +2,6 @@ use module::Module;
 use win32;
 use win32_types::*;
 
-static mut API: Option<Api> = None;
-
 #[allow(non_snake_case)]
 struct Api {
     #[allow(dead_code)]
@@ -27,23 +25,12 @@ struct Api {
     SwapBuffers: unsafe extern "system" fn(dc: DcHandle) -> i32,
 }
 
-#[inline]
-fn api() -> &'static Api {
-    unsafe {
-        if let Some(ref api) = API {
-            api
-        } else {
-            win32::debug_break();
-        }
-    }
-}
-
-pub fn init() {
+fn init() -> Api {
 
     if let Some(gdi32) = Module::new(b"Gdi32.dll\0") {
 
         unsafe {
-            API = Some(Api {
+            return Api {
                 ChoosePixelFormat: load_proc!(gdi32, 999 + 45),
 
                 DescribePixelFormat: load_proc!(gdi32, 999 + 360),
@@ -53,16 +40,20 @@ pub fn init() {
                 SwapBuffers: load_proc!(gdi32, 999 + 1528),
 
                 gdi32: gdi32,
-            })
+            }
         }
     } else {
         win32::debug_break();
     }
 }
 
+lazy_static! {
+    static ref API: Api = init();
+}
+
 pub fn choose_pixel_format(dc: DcHandle, descriptor: &PixelFormatDescriptor) -> i32 {
 
-    unsafe { (api().ChoosePixelFormat)(dc, descriptor as *const PixelFormatDescriptor) }
+    unsafe { (API.ChoosePixelFormat)(dc, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn describe_pixel_format(dc: DcHandle,
@@ -72,7 +63,7 @@ pub fn describe_pixel_format(dc: DcHandle,
                              -> i32 {
 
     unsafe {
-        (api().DescribePixelFormat)(dc,
+        (API.DescribePixelFormat)(dc,
                                     pixel_format,
                                     bytes,
                                     descriptor as *mut PixelFormatDescriptor)
@@ -84,10 +75,10 @@ pub fn set_pixel_format(dc: DcHandle,
                         descriptor: *const PixelFormatDescriptor)
                         -> i32 {
 
-    unsafe { (api().SetPixelFormat)(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+    unsafe { (API.SetPixelFormat)(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn swap_buffers(dc: DcHandle) -> bool {
 
-    unsafe { (api().SwapBuffers)(dc) != 0 }
+    unsafe { (API.SwapBuffers)(dc) != 0 }
 }

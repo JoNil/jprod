@@ -1,17 +1,16 @@
-use core::ptr;
 use win32;
 use win32_types::*;
 
 pub struct Module {
-    pub handle: ModuleHandle,
+    pub handle: usize,
 }
 
 impl Module {
     pub fn new(file_name: &[u8]) -> Option<Module> {
 
-        let handle = win32::load_library(file_name);
+        let handle = win32::load_library(file_name) as usize;
 
-        if handle == ptr::null_mut() {
+        if handle == 0 {
             None
         } else {
             Some(Module { handle: handle })
@@ -20,6 +19,6 @@ impl Module {
 
     pub fn get_proc_address(&self, proc_index: isize) -> Proc {
 
-        win32::get_proc_address(self.handle, proc_index)
+        win32::get_proc_address(self.handle as ModuleHandle, proc_index)
     }
 }

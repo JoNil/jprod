@@ -115,10 +115,6 @@ fn main() {
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
 
-    win32::init();
-    gdi32::init();
-    opengl32::init();
-
     main();
 
     win32::exit_process(0);

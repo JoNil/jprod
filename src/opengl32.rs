@@ -5,7 +5,18 @@ use module::Module;
 use win32;
 use win32_types::*;
 
-static mut API: Option<Api> = None;
+#[allow(non_snake_case)]
+struct Api {
+    #[allow(dead_code)]
+    opengl32: Module,
+
+    wglCreateContext: unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle,
+    wglDeleteContext: unsafe extern "system" fn(glrc: GlrcHandle) -> i32,
+
+    wglMakeCurrent: unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32,
+
+    wglGetProcAddress: unsafe extern "system" fn(name: *const u8) -> Proc,
+}
 
 #[allow(non_snake_case)]
 struct ExtApi {
@@ -27,47 +38,12 @@ struct ExtApi {
     wglSwapIntervalEXT: unsafe extern "system" fn(interval: i32) -> i32,
 }
 
-#[allow(non_snake_case)]
-struct Api {
-    #[allow(dead_code)]
-    opengl32: Module,
-
-    wglCreateContext: unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle,
-    wglDeleteContext: unsafe extern "system" fn(glrc: GlrcHandle) -> i32,
-
-    wglMakeCurrent: unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32,
-
-    wglGetProcAddress: unsafe extern "system" fn(name: *const u8) -> Proc,
-
-    ext: Option<ExtApi>,
-}
-
-#[inline]
-fn api() -> &'static Api {
-    unsafe {
-        if let Some(ref api) = API {
-            api
-        } else {
-            win32::debug_break();
-        }
-    }
-}
-
-#[inline]
-fn ext_api() -> &'static ExtApi {
-    if let Some(ref api) = api().ext {
-        api
-    } else {
-        win32::debug_break();
-    }
-}
-
-pub fn init() {
+fn init() -> Api {
 
     if let Some(opengl32) = Module::new(b"Opengl32.dll\0") {
 
         unsafe {
-            API = Some(Api {
+            return Api {
                 wglCreateContext: load_proc!(opengl32, 346),
                 wglDeleteContext: load_proc!(opengl32, 348),
 
@@ -75,14 +51,16 @@ pub fn init() {
 
                 wglGetProcAddress: load_proc!(opengl32, 356),
 
-                ext: None,
-
                 opengl32: opengl32,
-            })
+            }
         }
     } else {
         win32::debug_break();
     }
+}
+
+lazy_static! {
+    static ref API: Api = init();
 }
 
 macro_rules! wgl_load_proc {
@@ -94,57 +72,54 @@ macro_rules! wgl_load_proc {
             if procedure == ptr::null_mut() {
                 win32::debug_break();
             }
-            #[allow(unused_unsafe)]
             unsafe { core::intrinsics::transmute(procedure) }
         }
     }
 }
 
-pub fn load_extensions() {
+fn init_ext() -> ExtApi {
+    ExtApi {
+        wglGetExtensionsStringEXT: wgl_load_proc!(b"wglGetExtensionsStringEXT\0"),
 
-    unsafe {
+        wglChoosePixelFormatARB: wgl_load_proc!(b"wglChoosePixelFormatARB\0"),
 
-        if let Some(ref mut api) = API {
+        wglCreateContextAttribsARB: wgl_load_proc!(b"wglCreateContextAttribsARB\0"),
 
-            api.ext = Some(ExtApi {
-                wglGetExtensionsStringEXT: wgl_load_proc!(b"wglGetExtensionsStringEXT\0"),
-
-                wglChoosePixelFormatARB: wgl_load_proc!(b"wglChoosePixelFormatARB\0"),
-
-                wglCreateContextAttribsARB: wgl_load_proc!(b"wglCreateContextAttribsARB\0"),
-
-                wglSwapIntervalEXT: wgl_load_proc!(b"wglSwapIntervalEXT\0"),
-            });
-
-        } else {
-            win32::debug_break();
-        }
+        wglSwapIntervalEXT: wgl_load_proc!(b"wglSwapIntervalEXT\0"),
     }
+}
+
+lazy_static! {
+    static ref EXT_API: ExtApi = init_ext();
+}
+
+pub fn load_extensions() {
+    &*EXT_API;
 }
 
 pub fn create_context(dc: DcHandle) -> GlrcHandle {
 
-    unsafe { (api().wglCreateContext)(dc) }
+    unsafe { (API.wglCreateContext)(dc) }
 }
 
 pub fn delete_context(glrc: GlrcHandle) -> i32 {
 
-    unsafe { (api().wglDeleteContext)(glrc) }
+    unsafe { (API.wglDeleteContext)(glrc) }
 }
 
 pub fn make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
 
-    unsafe { (api().wglMakeCurrent)(dc, context) }
+    unsafe { (API.wglMakeCurrent)(dc, context) }
 }
 
 pub fn get_proc_address(name: &[u8]) -> Proc {
 
-    unsafe { (api().wglGetProcAddress)(&name[0]) }
+    unsafe { (API.wglGetProcAddress)(&name[0]) }
 }
 
 pub fn get_extensions_string() -> *const u8 {
 
-    unsafe { (ext_api().wglGetExtensionsStringEXT)() }
+    unsafe { (EXT_API.wglGetExtensionsStringEXT)() }
 }
 
 pub fn choose_pixel_format(dc: DcHandle,
@@ -155,7 +130,7 @@ pub fn choose_pixel_format(dc: DcHandle,
                            -> i32 {
 
     unsafe {
-        (ext_api().wglChoosePixelFormatARB)(
+        (EXT_API.wglChoosePixelFormatARB)(
                 dc,
                 if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
                 if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
@@ -170,11 +145,11 @@ pub fn create_context_attribs(dc: DcHandle,
                               attrib_list: &[i32])
                               -> GlrcHandle {
 
-    unsafe { (ext_api().wglCreateContextAttribsARB)(dc, shared_context, &attrib_list[0]) }
+    unsafe { (EXT_API.wglCreateContextAttribsARB)(dc, shared_context, &attrib_list[0]) }
 }
 
 #[allow(dead_code)]
 pub fn swap_interval(interval: i32) -> i32 {
 
-    unsafe { (ext_api().wglSwapIntervalEXT)(interval) }
+    unsafe { (EXT_API.wglSwapIntervalEXT)(interval) }
 }

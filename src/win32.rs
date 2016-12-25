@@ -152,8 +152,6 @@ pub fn debug_break() -> ! {
     }
 }
 
-static mut API: Option<Api> = None;
-
 #[allow(non_snake_case)]
 struct Api {
     #[allow(dead_code)]
@@ -201,23 +199,12 @@ struct Api {
     LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
 }
 
-#[inline]
-fn api() -> &'static Api {
-    unsafe {
-        if let Some(ref api) = API {
-            api
-        } else {
-            win32::debug_break();
-        }
-    }
-}
-
-pub fn init() {
+fn init() -> Api {
 
     if let Some(user32) = Module::new(b"user32.dll\0") {
 
         unsafe {
-            API = Some(Api {
+            return Api {
                 MessageBoxA: load_proc!(user32, 1501 + 617),
 
                 RegisterClassA: load_proc!(user32, 1501 + 700),
@@ -235,16 +222,20 @@ pub fn init() {
                 LoadCursorA: load_proc!(user32, 1501 + 577),
 
                 user32: user32,
-            })
+            };
         }
     } else {
         win32::debug_break();
     }
 }
 
+lazy_static! {
+    static ref API: Api = init();
+}
+
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
-        (api().MessageBoxA)(ptr::null_mut(), &text[0], &caption[0], box_type);
+        (API.MessageBoxA)(ptr::null_mut(), &text[0], &caption[0], box_type);
     }
 }
 
@@ -256,18 +247,18 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         wnd_extra: 0,
         instance: unsafe { GetModuleHandleA(ptr::null_mut()) },
         icon: ptr::null_mut(),
-        cursor: unsafe { (api().LoadCursorA)(ptr::null_mut(), IDC_ARROW) },
+        cursor: unsafe { (API.LoadCursorA)(ptr::null_mut(), IDC_ARROW) },
         background: ptr::null_mut(),
         menu_name: ptr::null(),
         class_name: &name[0],
     };
 
-    unsafe { (api().RegisterClassA)(&window_class) != 0 }
+    unsafe { (API.RegisterClassA)(&window_class) != 0 }
 }
 
 pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
-        (api().CreateWindowExA)(0,
+        (API.CreateWindowExA)(0,
                                 &class_name[0],
                                 &name[0],
                                 WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
@@ -283,15 +274,15 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
 }
 
 pub fn destroy_window(window: WindowHandle) -> i32 {
-    unsafe { (api().DestroyWindow)(window) }
+    unsafe { (API.DestroyWindow)(window) }
 }
 
 pub fn get_dc(window: WindowHandle) -> DcHandle {
-    unsafe { (api().GetDC)(window) }
+    unsafe { (API.GetDC)(window) }
 }
 
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
-    unsafe { (api().ReleaseDC)(window, dc) }
+    unsafe { (API.ReleaseDC)(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
@@ -304,19 +295,19 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { (api().PeekMessageA)(&mut msg, ptr::null_mut(), 0, 0, 1) };
+    let msg_result = unsafe { (API.PeekMessageA)(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
     unsafe {
-        (api().TranslateMessage)(msg as *const Msg);
-        (api().DispatchMessageA)(msg as *const Msg);
+        (API.TranslateMessage)(msg as *const Msg);
+        (API.DispatchMessageA)(msg as *const Msg);
     }
 }
 
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
-    unsafe { (api().DefWindowProcA)(window, message, wparam, lparam) }
+    unsafe { (API.DefWindowProcA)(window, message, wparam, lparam) }
 }
