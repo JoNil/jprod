@@ -3,6 +3,11 @@
 #![feature(link_args)]
 #![no_std]
 
+
+// TODO:
+// Figure out a way to test -C relocation-model=static
+// Do something about the static Option<Api> things 
+
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
 extern "C" {}
 
