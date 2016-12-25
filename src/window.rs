@@ -1,6 +1,5 @@
 use core::mem;
 use core::ptr;
-use gdi32;
 use gl;
 use opengl32;
 use win32;
@@ -175,7 +174,7 @@ impl Window {
     }
 
     pub fn swap(&self) {
-        if !gdi32::swap_buffers(self.context.dc.handle) {
+        if !win32::swap_buffers(self.context.dc.handle) {
             win32::debug_break();
         }
     }
@@ -261,21 +260,21 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
             damage_mask: 0,
         };
 
-        suggested_pixel_format_index = gdi32::choose_pixel_format(dc, &desired_pixel_format);
+        suggested_pixel_format_index = win32::choose_pixel_format(dc, &desired_pixel_format);
         if suggested_pixel_format_index == 0 {
             win32::debug_break();
         }
     }
 
     let mut suggested_pixel_format = unsafe { mem::uninitialized() };
-    if gdi32::describe_pixel_format(dc,
+    if win32::describe_pixel_format(dc,
                                     suggested_pixel_format_index,
                                     mem::size_of::<PixelFormatDescriptor>() as u32,
                                     &mut suggested_pixel_format) == 0 {
         win32::debug_break();
     }
 
-    if gdi32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
+    if win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
         win32::debug_break();
     }
 }

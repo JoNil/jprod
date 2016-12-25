@@ -19,7 +19,6 @@ mod win32_macros;
 
 mod c_types;
 mod file;
-mod gdi32;
 mod gl;
 mod mesh;
 mod module;
@@ -119,7 +118,6 @@ fn main() {
 pub extern "system" fn WinMainCRTStartup() {
 
     win32::init();
-    gdi32::init();
     opengl32::init();
 
     main();

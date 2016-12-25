@@ -152,6 +152,27 @@ pub fn debug_break() -> ! {
     }
 }
 
+pub fn init() {
+
+    if let Some(user32) = Module::new(b"user32.dll\0") {
+
+        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+
+    if let Some(gdi32) = Module::new(b"Gdi32.dll\0") {
+
+        for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                GDI_API[i] = gdi32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+}
+
 const FUNCTION_COUNT: usize = 11;
 
 type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
@@ -185,18 +206,6 @@ static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
 
     1501 + 577, // LoadCursorA
 ];
-
-pub fn init() {
-
-    if let Some(user32) = Module::new(b"user32.dll\0") {
-
-        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
-            }
-        }
-    }
-}
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
@@ -282,3 +291,56 @@ pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
 
     unsafe { mem::transmute::<_, LoadCursorA>(API[10])(instance, name) }
 }
+
+const GDI_FUNCTION_COUNT: usize = 4;
+
+type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
+type DescribePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, bytes: u32, descriptor: *mut PixelFormatDescriptor) -> i32;
+type SetPixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, descriptor: *const PixelFormatDescriptor) -> i32;
+type SwapBuffersTy = unsafe extern "system" fn(dc: DcHandle) -> i32;
+
+static mut GDI_API: [usize; GDI_FUNCTION_COUNT] = [ 0; GDI_FUNCTION_COUNT];
+
+static GDI_FUNCTION_ORDINALS: [u16; GDI_FUNCTION_COUNT] = [
+    999 + 45, // ChoosePixelFormat
+
+    999 + 360, // DescribePixelFormat
+
+    999 + 1491, // SetPixelFormat
+
+    999 + 1528, // SwapBuffers
+];
+
+pub fn choose_pixel_format(dc: DcHandle, descriptor: &PixelFormatDescriptor) -> i32 {
+
+    unsafe { mem::transmute::<_, ChoosePixelFormatTy>(GDI_API[0])(dc, descriptor as *const PixelFormatDescriptor) }
+}
+
+pub fn describe_pixel_format(dc: DcHandle,
+                             pixel_format: i32,
+                             bytes: u32,
+                             descriptor: &mut PixelFormatDescriptor)
+                             -> i32 {
+
+    unsafe {
+        mem::transmute::<_, DescribePixelFormatTy>(GDI_API[1])(
+            dc,
+            pixel_format,
+            bytes,
+            descriptor as *mut PixelFormatDescriptor)
+    }
+}
+
+pub fn set_pixel_format(dc: DcHandle,
+                        pixel_format: i32,
+                        descriptor: *const PixelFormatDescriptor)
+                        -> i32 {
+
+    unsafe { mem::transmute::<_, SetPixelFormatTy>(GDI_API[2])(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+}
+
+pub fn swap_buffers(dc: DcHandle) -> bool {
+
+    unsafe { mem::transmute::<_, SwapBuffersTy>(GDI_API[3])(dc) != 0 }
+}
+
