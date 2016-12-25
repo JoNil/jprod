@@ -20,6 +20,10 @@ impl Module {
 
     pub fn get_proc_address(&self, proc_index: isize) -> Proc {
 
-        win32::get_proc_address(self.handle, proc_index)
+        let ptr = win32::get_proc_address(self.handle, proc_index);
+        if ptr.is_null() {
+            win32::debug_break();
+        }
+        ptr
     }
 }

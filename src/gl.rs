@@ -6577,7 +6577,6 @@ pub unsafe fn GetProgramPipelineiv(pipeline: types::GLuint, pname: types::GLenum
     mem::transmute::<_, extern "system" fn(types::GLuint, types::GLenum, *mut types::GLint) -> ()>(storage::GetProgramPipelineiv.f)(pipeline, pname, params)
 }
 
-#[allow(missing_copy_implementations)]
 pub struct FnPtr {
     f: usize,
 }

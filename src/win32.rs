@@ -1,9 +1,9 @@
 #![allow(dead_code)]
 
 use c_types::*;
+use core::mem;
 use core::ptr;
 use module::Module;
-use win32;
 use win32_types::*;
 
 #[link_args = "kernel32.lib"]
@@ -152,98 +152,55 @@ pub fn debug_break() -> ! {
     }
 }
 
-static mut API: Option<Api> = None;
+const FUNCTION_COUNT: usize = 11;
 
-#[allow(non_snake_case)]
-struct Api {
-    #[allow(dead_code)]
-    user32: Module,
+type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
+type RegisterClassATy = unsafe extern "system" fn(window_class: *const WindowClass) -> Atom;
+type CreateWindowExATy = unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle;
+type DestroyWindowTy = unsafe extern "system" fn(window_handle: WindowHandle) -> i32;
+type GetDCTy = unsafe extern "system" fn(window: WindowHandle) -> DcHandle;
+type ReleaseDCTy = unsafe extern "system" fn(window: WindowHandle, dc: DcHandle) -> i32;
+type PeekMessageATy = unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: u32, msg_filter_max: u32, remove_message: u32) -> i32;
+type TranslateMessageTy = unsafe extern "system" fn(msg: *const Msg) -> i32;
+type DispatchMessageATy =  unsafe extern "system" fn(msg: *const Msg) -> i32;
+type DefWindowProcATy = unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
+type LoadCursorA = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
 
-    MessageBoxA: unsafe extern "system" fn(window_handle: WindowHandle,
-                                           text: *const u8,
-                                           caption: *const u8,
-                                           message_type: u32)
-                                           -> i32,
+static mut API: [usize; FUNCTION_COUNT] = [ 0; FUNCTION_COUNT];
 
-    RegisterClassA: unsafe extern "system" fn(windowClass: *const WindowClass) -> Atom,
-    CreateWindowExA: unsafe extern "system" fn(ex_style: u32,
-                                               class_name: *const u8,
-                                               window_name: *const u8,
-                                               style: u32,
-                                               x: i32,
-                                               y: i32,
-                                               width: i32,
-                                               height: i32,
-                                               parent_winodw: WindowHandle,
-                                               menu: MenuHandle,
-                                               instance: InstanceHandle,
-                                               param: *mut c_void)
-                                               -> WindowHandle,
-    DestroyWindow: unsafe extern "system" fn(window_handle: WindowHandle) -> i32,
+static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
+    1501 + 617, // MessageBoxA
 
-    GetDC: unsafe extern "system" fn(window: WindowHandle) -> DcHandle,
-    ReleaseDC: unsafe extern "system" fn(window: WindowHandle, dc: DcHandle) -> i32,
+    1501 + 700, // RegisterClassA
+    1501 + 121, // CreateWindowExA
+    1501 + 183, // DestroyWindow
 
-    PeekMessageA: unsafe extern "system" fn(msg: *mut Msg,
-                                            window_handle: WindowHandle,
-                                            msg_filter_min: u32,
-                                            msg_filter_max: u32,
-                                            remove_message: u32)
-                                            -> i32,
-    TranslateMessage: unsafe extern "system" fn(msg: *const Msg) -> i32,
-    DispatchMessageA: unsafe extern "system" fn(msg: *const Msg) -> i32,
-    DefWindowProcA: unsafe extern "system" fn(window: WindowHandle,
-                                              message: u32,
-                                              wparam: usize,
-                                              lparam: usize)
-                                              -> usize,
+    1501 + 322, // GetDC
+    1501 + 733, // ReleaseDC
 
-    LoadCursorA: unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle,
-}
+    1501 + 654, // PeekMessageA
+    1501 + 897, // TranslateMessage
+    1501 + 190, // DispatchMessageA
+    1501 + 170, // DefWindowProcA
 
-fn api() -> &'static Api {
-    unsafe {
-        if let Some(ref api) = API {
-            api
-        } else {
-            win32::debug_break();
-        }
-    }
-}
+    1501 + 577, // LoadCursorA
+];
 
 pub fn init() {
 
     if let Some(user32) = Module::new(b"user32.dll\0") {
 
-        unsafe {
-            API = Some(Api {
-                MessageBoxA: load_proc!(user32, 1501 + 617),
-
-                RegisterClassA: load_proc!(user32, 1501 + 700),
-                CreateWindowExA: load_proc!(user32, 1501 + 121),
-                DestroyWindow: load_proc!(user32, 1501 + 183),
-
-                GetDC: load_proc!(user32, 1501 + 322),
-                ReleaseDC: load_proc!(user32, 1501 + 733),
-
-                PeekMessageA: load_proc!(user32, 1501 + 654),
-                TranslateMessage: load_proc!(user32, 1501 + 897),
-                DispatchMessageA: load_proc!(user32, 1501 + 190),
-                DefWindowProcA: load_proc!(user32, 1501 + 170),
-
-                LoadCursorA: load_proc!(user32, 1501 + 577),
-
-                user32: user32,
-            })
+        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
+            }
         }
-    } else {
-        win32::debug_break();
     }
 }
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
-        (api().MessageBoxA)(ptr::null_mut(), &text[0], &caption[0], box_type);
+        mem::transmute::<_, MessageBoxATy>(API[0])(ptr::null_mut(), &text[0], &caption[0], box_type);
     }
 }
 
@@ -255,42 +212,43 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         wnd_extra: 0,
         instance: unsafe { GetModuleHandleA(ptr::null_mut()) },
         icon: ptr::null_mut(),
-        cursor: unsafe { (api().LoadCursorA)(ptr::null_mut(), IDC_ARROW) },
+        cursor: load_cursor(ptr::null_mut(), IDC_ARROW),
         background: ptr::null_mut(),
         menu_name: ptr::null(),
         class_name: &name[0],
     };
 
-    unsafe { (api().RegisterClassA)(&window_class) != 0 }
+    unsafe { mem::transmute::<_, RegisterClassATy>(API[1])(&window_class) != 0 }
 }
 
 pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
-        (api().CreateWindowExA)(0,
-                                &class_name[0],
-                                &name[0],
-                                WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
-                                CW_USEDEFAULT,
-                                CW_USEDEFAULT,
-                                CW_USEDEFAULT,
-                                CW_USEDEFAULT,
-                                ptr::null_mut(),
-                                ptr::null_mut(),
-                                GetModuleHandleA(ptr::null_mut()),
-                                ptr::null_mut())
+        mem::transmute::<_, CreateWindowExATy>(API[2])(
+            0,
+            &class_name[0],
+            &name[0],
+            WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            ptr::null_mut(),
+            ptr::null_mut(),
+            GetModuleHandleA(ptr::null_mut()),
+            ptr::null_mut())
     }
 }
 
 pub fn destroy_window(window: WindowHandle) -> i32 {
-    unsafe { (api().DestroyWindow)(window) }
+    unsafe { mem::transmute::<_, DestroyWindowTy>(API[3])(window) }
 }
 
 pub fn get_dc(window: WindowHandle) -> DcHandle {
-    unsafe { (api().GetDC)(window) }
+    unsafe { mem::transmute::<_, GetDCTy>(API[4])(window) }
 }
 
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
-    unsafe { (api().ReleaseDC)(window, dc) }
+    unsafe { mem::transmute::<_, ReleaseDCTy>(API[5])(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
@@ -303,19 +261,24 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { (api().PeekMessageA)(&mut msg, ptr::null_mut(), 0, 0, 1) };
+    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(API[6])(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
     unsafe {
-        (api().TranslateMessage)(msg as *const Msg);
-        (api().DispatchMessageA)(msg as *const Msg);
+        mem::transmute::<_, TranslateMessageTy>(API[7])(msg as *const Msg);
+        mem::transmute::<_, DispatchMessageATy>(API[8])(msg as *const Msg);
     }
 }
 
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
-    unsafe { (api().DefWindowProcA)(window, message, wparam, lparam) }
+    unsafe { mem::transmute::<_, DefWindowProcATy>(API[9])(window, message, wparam, lparam) }
+}
+
+pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
+
+    unsafe { mem::transmute::<_, LoadCursorA>(API[10])(instance, name) }
 }
