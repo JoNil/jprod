@@ -6599,8 +6599,8 @@ mod storage {
     #![allow(non_snake_case)]
 
     use c_types::*;
-
     use super::FnPtr;
+    
     pub static mut EndTransformFeedback: FnPtr = FnPtr { f: 0 as *const c_void };
     pub static mut GetProgramResourceLocationIndex: FnPtr = FnPtr { f: 0 as *const c_void };
     pub static mut GetProgramResourceLocation: FnPtr = FnPtr { f: 0 as *const c_void };
