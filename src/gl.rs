@@ -4536,7 +4536,7 @@ pub unsafe fn GetProgramPipelineiv(pipeline: GLuint, pname: GLenum, params: *mut
 
 static mut GL_API: [usize; 695] = [0; 695];
 
-static LOAD_DESC: &'static [(u16, &'static [u8])] = unsafe { &[
+static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
 
     // Program functions
     (CreateProgramIdx, b"glCreateProgram\0"),
@@ -4579,7 +4579,7 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = unsafe { &[
 
     // Misc
     (ClearBufferfvIdx, b"glClearBufferfv\0"),
-] };
+];
 
 #[allow(mutable_transmutes)]
 pub fn init() {
