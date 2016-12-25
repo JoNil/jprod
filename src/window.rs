@@ -1,7 +1,6 @@
 use core::mem;
 use core::ptr;
 use gl;
-use opengl32;
 use win32;
 use win32_types::*;
 
@@ -75,9 +74,9 @@ impl RawDc {
         set_pixel_format(self.handle, inital);
 
         let context = if inital {
-            opengl32::create_context(self.handle)
+            win32::wgl_create_context(self.handle)
         } else {
-            opengl32::create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
+            win32::wgl_create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
         };
 
         if context == ptr::null_mut() {
@@ -106,7 +105,7 @@ struct RawContext {
 
 impl RawContext {
     pub fn make_current(&self) {
-        if opengl32::make_current(self.dc.handle, self.handle) == 0 {
+        if win32::wgl_make_current(self.dc.handle, self.handle) == 0 {
             win32::debug_break();
         }
     }
@@ -114,11 +113,11 @@ impl RawContext {
 
 impl Drop for RawContext {
     fn drop(&mut self) {
-        if opengl32::make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
+        if win32::wgl_make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
             win32::debug_break();
         }
 
-        if opengl32::delete_context(self.handle) == 0 {
+        if win32::wgl_delete_context(self.handle) == 0 {
             win32::debug_break();
         }
     }
@@ -142,7 +141,7 @@ impl Window {
 
             context.make_current();
 
-            opengl32::load_extensions();
+            win32::wgl_load_extensions();
         }
 
         let window = RawWindow::new(true);
@@ -220,7 +219,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
     let mut extended_pick = 0;
 
     if !initial {
-        if opengl32::choose_pixel_format(dc,
+        if win32::wgl_choose_pixel_format(dc,
                                          Some(WINDOW_ATTRIBS),
                                          None,
                                          &mut suggested_pixel_format_index,

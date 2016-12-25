@@ -152,27 +152,6 @@ pub fn debug_break() -> ! {
     }
 }
 
-pub fn init() {
-
-    if let Some(user32) = Module::new(b"user32.dll\0") {
-
-        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
-            }
-        }
-    }
-
-    if let Some(gdi32) = Module::new(b"Gdi32.dll\0") {
-
-        for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                GDI_API[i] = gdi32.get_proc_address(*ordinal as isize) as usize;
-            }
-        }
-    }
-}
-
 const FUNCTION_COUNT: usize = 11;
 
 type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
@@ -344,3 +323,141 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { mem::transmute::<_, SwapBuffersTy>(GDI_API[3])(dc) != 0 }
 }
 
+const GL_FUNCTION_COUNT: usize = 4;
+
+type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
+type WglDeleteContextTy = unsafe extern "system" fn(glrc: GlrcHandle) -> i32;
+type WglMakeCurrentTy = unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32;
+type WglGetProcAddressTy = unsafe extern "system" fn(name: *const u8) -> Proc;
+
+static mut GL_API: [usize; GL_FUNCTION_COUNT] = [ 0; GL_FUNCTION_COUNT];
+
+static GL_FUNCTION_ORDINALS: [u16; GL_FUNCTION_COUNT] = [
+    346, // wglCreateContext
+    
+    348, // wglDeleteContext
+
+    357, // wglMakeCurrent
+
+    356, // wglGetProcAddress
+];
+
+pub fn wgl_create_context(dc: DcHandle) -> GlrcHandle {
+
+    unsafe { mem::transmute::<_, WglCreateContextTy>(GL_API[0])(dc) }
+}
+
+pub fn wgl_delete_context(glrc: GlrcHandle) -> i32 {
+
+    unsafe { mem::transmute::<_, WglDeleteContextTy>(GL_API[1])(glrc) }
+}
+
+pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
+
+    unsafe { mem::transmute::<_, WglMakeCurrentTy>(GL_API[2])(dc, context) }
+}
+
+pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
+
+    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(GL_API[3])(&name[0]) };
+
+    if ptr == ptr::null_mut() {
+        debug_break();
+    }
+
+    ptr
+}
+
+const GL_EXT_FUNCTION_COUNT: usize = 4;
+
+type WglGetExtensionsStringEXTTy = unsafe extern "system" fn() -> *const u8;
+type WglChoosePixelFormatARBTy = unsafe extern "system" fn(dc: DcHandle, attrib_i_list: *const i32, attrib_f_list: *const f32, max_formats: u32, pixel_formats: *mut i32, num_formats: *mut u32) -> i32;
+type WglCreateContextAttribsARBTy = unsafe extern "system" fn(dc: DcHandle, shared_context: GlrcHandle, attrib_list: *const i32) -> GlrcHandle;
+type WglSwapIntervalEXTTy = unsafe extern "system" fn(interval: i32) -> i32;
+
+static mut GL_EXT_API: [usize; GL_EXT_FUNCTION_COUNT] = [ 0; GL_EXT_FUNCTION_COUNT];
+
+static GL_EXT_NAMES: [&'static [u8]; GL_EXT_FUNCTION_COUNT] = [
+    b"wglGetExtensionsStringEXT\0",
+
+    b"wglChoosePixelFormatARB\0",
+
+    b"wglCreateContextAttribsARB\0",
+
+    b"wglSwapIntervalEXT\0",
+];
+
+pub fn wgl_get_extensions_string() -> *const u8 {
+
+    unsafe { mem::transmute::<_, WglGetExtensionsStringEXTTy>(GL_EXT_API[0])() }
+}
+
+pub fn wgl_choose_pixel_format(dc: DcHandle,
+                           attrib_i_list: Option<&[i32]>,
+                           attrib_f_list: Option<&[f32]>,
+                           pixel_formats: &mut i32,
+                           num_formats: &mut u32)
+                           -> i32 {
+
+    unsafe {
+        mem::transmute::<_, WglChoosePixelFormatARBTy>(GL_EXT_API[1])(
+                dc,
+                if let Some(i_attrib) = attrib_i_list { &i_attrib[0] } else { ptr::null() },
+                if let Some(f_attrib) = attrib_f_list { &f_attrib[0] } else { ptr::null() },
+                1,
+                pixel_formats as *mut _,
+                num_formats as *mut _)
+    }
+}
+
+pub fn wgl_create_context_attribs(dc: DcHandle,
+                              shared_context: GlrcHandle,
+                              attrib_list: &[i32])
+                              -> GlrcHandle {
+
+    unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(GL_EXT_API[2])(dc, shared_context, &attrib_list[0]) }
+}
+
+#[allow(dead_code)]
+pub fn wgl_swap_interval(interval: i32) -> i32 {
+
+    unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(GL_EXT_API[3])(interval) }
+}
+
+pub fn init() {
+
+    if let Some(user32) = Module::new(b"user32.dll\0") {
+
+        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                API[i] = user32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+
+    if let Some(gdi32) = Module::new(b"Gdi32.dll\0") {
+
+        for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                GDI_API[i] = gdi32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+
+    if let Some(opengl32) = Module::new(b"Opengl32.dll\0") {
+
+        for (ordinal, i) in GL_FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                GL_API[i] = opengl32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+}
+
+pub fn wgl_load_extensions() {
+    for (name, i) in GL_EXT_NAMES.iter().zip(0..) {
+        unsafe {
+        GL_EXT_API[i] = wgl_get_proc_address(*name) as usize;
+    }
+}
+}

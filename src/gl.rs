@@ -3,7 +3,6 @@
 
 use c_types::*;
 use core::mem;
-use opengl32;
 use win32;
 
 pub mod types {
@@ -7328,19 +7327,11 @@ pub static LOAD_DESC: &'static [(&'static FnPtr, &'static [u8])] = unsafe { &[
     (&storage::ClearBufferfv, b"glClearBufferfv\0"),
 ] };
 
-fn gl_load(symbol: &[u8]) -> usize {
-    let ptr = opengl32::get_proc_address(symbol);
-    if ptr.is_null() {
-        win32::debug_break();
-    }
-    ptr as usize
-}
-
 #[allow(mutable_transmutes)]
 pub fn init() {
     for &(location, ref name) in LOAD_DESC {
         unsafe {
-            mem::transmute::<&FnPtr, &mut FnPtr>(location).f = gl_load(name);
+            mem::transmute::<&FnPtr, &mut FnPtr>(location).f = win32::wgl_get_proc_address(name) as usize;
         }
     }
 }

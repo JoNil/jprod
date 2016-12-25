@@ -7,22 +7,17 @@
 // TODO:
 // Load kernal32 stuff by ordinal
 // Figure out a way to test -C relocation-model=static
-// Do something about the static Option<Api> things 
 
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
 extern "C" {}
 
 extern crate rlibc;
 
-#[macro_use]
-mod win32_macros;
-
 mod c_types;
 mod file;
 mod gl;
 mod mesh;
 mod module;
-mod opengl32;
 mod pool;
 mod shader;
 mod shader_sources;
@@ -118,7 +113,6 @@ fn main() {
 pub extern "system" fn WinMainCRTStartup() {
 
     win32::init();
-    opengl32::init();
 
     main();
 
