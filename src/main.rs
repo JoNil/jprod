@@ -47,9 +47,9 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
     for mvp in mvps.iter_mut() {
 
         unsafe {
-            (*mvp.get_unchecked_mut(0)) = [0.2, 0.0, 0.0, 0.0];
-            (*mvp.get_unchecked_mut(1)) = [0.0, 0.2, 0.0, 0.0];
-            (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.2, 0.0];
+            (*mvp.get_unchecked_mut(0)) = [0.01, 0.0, 0.0, 0.0];
+            (*mvp.get_unchecked_mut(1)) = [0.0, 0.01, 0.0, 0.0];
+            (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.01, 0.0];
             (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5, rng.next_f32() - 0.5, 0.0, 1.0];
         }
      }
