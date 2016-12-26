@@ -29,8 +29,6 @@ mod win32;
 mod win32_types;
 mod window;
 
-use core::mem;
-use core::slice;
 use mesh::Mesh;
 use pool::Pool;
 use pool::PoolAllocator;
@@ -44,9 +42,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
 
     let allocator = pool.get_sub_allocator();
 
-    let buffer = allocator.allocate(100 * mem::size_of::<[[f32; 4]; 4]>());
-
-    let mvps: &mut [[[f32; 4]; 4]] = unsafe { slice::from_raw_parts_mut(&mut *buffer.get_unchecked_mut(0) as *mut u8 as *mut _, buffer.len() / mem::size_of::<[[f32; 4]; 4]>()) };
+    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(100);
 
     for mvp in mvps.iter_mut() {
 

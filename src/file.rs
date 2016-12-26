@@ -24,7 +24,7 @@ impl File {
 
 		let size = win32::get_file_size(self.handle);
 
-		let buffer = allocator.allocate(size as usize);
+		let buffer = allocator.allocate_byte_slice(size as usize);
 
 		win32::read_file(self.handle, buffer);
 

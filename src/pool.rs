@@ -1,5 +1,8 @@
+#![allow(dead_code)]
+
 use c_types::c_void;
 use core::cell::Cell;
+use core::mem;
 use core::slice;
 use win32;
 
@@ -43,7 +46,7 @@ pub struct PoolAllocator<'a> {
 }
 
 impl<'a> PoolAllocator<'a> {
-    pub fn allocate(&'a self, size: usize) -> &'a mut [u8] {
+    pub fn allocate_byte_slice(&'a self, size: usize) -> &'a mut [u8] {
 
         if self.borrowed.get() {
             win32::debug_break();
@@ -57,7 +60,31 @@ impl<'a> PoolAllocator<'a> {
 
         self.used.set(self.used.get() + size);
 
-        unsafe { slice::from_raw_parts_mut(self.pool.memory.offset(offset as isize), size) }
+        let buffer = unsafe { slice::from_raw_parts_mut(self.pool.memory.offset(offset as isize), size) };
+
+        for byte in buffer.iter_mut() {
+            *byte = 0;
+        }
+
+        buffer
+    }
+
+    pub fn allocate<T: Copy>(&'a self) -> &'a mut T {
+
+        let size = mem::size_of::<T>();
+
+        let buffer = self.allocate_byte_slice(size);
+
+        unsafe { mem::transmute(&mut *buffer.get_unchecked_mut(0)) }
+    }
+
+    pub fn allocate_slice<T: Copy>(&'a self, count: usize) -> &'a mut [T] {
+
+        let size = mem::size_of::<T>();
+
+        let buffer = self.allocate_byte_slice(count * size);
+
+        unsafe { slice::from_raw_parts_mut(&mut *buffer.get_unchecked_mut(0) as *mut u8 as *mut _, buffer.len() / size) }
     }
 
     pub fn get_sub_allocator(&'a self) -> PoolAllocator<'a> {
