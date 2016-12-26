@@ -42,7 +42,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
 
     let allocator = pool.get_sub_allocator();
 
-    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(100);
+    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(10000);
 
     for mvp in mvps.iter_mut() {
 
@@ -98,7 +98,7 @@ fn main() {
 
         window.clear();
 
-        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 100);
+        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 10000);
 
         window.swap();
     }
