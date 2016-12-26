@@ -19,26 +19,54 @@ mod gl;
 mod mesh;
 mod module;
 mod pool;
+mod random;
 mod shader;
 mod shader_sources;
 mod ssbo;
+mod time;
 mod utils;
 mod win32;
-mod time;
 mod win32_types;
 mod window;
 
+use core::mem;
+use core::slice;
 use mesh::Mesh;
 use pool::Pool;
+use pool::PoolAllocator;
+use random::Generator;
 use shader::Shader;
 use shader_sources::ShaderId;
 use ssbo::Ssbo;
 use window::Window;
 
+fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Generator) {
+
+    let allocator = pool.get_sub_allocator();
+
+    let buffer = allocator.allocate(100 * mem::size_of::<[[f32; 4]; 4]>());
+
+    let mvps: &mut [[[f32; 4]; 4]] = unsafe { slice::from_raw_parts_mut(&mut *buffer.get_unchecked_mut(0) as *mut u8 as *mut _, buffer.len() / mem::size_of::<[[f32; 4]; 4]>()) };
+
+    for mvp in mvps.iter_mut() {
+
+        unsafe {
+            (*mvp.get_unchecked_mut(0)) = [0.2, 0.0, 0.0, 0.0];
+            (*mvp.get_unchecked_mut(1)) = [0.0, 0.2, 0.0, 0.0];
+            (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.2, 0.0];
+            (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5, rng.next_f32() - 0.5, 0.0, 1.0];
+        }
+     }
+
+    instance_data.upload_slice(mvps);
+}
+
 fn main() {
 
     let mut pool = Pool::new(256 * 1024 * 1024);
-    let allocator = pool.get_allocator();
+    let mut allocator = pool.get_allocator();
+
+    let mut rng = Generator::new_unseeded();
 
     let window = Window::new();
 
@@ -56,35 +84,6 @@ fn main() {
 
     let mut instance_data = Ssbo::new(&window);
 
-    let mvps: [[[f32; 4]; 4]; 4] = [
-        [
-            [0.2, 0.0, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.0, 0.2, 0.0],
-            [0.5, 0.5, 0.0, 1.0],
-        ],
-        [
-            [0.2, 0.0, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.0, 0.2, 0.0],
-            [0.5, -0.5, 0.0, 1.0],
-        ],
-        [
-            [0.2, 0.0, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.0, 0.2, 0.0],
-            [-0.5, 0.5, 0.0, 1.0],
-        ],
-        [
-            [0.2, 0.0, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.0, 0.2, 0.0],
-            [-0.5, -0.5, 0.0, 1.0],
-        ],
-    ];
-
-    instance_data.upload_slice(&mvps);
-
     let mut uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
@@ -99,9 +98,11 @@ fn main() {
         let time = (time::now_s() - start) as f32;
         uniform_data.upload(&time);
 
+        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
+
         window.clear();
 
-        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 4);
+        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 100);
 
         window.swap();
     }
