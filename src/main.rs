@@ -1,7 +1,7 @@
-#![cfg_attr(not(test), no_main)]
 #![feature(lang_items)]
 #![feature(link_args)]
 
+#![cfg_attr(not(test), no_main)]
 #![no_std]
 
 // TODO:
