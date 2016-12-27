@@ -9,6 +9,9 @@
 // Debug camera
 // Defered rendering
 // Dna shaped rombs
+// Camera path
+// Audio output
+// Square wave
 
 // Optimizations
 // Load kernal32 stuff by ordinal
