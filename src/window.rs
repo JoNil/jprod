@@ -156,8 +156,30 @@ impl Window {
     }
 
     pub fn process_messages(&self) {
+
         while let Some(msg) = win32::get_message() {
-            win32::translate_and_dispatch_message(&msg);
+
+            match msg.message {
+
+                WM_SIZE => {
+                    let width = msg.lparam as u64 >> 32 as u32;
+                    let height = (msg.lparam as u64 & 0xffff_ffff) as u32;
+                }
+
+                WM_SYSKEYDOWN | WM_SYSKEYUP | WM_KEYDOWN | WM_KEYUP => {
+
+                    let key_code = msg.wparam as u32;
+
+                    let was_down: bool = (msg.lparam & (1 << 30)) != 0;
+                    let is_down: bool = (msg.lparam & (1 << 31)) == 0;
+
+                    win32::output_debug_string(b"Got key!!!\n\0");
+                }
+
+                _ => {
+                    win32::translate_and_dispatch_message(&msg);;
+                }
+            }
         }
     }
 
@@ -181,36 +203,16 @@ impl Window {
 
 unsafe impl GlContext for Window {}
 
-extern "system" fn window_proc(window: WindowHandle,
-                               msg: u32,
-                               wparam: usize,
-                               lparam: usize)
-                               -> usize {
+extern "system" fn window_proc(handle: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
+
     match msg {
 
-        WM_SIZE => {
-            win32::output_debug_string(b"WM_SIZE\n\0");
-        }
-
-        WM_CLOSE => {
-            win32::output_debug_string(b"WM_CLOSE\n\0");
-            win32::exit_process(0);
-        }
-
-        WM_ACTIVATEAPP => {
-            win32::output_debug_string(b"WM_ACTIVATEAPP\n\0");
-        }
-
-        WM_DESTROY => {
-            win32::output_debug_string(b"WM_DESTROY\n\0");
-        }
+        WM_CLOSE => { win32::exit_process(0); }
 
         _ => {
-            return win32::def_window_proc(window, msg, wparam, lparam);
+            return win32::def_window_proc(handle, msg, wparam, lparam);
         }
     }
-
-    return 0;
 }
 
 fn set_pixel_format(dc: DcHandle, initial: bool) {

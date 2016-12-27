@@ -151,7 +151,7 @@ pub fn debug_break() -> ! {
     }
 }
 
-const FUNCTION_COUNT: usize = 11;
+const USER_FUNCTION_COUNT: usize = 13;
 
 type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
 type RegisterClassATy = unsafe extern "system" fn(window_class: *const WindowClass) -> Atom;
@@ -163,11 +163,13 @@ type PeekMessageATy = unsafe extern "system" fn(msg: *mut Msg, window_handle: Wi
 type TranslateMessageTy = unsafe extern "system" fn(msg: *const Msg) -> i32;
 type DispatchMessageATy =  unsafe extern "system" fn(msg: *const Msg) -> i32;
 type DefWindowProcATy = unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
-type LoadCursorA = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
+type LoadCursorATy = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
+type SetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32, data: usize) -> usize;
+type GetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32) -> usize;
 
-static mut API: [usize; FUNCTION_COUNT] = [ 0; FUNCTION_COUNT];
+static mut USER_API: [usize; USER_FUNCTION_COUNT] = [ 0; USER_FUNCTION_COUNT];
 
-static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
+static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
     1501 + 617, // MessageBoxA
 
     1501 + 700, // RegisterClassA
@@ -183,11 +185,14 @@ static FUNCTION_ORDINALS: [u16; FUNCTION_COUNT] = [
     1501 + 170, // DefWindowProcA
 
     1501 + 577, // LoadCursorA
+
+    1501 + 844, // SetWindowLongPtrA
+    1501 + 473, // GetWindowLongPtrA
 ];
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
     unsafe {
-        mem::transmute::<_, MessageBoxATy>(*API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), box_type);
+        mem::transmute::<_, MessageBoxATy>(*USER_API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), box_type);
     }
 }
 
@@ -205,12 +210,12 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         class_name: unsafe { &*name.get_unchecked(0) },
     };
 
-    unsafe { mem::transmute::<_, RegisterClassATy>(*API.get_unchecked(1))(&window_class) != 0 }
+    unsafe { mem::transmute::<_, RegisterClassATy>(*USER_API.get_unchecked(1))(&window_class) != 0 }
 }
 
 pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
-        mem::transmute::<_, CreateWindowExATy>(*API.get_unchecked(2))(
+        mem::transmute::<_, CreateWindowExATy>(*USER_API.get_unchecked(2))(
             0,
             &*class_name.get_unchecked(0),
             &*name.get_unchecked(0),
@@ -227,15 +232,15 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
 }
 
 pub fn destroy_window(window: WindowHandle) -> i32 {
-    unsafe { mem::transmute::<_, DestroyWindowTy>(*API.get_unchecked(3))(window) }
+    unsafe { mem::transmute::<_, DestroyWindowTy>(*USER_API.get_unchecked(3))(window) }
 }
 
 pub fn get_dc(window: WindowHandle) -> DcHandle {
-    unsafe { mem::transmute::<_, GetDCTy>(*API.get_unchecked(4))(window) }
+    unsafe { mem::transmute::<_, GetDCTy>(*USER_API.get_unchecked(4))(window) }
 }
 
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
-    unsafe { mem::transmute::<_, ReleaseDCTy>(*API.get_unchecked(5))(window, dc) }
+    unsafe { mem::transmute::<_, ReleaseDCTy>(*USER_API.get_unchecked(5))(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
@@ -248,26 +253,36 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(*API.get_unchecked(6))(&mut msg, ptr::null_mut(), 0, 0, 1) };
+    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(*USER_API.get_unchecked(6))(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
     unsafe {
-        mem::transmute::<_, TranslateMessageTy>(*API.get_unchecked(7))(msg as *const Msg);
-        mem::transmute::<_, DispatchMessageATy>(*API.get_unchecked(8))(msg as *const Msg);
+        mem::transmute::<_, TranslateMessageTy>(*USER_API.get_unchecked(7))(msg as *const Msg);
+        mem::transmute::<_, DispatchMessageATy>(*USER_API.get_unchecked(8))(msg as *const Msg);
     }
 }
 
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
-    unsafe { mem::transmute::<_, DefWindowProcATy>(*API.get_unchecked(9))(window, message, wparam, lparam) }
+    unsafe { mem::transmute::<_, DefWindowProcATy>(*USER_API.get_unchecked(9))(window, message, wparam, lparam) }
 }
 
 pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
 
-    unsafe { mem::transmute::<_, LoadCursorA>(*API.get_unchecked(10))(instance, name) }
+    unsafe { mem::transmute::<_, LoadCursorATy>(*USER_API.get_unchecked(10))(instance, name) }
+}
+
+pub fn set_window_user_data(window: WindowHandle, data: usize) {
+
+    unsafe { mem::transmute::<_, SetWindowLongPtrATy>(*USER_API.get_unchecked(11))(window, GWLP_USERDATA, data); }
+}
+
+pub fn get_window_user_data(window: WindowHandle) -> usize {
+
+    unsafe { mem::transmute::<_, GetWindowLongPtrATy>(*USER_API.get_unchecked(12))(window, GWLP_USERDATA) }
 }
 
 const GDI_FUNCTION_COUNT: usize = 4;
@@ -427,9 +442,9 @@ pub fn init() {
 
     if let Some(user32) = Module::new(b"user32.dll\0") {
 
-        for (ordinal, i) in FUNCTION_ORDINALS.iter().zip(0..) {
+        for (ordinal, i) in USER_FUNCTION_ORDINALS.iter().zip(0..) {
             unsafe {
-                (*API.get_unchecked_mut(i)) = user32.get_proc_address(*ordinal as isize) as usize;
+                (*USER_API.get_unchecked_mut(i)) = user32.get_proc_address(*ordinal as isize) as usize;
             }
         }
     }

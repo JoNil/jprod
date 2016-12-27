@@ -15,11 +15,7 @@ pub type MenuHandle = *mut c_void;
 pub type ModuleHandle = *mut c_void;
 pub type Proc = *mut c_void;
 pub type WindowHandle = *mut c_void;
-pub type WindowProc = extern "system" fn(window: WindowHandle,
-                                         message: u32,
-                                         wparam: usize,
-                                         lparam: usize)
-                                         -> usize;
+pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
 
 pub const CS_HREDRAW: u32 = 0x0002;
 pub const CS_OWNDC: u32 = 0x0020;
@@ -32,6 +28,10 @@ pub const WM_ACTIVATEAPP: u32 = 0x001C;
 pub const WM_CLOSE: u32 = 0x0010;
 pub const WM_DESTROY: u32 = 0x0002;
 pub const WM_SIZE: u32 = 0x0005;
+pub const WM_SYSKEYDOWN: u32 = 0x0104;
+pub const WM_SYSKEYUP: u32 = 0x0105;
+pub const WM_KEYDOWN: u32 = 0x0100;
+pub const WM_KEYUP: u32 = 0x0101;
 
 pub const WS_CAPTION: u32 = 0x00C00000;
 pub const WS_MAXIMIZEBOX: u32 = 0x00010000;
@@ -175,7 +175,6 @@ impl FileAttributeData {
     }
 }
 
-
 pub const MEM_COMMIT: u32 = 0x00001000;
 pub const MEM_RESERVE: u32 = 0x00002000;
 pub const MEM_RELEASE: u32 = 0x00008000;
@@ -193,3 +192,5 @@ pub const OPEN_EXISTING: u32 = 3;
 pub const FILE_ATTRIBUTE_NORMAL: u32 = 0x80;
 
 pub const INVALID_HANDLE_VALUE: Handle = -1isize as usize as Handle;
+
+pub const GWLP_USERDATA: i32 = -21;
