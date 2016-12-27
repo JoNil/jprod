@@ -3,6 +3,7 @@
 use c_types::c_void;
 use core::cell::Cell;
 use core::mem;
+use core::ptr;
 use core::slice;
 use win32;
 
@@ -14,8 +15,15 @@ pub struct Pool {
 impl Pool {
 
     pub fn new(size: usize) -> Pool {
+
+        let memory = win32::virtual_alloc(size) as *mut u8;
+
+        if memory == ptr::null_mut() {
+            win32::debug_break();
+        }
+
         Pool {
-            memory: win32::virtual_alloc(size) as *mut u8,
+            memory: memory,
             size: size,
         }
     }

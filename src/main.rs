@@ -5,6 +5,12 @@
 #![no_std]
 
 // TODO:
+// Prototype math primitives
+// Debug camera
+// Defered rendering
+// Dna shaped rombs
+
+// Optimizations
 // Load kernal32 stuff by ordinal
 // Figure out a way to test -C relocation-model=static
 
@@ -32,13 +38,13 @@ mod window;
 use mesh::Mesh;
 use pool::Pool;
 use pool::PoolAllocator;
-use random::Generator;
+use random::Rng;
 use shader::Shader;
 use shader_sources::ShaderId;
 use ssbo::Ssbo;
 use window::Window;
 
-fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Generator) {
+fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng) {
 
     let allocator = pool.get_sub_allocator();
 
@@ -62,7 +68,7 @@ fn main() {
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
 
-    let mut rng = Generator::new_unseeded();
+    let mut rng = Rng::new_unseeded();
 
     let window = Window::new();
 

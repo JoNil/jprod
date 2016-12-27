@@ -3,16 +3,16 @@
 use core::mem;
 use core::num::Wrapping;
 
-pub struct Generator {
+pub struct Rng {
     x: Wrapping<u32>,
     y: Wrapping<u32>,
     z: Wrapping<u32>,
     w: Wrapping<u32>,
 }
 
-impl Generator {
-    pub fn new_unseeded() -> Generator {
-        Generator {
+impl Rng {
+    pub fn new_unseeded() -> Rng {
+        Rng {
             x: Wrapping(0x66126c8d),
             y: Wrapping(0xfdf79948),
             z: Wrapping(0xc01a50a2),
