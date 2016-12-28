@@ -137,7 +137,7 @@ fn main() {
                     (&shader.vertex_source, &shader.fragment_source, &shader.vertex_path, &shader.fragment_path, &shader.vertex_filetime, &shader.fragment_filetime) {
                 
                 shader_source.push_str(
-                        &format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, vertex_filetime: Filetime::new({}, {}), fragment_source: {}, fragment_path: {}, fragment_filetime: Filetime::new({}, {}) }},",
+                        &format!("ShaderId::{} => ShaderSource {{ vertex_source: {}, vertex_path: {}, vertex_filetime: Filetime {{ low_datetime: {}, high_datetime: {} }}, fragment_source: {}, fragment_path: {}, fragment_filetime: Filetime {{ low_datetime: {}, high_datetime: {} }} }},",
                                 name,
                                 format!(r###"br##"{}"##"###, vertex),
                                 format!(r###"b"{}\0""###, vertex_path.replace("\\", "/")),

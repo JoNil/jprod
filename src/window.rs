@@ -152,8 +152,6 @@ pub struct Actions {
 pub struct Window {
     context: RawContext,
     actions: Actions,
-    width: i32,
-    height: i32,
 }
 
 impl Window {
@@ -181,17 +179,10 @@ impl Window {
 
         gl::init();
 
-        let size = win32::get_window_client_rect(context.dc.window.handle);
-
-        Window { context: context, actions: Default::default(), width: size.2, height: size.3 }
+        Window { context: context, actions: Default::default() }
     }
 
-    pub fn process_messages(&mut self) {
-
-        let size = win32::get_window_client_rect(self.context.dc.window.handle);
-
-        self.width = size.2;
-        self.height = size.3;
+    pub fn update(&mut self) {
 
         while let Some(msg) = win32::get_message() {
 
@@ -229,7 +220,13 @@ impl Window {
     }
 
     pub fn get_size(&self) -> (i32, i32) {
-        (self.width, self.height)
+        let rect = win32::get_window_client_rect(self.context.dc.window.handle);
+
+        (rect.2, rect.3)
+    }
+
+    pub fn get_mouse_pos(&self) -> (i32, i32) {
+        win32::get_mouse_pos(self.context.dc.window.handle)
     }
 
     pub fn clear(&self) {

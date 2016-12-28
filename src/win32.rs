@@ -165,9 +165,11 @@ type DefWindowProcATy = unsafe extern "system" fn(window: WindowHandle, message:
 type LoadCursorATy = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
 type SetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32, data: usize) -> usize;
 type GetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32) -> usize;
-type GetClientRectTy = unsafe extern "system" fn(window: WindowHandle, rect: *mut Rect) -> usize;
+type GetClientRectTy = unsafe extern "system" fn(window: WindowHandle, rect: *mut Rect) -> i32;
+type GetCursorPosTy = unsafe extern "system" fn(point: *mut Point) -> i32;
+type ScreenToClientTy = unsafe extern "system" fn(window: WindowHandle, point: *mut Point) -> i32;
 
-const USER_FUNCTION_COUNT: usize = 14;
+const USER_FUNCTION_COUNT: usize = 16;
 
 static mut USER_API: [usize; USER_FUNCTION_COUNT] = [ 0; USER_FUNCTION_COUNT];
 
@@ -192,6 +194,8 @@ static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
     1501 + 473, // GetWindowLongPtrA
 
     1501 + 307, // GetClientRect
+    1501 + 321, // GetCursorPos
+    1501 + 743, // ScreenToClient
 ];
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
@@ -296,6 +300,16 @@ pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {
     unsafe { mem::transmute::<_, GetClientRectTy>(*USER_API.get_unchecked(13))(window, &mut rect as *mut _); }
 
     (rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
+}
+
+pub fn get_mouse_pos(window: WindowHandle) -> (i32, i32) {
+
+    let mut point: Point = Default::default();
+
+    unsafe { mem::transmute::<_, GetCursorPosTy>(*USER_API.get_unchecked(14))(&mut point as *mut _); }
+    unsafe { mem::transmute::<_, ScreenToClientTy>(*USER_API.get_unchecked(15))(window, &mut point as *mut _); }    
+
+    (point.x, point.y)
 }
 
 type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;

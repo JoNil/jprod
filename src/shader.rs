@@ -1,3 +1,4 @@
+use core::default::Default;
 use core::marker::PhantomData;
 use core::ptr;
 use file::File;
@@ -156,14 +157,14 @@ impl Shader {
     pub fn reload_if_changed<'a>(&mut self, allocator: &PoolAllocator<'a>) {
         let mut needs_update = false;
 
-        let mut vertex_file_attributes: FileAttributeData = FileAttributeData::new();
+        let mut vertex_file_attributes: FileAttributeData = Default::default();
         win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
 
         if win32::compare_file_time(&vertex_file_attributes.last_write_time, &self.source.vertex_filetime) == 1 {
             needs_update = true;
         }
 
-        let mut fragment_file_attributes: FileAttributeData = FileAttributeData::new();
+        let mut fragment_file_attributes: FileAttributeData = Default::default();
         win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
 
         if win32::compare_file_time(&fragment_file_attributes.last_write_time, &self.source.fragment_filetime) == 1 {

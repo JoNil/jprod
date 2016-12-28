@@ -99,7 +99,7 @@ fn main() {
     let mut y = 0.0;
 
     loop {
-        window.process_messages();
+        window.update();
 
         {
             let actions = window.get_actions();
@@ -118,6 +118,9 @@ fn main() {
             }
         }
 
+        let mouse = window.get_mouse_pos();
+        let size = window.get_size();
+
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
 
         shader.reload_if_changed(&allocator);
@@ -125,9 +128,21 @@ fn main() {
         let time = (time::now_s() - start) as f32;
         uniform_data.upload(&time);
 
-        update_instance_data(&mut instance_data, &mut allocator, &mut rng, x, y);
+        let mouse_offset = {
 
-        let size = window.get_size();
+            let mouse_x = mouse.0 as f32;
+            let mouse_y = mouse.1 as f32;
+            let width = size.0 as f32;
+            let height = size.1 as f32;
+
+            (
+                2.0 * mouse_x / width - 1.0,
+                -2.0 * mouse_y / height + 1.0,
+            )
+        };
+
+        update_instance_data(&mut instance_data, &mut allocator, &mut rng,
+            mouse_offset.0 + x, mouse_offset.1 + y);
 
         unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
 
