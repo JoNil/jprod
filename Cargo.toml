@@ -14,7 +14,7 @@ walkdir = "1"
 winapi = "0.2"
 
 [profile.release]
-opt-level = "s"
+opt-level = "z"
 panic = "abort"
 
 [profile.dev]
