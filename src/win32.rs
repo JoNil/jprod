@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use c_types::*;
+use core::default::Default;
 use core::mem;
 use core::ptr;
 use module::Module;
@@ -151,8 +152,6 @@ pub fn debug_break() -> ! {
     }
 }
 
-const USER_FUNCTION_COUNT: usize = 13;
-
 type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
 type RegisterClassATy = unsafe extern "system" fn(window_class: *const WindowClass) -> Atom;
 type CreateWindowExATy = unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle;
@@ -166,6 +165,9 @@ type DefWindowProcATy = unsafe extern "system" fn(window: WindowHandle, message:
 type LoadCursorATy = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
 type SetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32, data: usize) -> usize;
 type GetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32) -> usize;
+type GetClientRectTy = unsafe extern "system" fn(window: WindowHandle, rect: *mut Rect) -> usize;
+
+const USER_FUNCTION_COUNT: usize = 14;
 
 static mut USER_API: [usize; USER_FUNCTION_COUNT] = [ 0; USER_FUNCTION_COUNT];
 
@@ -188,6 +190,8 @@ static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
 
     1501 + 844, // SetWindowLongPtrA
     1501 + 473, // GetWindowLongPtrA
+
+    1501 + 307, // GetClientRect
 ];
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
@@ -285,12 +289,21 @@ pub fn get_window_user_data(window: WindowHandle) -> usize {
     unsafe { mem::transmute::<_, GetWindowLongPtrATy>(*USER_API.get_unchecked(12))(window, GWLP_USERDATA) }
 }
 
-const GDI_FUNCTION_COUNT: usize = 4;
+pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {
+
+    let mut rect: Rect = Default::default();
+
+    unsafe { mem::transmute::<_, GetClientRectTy>(*USER_API.get_unchecked(13))(window, &mut rect as *mut _); }
+
+    (rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
+}
 
 type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
 type DescribePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, bytes: u32, descriptor: *mut PixelFormatDescriptor) -> i32;
 type SetPixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, descriptor: *const PixelFormatDescriptor) -> i32;
 type SwapBuffersTy = unsafe extern "system" fn(dc: DcHandle) -> i32;
+
+const GDI_FUNCTION_COUNT: usize = 4;
 
 static mut GDI_API: [usize; GDI_FUNCTION_COUNT] = [ 0; GDI_FUNCTION_COUNT];
 
@@ -337,12 +350,12 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { mem::transmute::<_, SwapBuffersTy>(*GDI_API.get_unchecked(3))(dc) != 0 }
 }
 
-const GL_FUNCTION_COUNT: usize = 4;
-
 type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
 type WglDeleteContextTy = unsafe extern "system" fn(glrc: GlrcHandle) -> i32;
 type WglMakeCurrentTy = unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32;
 type WglGetProcAddressTy = unsafe extern "system" fn(name: *const u8) -> Proc;
+
+const GL_FUNCTION_COUNT: usize = 4;
 
 static mut GL_API: [usize; GL_FUNCTION_COUNT] = [ 0; GL_FUNCTION_COUNT];
 
@@ -382,12 +395,12 @@ pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
     ptr
 }
 
-const GL_EXT_FUNCTION_COUNT: usize = 4;
-
 type WglGetExtensionsStringEXTTy = unsafe extern "system" fn() -> *const u8;
 type WglChoosePixelFormatARBTy = unsafe extern "system" fn(dc: DcHandle, attrib_i_list: *const i32, attrib_f_list: *const f32, max_formats: u32, pixel_formats: *mut i32, num_formats: *mut u32) -> i32;
 type WglCreateContextAttribsARBTy = unsafe extern "system" fn(dc: DcHandle, shared_context: GlrcHandle, attrib_list: *const i32) -> GlrcHandle;
 type WglSwapIntervalEXTTy = unsafe extern "system" fn(interval: i32) -> i32;
+
+const GL_EXT_FUNCTION_COUNT: usize = 4;
 
 static mut GL_EXT_API: [usize; GL_EXT_FUNCTION_COUNT] = [ 0; GL_EXT_FUNCTION_COUNT];
 

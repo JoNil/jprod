@@ -7,6 +7,8 @@
 // TODO:
 // Prototype math primitives
 // Debug camera
+// Profiling? Gpu and cpu time. Telemetry?
+// Imgui
 // Defered rendering
 // Dna shaped rombs
 // Camera path
@@ -47,11 +49,11 @@ use shader_sources::ShaderId;
 use ssbo::Ssbo;
 use window::Window;
 
-fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng) {
+fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng, x: f32, y: f32) {
 
     let allocator = pool.get_sub_allocator();
 
-    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(10000);
+    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(5000);
 
     for mvp in mvps.iter_mut() {
 
@@ -59,7 +61,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
             (*mvp.get_unchecked_mut(0)) = [0.01, 0.0, 0.0, 0.0];
             (*mvp.get_unchecked_mut(1)) = [0.0, 0.01, 0.0, 0.0];
             (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.01, 0.0];
-            (*mvp.get_unchecked_mut(3)) = [2.0*rng.next_f32() - 1.0, 2.0*rng.next_f32() - 1.0, 0.0, 1.0];
+            (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5 + x, rng.next_f32() - 0.5 + y, 0.0, 1.0];
         }
      }
 
@@ -73,7 +75,7 @@ fn main() {
 
     let mut rng = Rng::new_unseeded();
 
-    let window = Window::new();
+    let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);
 
@@ -93,8 +95,28 @@ fn main() {
 
     let start = time::now_s();
 
+    let mut x = 0.0;
+    let mut y = 0.0;
+
     loop {
         window.process_messages();
+
+        {
+            let actions = window.get_actions();
+
+            if actions.forward.active {
+                y += 0.02;
+            }
+            if actions.backward.active {
+                y -= 0.02;
+            }
+            if actions.right.active {
+                x += 0.02;
+            }
+            if actions.left.active {
+                x -= 0.02;
+            }
+        }
 
         // win32::message_box(b"Frame\0", b"Frame\0", 0);
 
@@ -103,11 +125,15 @@ fn main() {
         let time = (time::now_s() - start) as f32;
         uniform_data.upload(&time);
 
-        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
+        update_instance_data(&mut instance_data, &mut allocator, &mut rng, x, y);
+
+        let size = window.get_size();
+
+        unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
 
         window.clear();
 
-        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 10000);
+        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 5000);
 
         window.swap();
     }

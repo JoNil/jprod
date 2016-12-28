@@ -1,3 +1,4 @@
+use core::default::Default;
 use core::mem;
 use core::ptr;
 use gl;
@@ -123,8 +124,36 @@ impl Drop for RawContext {
     }
 }
 
+#[derive(Default)]
+pub struct ButtonState {
+    pub active: bool,
+    pub half_transition_count: i32,
+}
+
+impl ButtonState {
+    fn process_message(&mut self, is_down: bool) {
+        if self.active != is_down {
+            self.active = is_down;
+            self.half_transition_count += 1;
+        }
+    }
+}
+
+#[derive(Default)]
+pub struct Actions {
+    pub forward: ButtonState,
+    pub backward: ButtonState,
+    pub left: ButtonState,
+    pub right: ButtonState,
+    pub up: ButtonState,
+    pub down: ButtonState,
+}
+
 pub struct Window {
     context: RawContext,
+    actions: Actions,
+    width: i32,
+    height: i32,
 }
 
 impl Window {
@@ -152,35 +181,55 @@ impl Window {
 
         gl::init();
 
-        Window { context: context }
+        let size = win32::get_window_client_rect(context.dc.window.handle);
+
+        Window { context: context, actions: Default::default(), width: size.2, height: size.3 }
     }
 
-    pub fn process_messages(&self) {
+    pub fn process_messages(&mut self) {
+
+        let size = win32::get_window_client_rect(self.context.dc.window.handle);
+
+        self.width = size.2;
+        self.height = size.3;
 
         while let Some(msg) = win32::get_message() {
 
             match msg.message {
-
-                WM_SIZE => {
-                    let width = msg.lparam as u64 >> 32 as u32;
-                    let height = (msg.lparam as u64 & 0xffff_ffff) as u32;
-                }
-
                 WM_SYSKEYDOWN | WM_SYSKEYUP | WM_KEYDOWN | WM_KEYUP => {
 
-                    let key_code = msg.wparam as u32;
+                    let key_code = msg.wparam as u8 as char;
 
-                    let was_down: bool = (msg.lparam & (1 << 30)) != 0;
-                    let is_down: bool = (msg.lparam & (1 << 31)) == 0;
+                    let was_down = (msg.lparam & (1 << 30)) != 0;
+                    let is_down = (msg.lparam & (1 << 31)) == 0;
 
-                    win32::output_debug_string(b"Got key!!!\n\0");
+                    if was_down != is_down {
+
+                        match key_code {
+                            'R' => self.actions.forward.process_message(is_down),
+                            'F' => self.actions.backward.process_message(is_down),
+                            'D' => self.actions.left.process_message(is_down),
+                            'G' => self.actions.right.process_message(is_down),
+                            'A' => self.actions.up.process_message(is_down),
+                            'Z' => self.actions.down.process_message(is_down),
+                            _ => (),
+                        }
+                    }
                 }
 
-                _ => {
-                    win32::translate_and_dispatch_message(&msg);;
-                }
+                _ => ()
             }
+
+            win32::translate_and_dispatch_message(&msg);
         }
+    }
+
+    pub fn get_actions(&self) -> &Actions {
+        &self.actions
+    }
+
+    pub fn get_size(&self) -> (i32, i32) {
+        (self.width, self.height)
     }
 
     pub fn clear(&self) {

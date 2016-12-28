@@ -194,3 +194,12 @@ pub const FILE_ATTRIBUTE_NORMAL: u32 = 0x80;
 pub const INVALID_HANDLE_VALUE: Handle = -1isize as usize as Handle;
 
 pub const GWLP_USERDATA: i32 = -21;
+
+#[repr(C)]
+#[derive(Default)]
+pub struct Rect {
+    pub left: i32,
+    pub top: i32,
+    pub right: i32,
+    pub bottom: i32,
+}
