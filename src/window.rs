@@ -147,6 +147,21 @@ pub struct Actions {
     pub right: ButtonState,
     pub up: ButtonState,
     pub down: ButtonState,
+
+    pub left_mouse: ButtonState,
+}
+
+impl Actions {
+    fn reset(&mut self) {
+        self.forward.half_transition_count = 0;
+        self.backward.half_transition_count = 0;
+        self.left.half_transition_count = 0;
+        self.right.half_transition_count = 0;
+        self.up.half_transition_count = 0;
+        self.down.half_transition_count = 0;
+
+        self.left_mouse.half_transition_count = 0;
+    }
 }
 
 pub struct Window {
@@ -184,27 +199,31 @@ impl Window {
 
     pub fn update(&mut self) {
 
+        self.actions.reset();
+
+        {
+            let left_down = win32::get_key_down(VK_LBUTTON);
+            self.actions.left_mouse.process_message(left_down);
+        }
+
         while let Some(msg) = win32::get_message() {
 
             match msg.message {
+                
                 WM_SYSKEYDOWN | WM_SYSKEYUP | WM_KEYDOWN | WM_KEYUP => {
-
+                    
                     let key_code = msg.wparam as u8 as char;
 
-                    let was_down = (msg.lparam & (1 << 30)) != 0;
                     let is_down = (msg.lparam & (1 << 31)) == 0;
 
-                    if was_down != is_down {
-
-                        match key_code {
-                            'R' => self.actions.forward.process_message(is_down),
-                            'F' => self.actions.backward.process_message(is_down),
-                            'D' => self.actions.left.process_message(is_down),
-                            'G' => self.actions.right.process_message(is_down),
-                            'A' => self.actions.up.process_message(is_down),
-                            'Z' => self.actions.down.process_message(is_down),
-                            _ => (),
-                        }
+                    match key_code {
+                        'R' => self.actions.forward.process_message(is_down),
+                        'F' => self.actions.backward.process_message(is_down),
+                        'D' => self.actions.left.process_message(is_down),
+                        'G' => self.actions.right.process_message(is_down),
+                        'A' => self.actions.up.process_message(is_down),
+                        'Z' => self.actions.down.process_message(is_down),
+                        _ => (),
                     }
                 }
 
@@ -229,9 +248,7 @@ impl Window {
         win32::get_mouse_pos(self.context.dc.window.handle)
     }
 
-    pub fn clear(&self) {
-
-        let color = [ 0.0f32, 0.5, 0.0, 1.0 ];
+    pub fn clear(&self, color: [f32; 4]) {
 
         unsafe { gl::ClearBufferfv(gl::COLOR, 0, &color as *const f32); }
 

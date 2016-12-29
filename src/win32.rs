@@ -7,7 +7,7 @@ use core::ptr;
 use module::Module;
 use win32_types::*;
 
-#[link_args = "kernel32.lib"]
+#[link(name = "kernel32")]
 #[allow(dead_code)]
 extern "system" {
     fn OutputDebugStringA(output_string: *const u8);
@@ -168,8 +168,9 @@ type GetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index
 type GetClientRectTy = unsafe extern "system" fn(window: WindowHandle, rect: *mut Rect) -> i32;
 type GetCursorPosTy = unsafe extern "system" fn(point: *mut Point) -> i32;
 type ScreenToClientTy = unsafe extern "system" fn(window: WindowHandle, point: *mut Point) -> i32;
+type GetKeyStateTy = unsafe extern "system" fn(key_code: i32) -> i16;
 
-const USER_FUNCTION_COUNT: usize = 16;
+const USER_FUNCTION_COUNT: usize = 17;
 
 static mut USER_API: [usize; USER_FUNCTION_COUNT] = [ 0; USER_FUNCTION_COUNT];
 
@@ -196,6 +197,8 @@ static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
     1501 + 307, // GetClientRect
     1501 + 321, // GetCursorPos
     1501 + 743, // ScreenToClient
+
+    1501 + 355, // GetKeyState
 ];
 
 pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
@@ -310,6 +313,11 @@ pub fn get_mouse_pos(window: WindowHandle) -> (i32, i32) {
     unsafe { mem::transmute::<_, ScreenToClientTy>(*USER_API.get_unchecked(15))(window, &mut point as *mut _); }    
 
     (point.x, point.y)
+}
+
+pub fn get_key_down(key_code: i32) -> bool {
+
+    unsafe { mem::transmute::<_, GetKeyStateTy>(*USER_API.get_unchecked(16))(key_code) < 0}
 }
 
 type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;

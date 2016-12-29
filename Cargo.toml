@@ -13,8 +13,12 @@ kernel32-sys = "0.2"
 walkdir = "1"
 winapi = "0.2"
 
+[features]
+use_std = []
+
 [profile.release]
 opt-level = "z"
+debug-assertions = false
 panic = "abort"
 
 [profile.dev]

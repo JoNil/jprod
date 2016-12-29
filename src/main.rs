@@ -2,7 +2,7 @@
 #![feature(link_args)]
 
 #![cfg_attr(not(test), no_main)]
-#![no_std]
+#![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
 // Prototype math primitives
@@ -23,6 +23,11 @@
 extern "C" {}
 
 extern crate rlibc;
+
+#[cfg(feature = "use_std")]
+mod core {
+    pub use std::*;
+}
 
 mod c_types;
 mod file;
@@ -101,21 +106,19 @@ fn main() {
     loop {
         window.update();
 
-        {
-            let actions = window.get_actions();
+        let actions = window.get_actions();
 
-            if actions.forward.active {
-                y += 0.02;
-            }
-            if actions.backward.active {
-                y -= 0.02;
-            }
-            if actions.right.active {
-                x += 0.02;
-            }
-            if actions.left.active {
-                x -= 0.02;
-            }
+        if actions.forward.active {
+            y += 0.02;
+        }
+        if actions.backward.active {
+            y -= 0.02;
+        }
+        if actions.right.active {
+            x += 0.02;
+        }
+        if actions.left.active {
+            x -= 0.02;
         }
 
         let mouse = window.get_mouse_pos();
@@ -146,7 +149,7 @@ fn main() {
 
         unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
 
-        window.clear();
+        window.clear(if actions.left_mouse.active { [0.5, 0.0, 0.0, 1.0 ] } else { [0.0, 0.5, 0.0, 1.0 ] });
 
         mesh.draw_instanced(&shader, &instance_data, &uniform_data, 5000);
 
@@ -166,7 +169,7 @@ pub extern "system" fn WinMainCRTStartup() {
     win32::exit_process(0);
 }
 
-#[cfg(not(test))]
+#[cfg(all(not(test), not(feature = "use_std")))]
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
