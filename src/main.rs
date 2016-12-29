@@ -6,19 +6,17 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
-// Prototype math primitives
 // Debug camera
 // Profiling? Gpu and cpu time. Telemetry?
-// Imgui
 // Defered rendering
 // Dna shaped rombs
+// Imgui
 // Camera path
 // Audio output
 // Square wave
 
 // Optimizations
 // Load kernal32 stuff by ordinal
-// Figure out a way to test -C relocation-model=static
 
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
@@ -31,6 +29,7 @@ mod core {
 }
 
 mod c_types;
+mod camera;
 mod file;
 mod gl;
 mod mat4;
@@ -49,6 +48,8 @@ mod win32;
 mod win32_types;
 mod window;
 
+use camera::Camera;
+use mat4::Mat4;
 use mesh::Mesh;
 use pool::Pool;
 use pool::PoolAllocator;
@@ -75,6 +76,12 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
      }
 
     instance_data.upload_slice(mvps);
+}
+
+#[derive(Copy, Clone)]
+struct Uniforms {
+    time: f32,
+    vp: Mat4,
 }
 
 fn main() {
@@ -107,6 +114,10 @@ fn main() {
     let mut x = 0.0;
     let mut y = 0.0;
 
+    let mut uniforms = Uniforms { time: 0.0, vp: Mat4::identity() };
+
+    let camera = Camera::new();
+
     loop {
         window.update();
 
@@ -128,12 +139,11 @@ fn main() {
         let mouse = window.get_mouse_pos();
         let size = window.get_size();
 
-        // win32::message_box(b"Frame\0", b"Frame\0", 0);
-
         shader.reload_if_changed(&allocator);
 
-        let time = (time::now_s() - start) as f32;
-        uniform_data.upload(&time);
+        uniforms.time = (time::now_s() - start) as f32;
+        
+        uniform_data.upload(&uniforms);
 
         let mouse_offset = {
 

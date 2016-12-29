@@ -7,12 +7,13 @@ out vec2 frag_uv;
 
 layout(std430, binding = 0) buffer instance_data
 {
-    mat4 mvp[];
+    mat4 m[];
 };
 
 layout(std430, binding = 1) buffer uniforms
 {
     float time;
+    mat4 vp;
 };
 
 void main()
@@ -27,5 +28,5 @@ void main()
 
     frag_uv = rotated_vec.xy/2.0 + 0.5;
 
-    gl_Position = mvp[gl_InstanceID] * rotated_vec;
+    gl_Position = vp * m[gl_InstanceID] * rotated_vec;
 }
