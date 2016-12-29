@@ -5,6 +5,7 @@ use core::mem;
 use core::ops::Mul;
 use core::ops::MulAssign;
 use math;
+use vec4::Vec4;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -28,6 +29,17 @@ impl Mat4 {
                 (0.0, 0.0, 0.0, 1.0),
             ),
         }
+    }
+
+    pub fn translate(pos: Vec4) -> Mat4 {
+        Mat4 {
+            m: (
+                (1.0, 0.0, 0.0, 0.0),
+                (0.0, 1.0, 0.0, 0.0),
+                (0.0, 0.0, 1.0, 0.0),
+                (pos.x, pos.y, pos.z, 1.0),
+            ),
+        }   
     }
 
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {

@@ -1,6 +1,6 @@
+#![feature(core_intrinsics)]
 #![feature(lang_items)]
 #![feature(link_args)]
-#![feature(link_llvm_intrinsics)]
 
 #![cfg_attr(not(test), no_main)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
@@ -120,8 +120,6 @@ fn main() {
 
         shader.reload_if_changed(&allocator);
 
-        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
-
         let dt = {
             let now = time::now_s();
             let dt = last - now;
@@ -130,6 +128,8 @@ fn main() {
         };
 
         camera.update(&window, dt as f32);
+
+        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
 
         uniforms.vp = camera.get_view_projection();
         uniforms.time = (time::now_s() - start) as f32;

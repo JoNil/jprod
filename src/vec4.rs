@@ -4,11 +4,31 @@ use core::ops::Add;
 use core::ops::AddAssign;
 
 #[derive(Copy, Clone)]
-struct Vec4 {
+pub struct Vec4 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
     pub w: f32,
+}
+
+impl Vec4 {
+    pub fn zero() -> Vec4 {
+        Vec4 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+            w: 0.0,
+        }
+    }
+
+    pub fn xyz(x: f32, y: f32, z: f32) -> Vec4 {
+        Vec4 {
+            x: x,
+            y: y,
+            z: z,
+            w: 0.0,
+        }
+    }
 }
 
 impl Add for Vec4 {
