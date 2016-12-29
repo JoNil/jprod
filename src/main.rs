@@ -1,5 +1,6 @@
 #![feature(lang_items)]
 #![feature(link_args)]
+#![feature(link_llvm_intrinsics)]
 
 #![cfg_attr(not(test), no_main)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
@@ -32,6 +33,8 @@ mod core {
 mod c_types;
 mod file;
 mod gl;
+mod mat4;
+mod math;
 mod mesh;
 mod module;
 mod pool;
@@ -41,6 +44,7 @@ mod shader_sources;
 mod ssbo;
 mod time;
 mod utils;
+mod vec4;
 mod win32;
 mod win32_types;
 mod window;
