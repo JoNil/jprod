@@ -12,8 +12,8 @@ layout(std430, binding = 0) buffer instance_data
 
 layout(std430, binding = 1) buffer uniforms
 {
-    float time;
     mat4 vp;
+    float time;
 };
 
 void main()

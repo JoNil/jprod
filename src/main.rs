@@ -59,7 +59,7 @@ use shader_sources::ShaderId;
 use ssbo::Ssbo;
 use window::Window;
 
-fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng, x: f32, y: f32) {
+fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng) {
 
     let allocator = pool.get_sub_allocator();
 
@@ -71,7 +71,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
             (*mvp.get_unchecked_mut(0)) = [0.01, 0.0, 0.0, 0.0];
             (*mvp.get_unchecked_mut(1)) = [0.0, 0.01, 0.0, 0.0];
             (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.01, 0.0];
-            (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5 + x, rng.next_f32() - 0.5 + y, 0.0, 1.0];
+            (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5, rng.next_f32() - 0.5, 0.0, 1.0];
         }
      }
 
@@ -80,93 +80,64 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
 
 #[derive(Copy, Clone)]
 struct Uniforms {
-    time: f32,
     vp: Mat4,
+    time: f32,
 }
 
 fn main() {
 
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
-
     let mut rng = Rng::new_unseeded();
-
     let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);
-
     let mut mesh = Mesh::new(&window);
 
     let triangle = [
         [  0.0, 1.0, 0.0   ],
         [ -1.0, -1.0, 0.0  ],
-        [  1.0, -1.0, 0.0  ]
+        [  1.0, -1.0, 0.0  ],
     ];
 
     mesh.upload(&triangle);
 
     let mut instance_data = Ssbo::new(&window);
-
     let mut uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
+    let mut last = start;
 
-    let mut x = 0.0;
-    let mut y = 0.0;
+    let mut uniforms = Uniforms {
+        vp: Mat4::identity(),
+        time: 0.0,
+    };
 
-    let mut uniforms = Uniforms { time: 0.0, vp: Mat4::identity() };
-
-    let camera = Camera::new();
+    let mut camera = Camera::new();
 
     loop {
         window.update();
 
-        let actions = window.get_actions();
-
-        if actions.forward.active {
-            y += 0.02;
-        }
-        if actions.backward.active {
-            y -= 0.02;
-        }
-        if actions.right.active {
-            x += 0.02;
-        }
-        if actions.left.active {
-            x -= 0.02;
-        }
-
-        let mouse = window.get_mouse_pos();
-        let size = window.get_size();
-
         shader.reload_if_changed(&allocator);
 
-        uniforms.time = (time::now_s() - start) as f32;
-        
-        uniform_data.upload(&uniforms);
+        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
 
-        let mouse_offset = {
-
-            let mouse_x = mouse.0 as f32;
-            let mouse_y = mouse.1 as f32;
-            let width = size.0 as f32;
-            let height = size.1 as f32;
-
-            (
-                2.0 * mouse_x / width - 1.0,
-                -2.0 * mouse_y / height + 1.0,
-            )
+        let dt = {
+            let now = time::now_s();
+            let dt = last - now;
+            last = now;
+            dt
         };
 
-        update_instance_data(&mut instance_data, &mut allocator, &mut rng,
-            mouse_offset.0 + x, mouse_offset.1 + y);
+        camera.update(&window, dt as f32);
 
-        unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
+        uniforms.vp = camera.get_view_projection();
+        uniforms.time = (time::now_s() - start) as f32;
+        uniform_data.upload(&uniforms);
 
-        window.clear(if actions.left_mouse.active { [0.5, 0.0, 0.0, 1.0 ] } else { [0.0, 0.5, 0.0, 1.0 ] });
-
+        window.update_viewport();
+        window.clear([ 0.0, 0.5, 0.0, 1.0 ]);
         mesh.draw_instanced(&shader, &instance_data, &uniform_data, 5000);
-
         window.swap();
     }
 }

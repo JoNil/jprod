@@ -240,12 +240,17 @@ impl Window {
 
     pub fn get_size(&self) -> (i32, i32) {
         let rect = win32::get_window_client_rect(self.context.dc.window.handle);
-
+        
         (rect.2, rect.3)
     }
 
     pub fn get_mouse_pos(&self) -> (i32, i32) {
         win32::get_mouse_pos(self.context.dc.window.handle)
+    }
+
+    pub fn update_viewport(&self) {
+            let size = self.get_size();
+            unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
     }
 
     pub fn clear(&self, color: [f32; 4]) {
