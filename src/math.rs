@@ -1,13 +1,13 @@
 #![allow(dead_code)]
 
-use core::intrinsics;
+use win32;
 
 pub fn sin_f32(a: f32) -> f32 {
-    unsafe { intrinsics::sinf32(a) }
+    win32::sin(a as f64) as f32
 }
 
 pub fn cos_f32(a: f32) -> f32 {
-    unsafe { intrinsics::cosf32(a) }
+    win32::cos(a as f64) as f32
 }
 
 pub fn tan_f32(a: f32) -> f32 {

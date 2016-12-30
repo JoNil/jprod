@@ -372,6 +372,27 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { mem::transmute::<_, SwapBuffersTy>(*GDI_API.get_unchecked(3))(dc) != 0 }
 }
 
+type SinTy = unsafe extern "system" fn(a: f64) -> f64;
+type CosTy = unsafe extern "system" fn(b: f64) -> f64;
+
+const NT_FUNCTION_COUNT: usize = 2;
+
+static mut NT_API: [usize; NT_FUNCTION_COUNT] = [ 0; NT_FUNCTION_COUNT];
+
+static NT_FUNCTION_ORDINALS: [u16; NT_FUNCTION_COUNT] = [
+    7 + 2217, // sin
+
+    7 + 2179, // cos
+];
+
+pub fn sin(a: f64) -> f64 {
+    unsafe { mem::transmute::<_, SinTy>(*NT_API.get_unchecked(0))(a) }
+}
+
+pub fn cos(a: f64) -> f64 {
+    unsafe { mem::transmute::<_, CosTy>(*NT_API.get_unchecked(1))(a) }
+}
+
 type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
 type WglDeleteContextTy = unsafe extern "system" fn(glrc: GlrcHandle) -> i32;
 type WglMakeCurrentTy = unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32;
@@ -489,6 +510,15 @@ pub fn init() {
         for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
             unsafe {
                 (*GDI_API.get_unchecked_mut(i)) = gdi32.get_proc_address(*ordinal as isize) as usize;
+            }
+        }
+    }
+
+    if let Some(nt) = Module::new(b"NTDLL.dll\0") {
+
+        for (ordinal, i) in NT_FUNCTION_ORDINALS.iter().zip(0..) {
+            unsafe {
+                (*NT_API.get_unchecked_mut(i)) = nt.get_proc_address(*ordinal as isize) as usize;
             }
         }
     }
