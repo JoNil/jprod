@@ -20,6 +20,7 @@ use_std = []
 opt-level = "z"
 debug-assertions = false
 panic = "abort"
+debug = true
 
 [profile.dev]
 panic = "abort"
