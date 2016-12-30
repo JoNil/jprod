@@ -5,6 +5,10 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
+// Debug break on release should be unrechable
+// Get sin and cos from simd
+// asm version of memcpy with rep move, check chaos theory source
+// asm version of checkstack from ntdll or similar
 // Debug camera
 // Profiling? Gpu and cpu time. Telemetry?
 // Defered rendering
