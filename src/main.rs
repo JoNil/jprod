@@ -19,6 +19,7 @@
 // Square wave
 
 // Optimizations
+// Remove whitespace from shaders
 // Load kernal32 stuff by ordinal
 
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
