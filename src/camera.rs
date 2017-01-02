@@ -21,7 +21,7 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new() -> Camera {
+    pub fn new(window: &Window) -> Camera {
         Camera {
             projection: Mat4::identity(),
 
@@ -34,7 +34,7 @@ impl Camera {
             up: Vec4::zero(),
             forward: Vec4::zero(),
 
-            previus_mouse_offset: (0.0, 0.0),
+            previus_mouse_offset: get_mouse_offset(window),
         }
     }
 
@@ -42,25 +42,12 @@ impl Camera {
     
         let actions = window.get_actions();
 
-        let mouse = window.get_mouse_pos();
         let size = window.get_size();
 
         self.projection = Mat4::perspective(90.0, size.0 as f32 / size.1 as f32, 0.01, 1000.0);
 
         {
-            let mouse_offset = {
-
-                let mouse_x = mouse.0 as f32;
-                let mouse_y = mouse.1 as f32;
-                let width = size.0 as f32;
-                let height = size.1 as f32;
-
-                (
-                    2.0 * mouse_x / width - 1.0,
-                    2.0 * mouse_y / height + 1.0,
-                )
-            };
-
+            let mouse_offset = get_mouse_offset(window);
 
             if actions.left_mouse.active {
                 self.x_angle += self.previus_mouse_offset.0 - mouse_offset.0;
@@ -109,4 +96,20 @@ impl Camera {
 
         self.projection * (pos * rot).inverted().unwrap_or(Mat4::identity())
     }
+}
+
+fn get_mouse_offset(window: &Window) -> (f32, f32) {
+    
+    let mouse = window.get_mouse_pos();
+    let size = window.get_size();
+
+    let mouse_x = mouse.0 as f32;
+    let mouse_y = mouse.1 as f32;
+    let width = size.0 as f32;
+    let height = size.1 as f32;
+
+    (
+        2.0 * mouse_x / width - 1.0,
+        2.0 * mouse_y / height + 1.0,
+    )
 }
