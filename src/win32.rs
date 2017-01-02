@@ -373,9 +373,10 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
 }
 
 type SinTy = unsafe extern "system" fn(a: f64) -> f64;
-type CosTy = unsafe extern "system" fn(b: f64) -> f64;
+type CosTy = unsafe extern "system" fn(a: f64) -> f64;
+type SqrtTy = unsafe extern "system" fn(a: f64) -> f64;
 
-const NT_FUNCTION_COUNT: usize = 2;
+const NT_FUNCTION_COUNT: usize = 3;
 
 static mut NT_API: [usize; NT_FUNCTION_COUNT] = [ 0; NT_FUNCTION_COUNT];
 
@@ -383,6 +384,8 @@ static NT_FUNCTION_ORDINALS: [u16; NT_FUNCTION_COUNT] = [
     7 + 2217, // sin
 
     7 + 2179, // cos
+
+    7 + 2220, // sqrt
 ];
 
 pub fn sin(a: f64) -> f64 {
@@ -391,6 +394,10 @@ pub fn sin(a: f64) -> f64 {
 
 pub fn cos(a: f64) -> f64 {
     unsafe { mem::transmute::<_, CosTy>(*NT_API.get_unchecked(1))(a) }
+}
+
+pub fn sqrt(a: f64) -> f64 {
+    unsafe { mem::transmute::<_, SqrtTy>(*NT_API.get_unchecked(2))(a) }
 }
 
 type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;

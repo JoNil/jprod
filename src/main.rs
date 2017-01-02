@@ -34,10 +34,10 @@ mod core {
 
 mod c_types;
 mod camera;
+mod f32;
 mod file;
 mod gl;
 mod mat4;
-mod math;
 mod mesh;
 mod module;
 mod pool;

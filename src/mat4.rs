@@ -1,10 +1,9 @@
 #![allow(dead_code)]
 
-use core::f32;
 use core::mem;
 use core::ops::Mul;
 use core::ops::MulAssign;
-use math;
+use f32;
 use vec4::Vec4;
 
 #[derive(Copy, Clone)]
@@ -31,6 +30,18 @@ impl Mat4 {
         }
     }
 
+    pub fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
+        Mat4 {
+            m: (
+                (x.x, x.y, x.z, 0.0),
+                (y.x, y.y, y.z, 0.0),
+                (z.x, z.y, z.z, 0.0),
+                (0.0, 0.0, 0.0, 1.0),
+            ),
+        }
+    }
+
+
     pub fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m: (
@@ -40,6 +51,43 @@ impl Mat4 {
                 (pos.x, pos.y, pos.z, 1.0),
             ),
         }   
+    }
+
+    pub fn rotate(angle: f32, axis: Vec4) -> Mat4 {
+        
+        let mut temp = Mat4::identity();
+
+        let c = f32::cos(angle);
+        let s = f32::sin(angle);
+        let t = 1.0 - c;
+        let a = axis.normalized();
+
+        (temp.m.0).0 = c + a.x*a.x*t;
+        (temp.m.1).1 = c + a.y*a.y*t;
+        (temp.m.2).2 = c + a.z*a.z*t;
+
+        {
+            let tmp1 = a.x*a.y*t;
+            let tmp2 = a.z*s;
+            (temp.m.0).1 = tmp1 + tmp2;
+            (temp.m.1).0 = tmp1 - tmp2;
+        }
+
+        {
+            let tmp1 = a.x*a.z*t;
+            let tmp2 = a.y*s;
+            (temp.m.0).2 = tmp1 - tmp2;
+            (temp.m.2).0 = tmp1 + tmp2;
+        }
+
+        {
+            let tmp1 = a.y*a.z*t;
+            let tmp2 = a.x*s;
+            (temp.m.1).2 = tmp1 + tmp2;
+            (temp.m.2).1 = tmp1 - tmp2;
+        }
+
+        temp
     }
 
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
@@ -55,7 +103,7 @@ impl Mat4 {
 
     pub fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
 
-        let height = near*math::tan_f32(horizontal_fov*f32::consts::PI/360.0);
+        let height = near*f32::tan(horizontal_fov*f32::consts::PI/360.0);
         let width = height*aspect_ratio;
         Mat4::frustum(-width, width, -height, height, near, far)
     }
@@ -140,8 +188,21 @@ impl Mat4 {
     }
 }
 
+impl Mul<Vec4> for Mat4 {
+    type Output = Vec4;
+
+    fn mul(self, rhs: Vec4) -> Vec4 {
+        Vec4 {
+            x: (self.m.0).0*rhs.x + (self.m.1).0*rhs.y + (self.m.2).0*rhs.z + (self.m.3).0*rhs.w,
+            y: (self.m.0).1*rhs.x + (self.m.1).1*rhs.y + (self.m.2).1*rhs.z + (self.m.3).1*rhs.w,
+            z: (self.m.0).2*rhs.x + (self.m.1).2*rhs.y + (self.m.2).2*rhs.z + (self.m.3).2*rhs.w,
+            w: (self.m.0).3*rhs.x + (self.m.1).3*rhs.y + (self.m.2).3*rhs.z + (self.m.3).3*rhs.w,
+        }
+    }
+}
+
 impl Mul for Mat4 {
-    type Output = Self;
+    type Output = Mat4;
 
     fn mul(self, rhs: Self) -> Self {
         Mat4 {
