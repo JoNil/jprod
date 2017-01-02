@@ -3,7 +3,6 @@
 use f32;
 use mat4::Mat4;
 use vec4::Vec4;
-use win32;
 use window::Window;
 
 pub struct Camera {
