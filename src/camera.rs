@@ -101,11 +101,6 @@ impl Camera {
         if actions.down.active {
             self.pos += self.up * dt;
         }
-
-        let t = format!("x {} y {} z {} xa {} ya {}\n\0", self.pos.x, self.pos.y, self.pos.z, self.x_angle, self.y_angle);
-
-        win32::output_debug_string(t.as_bytes());
-
     }
 
     pub fn get_view_projection(&self) -> Mat4 {
