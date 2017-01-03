@@ -25,7 +25,7 @@
 // Don't manually unroll matrix invert and multiply
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED mul.o")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
 
 extern crate rlibc;
