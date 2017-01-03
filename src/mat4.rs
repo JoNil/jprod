@@ -5,17 +5,17 @@ use core::ops::Mul;
 use core::ops::MulAssign;
 use f32;
 use intrinsics::*;
-use simdty::*;
+use simdty::f32x4;
 use vec4::Vec4;
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 #[repr(C)]
 pub struct Mat4 {
     pub m: (
-        (f32, f32, f32, f32),
-        (f32, f32, f32, f32),
-        (f32, f32, f32, f32),
-        (f32, f32, f32, f32),
+        f32x4,
+        f32x4,
+        f32x4,
+        f32x4,
     ),
 }
 
@@ -24,10 +24,10 @@ impl Mat4 {
     pub fn identity() -> Mat4 {
         Mat4 {
             m: (
-                (1.0, 0.0, 0.0, 0.0),
-                (0.0, 1.0, 0.0, 0.0),
-                (0.0, 0.0, 1.0, 0.0),
-                (0.0, 0.0, 0.0, 1.0),
+                f32x4(1.0, 0.0, 0.0, 0.0),
+                f32x4(0.0, 1.0, 0.0, 0.0),
+                f32x4(0.0, 0.0, 1.0, 0.0),
+                f32x4(0.0, 0.0, 0.0, 1.0),
             ),
         }
     }
@@ -35,10 +35,10 @@ impl Mat4 {
     pub fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
         Mat4 {
             m: (
-                (x.x, x.y, x.z, 0.0),
-                (y.x, y.y, y.z, 0.0),
-                (z.x, z.y, z.z, 0.0),
-                (0.0, 0.0, 0.0, 1.0),
+                f32x4(x.x, x.y, x.z, 0.0),
+                f32x4(y.x, y.y, y.z, 0.0),
+                f32x4(z.x, z.y, z.z, 0.0),
+                f32x4(0.0, 0.0, 0.0, 1.0),
             ),
         }
     }
@@ -47,10 +47,10 @@ impl Mat4 {
     pub fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m: (
-                (1.0, 0.0, 0.0, 0.0),
-                (0.0, 1.0, 0.0, 0.0),
-                (0.0, 0.0, 1.0, 0.0),
-                (pos.x, pos.y, pos.z, 1.0),
+                f32x4(1.0, 0.0, 0.0, 0.0),
+                f32x4(0.0, 1.0, 0.0, 0.0),
+                f32x4(0.0, 0.0, 1.0, 0.0),
+                f32x4(pos.x, pos.y, pos.z, 1.0),
             ),
         }   
     }
@@ -95,10 +95,10 @@ impl Mat4 {
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         Mat4 {
             m: (
-                (2.0*near/(right-left), 0.0, 0.0, 0.0),
-                (0.0, 2.0*near/(top-bottom), 0.0, 0.0),
-                ((right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1.0),
-                (0.0, 0.0, -2.0*far*near/(far-near), 0.0),
+                f32x4(2.0*near/(right-left), 0.0, 0.0, 0.0),
+                f32x4(0.0, 2.0*near/(top-bottom), 0.0, 0.0),
+                f32x4((right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1.0),
+                f32x4(0.0, 0.0, -2.0*far*near/(far-near), 0.0),
             ),
         }
     }
@@ -113,10 +113,10 @@ impl Mat4 {
     pub fn transposed(&self) -> Mat4 {
         Mat4 {
             m: (
-                ((self.m.0).0, (self.m.1).0, (self.m.2).0, (self.m.3).0),
-                ((self.m.0).1, (self.m.1).1, (self.m.2).1, (self.m.3).1),
-                ((self.m.0).2, (self.m.1).2, (self.m.2).2, (self.m.3).2),
-                ((self.m.0).3, (self.m.1).3, (self.m.2).3, (self.m.3).3),
+                f32x4((self.m.0).0, (self.m.1).0, (self.m.2).0, (self.m.3).0),
+                f32x4((self.m.0).1, (self.m.1).1, (self.m.2).1, (self.m.3).1),
+                f32x4((self.m.0).2, (self.m.1).2, (self.m.2).2, (self.m.3).2),
+                f32x4((self.m.0).3, (self.m.1).3, (self.m.2).3, (self.m.3).3),
             )
         }
     }
@@ -190,6 +190,14 @@ impl Mat4 {
         unsafe { mem::transmute(&mut self.m) }
     }
 
+    pub fn as_vec4_array(&self) -> &[Vec4; 4] {
+        unsafe { mem::transmute(&self.m) }
+    }
+
+    pub fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
+        unsafe { mem::transmute(&mut self.m) }
+    }
+
     pub fn as_flat_tuple(&self) -> &(
         f32, f32, f32, f32,
         f32, f32, f32, f32,
@@ -207,33 +215,32 @@ impl Mat4 {
     {
         unsafe { mem::transmute(&mut self.m) }
     }
-
-    pub fn as_simd_tuple(&self) -> &(f32x4, f32x4, f32x4, f32x4)
-    {
-        unsafe { mem::transmute(&self.m) }
-    }
-
-    pub fn as_simd_tuple_mut(&mut self) -> &mut (f32x4, f32x4, f32x4, f32x4)
-    {
-        unsafe { mem::transmute(&mut self.m) }
-    }
 }
 
 impl Mul<Vec4> for Mat4 {
     type Output = Vec4;
 
+    #[inline(always)]
     fn mul(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
-            x: (self.m.0).0*rhs.x + (self.m.1).0*rhs.y + (self.m.2).0*rhs.z + (self.m.3).0*rhs.w,
-            y: (self.m.0).1*rhs.x + (self.m.1).1*rhs.y + (self.m.2).1*rhs.z + (self.m.3).1*rhs.w,
-            z: (self.m.0).2*rhs.x + (self.m.1).2*rhs.y + (self.m.2).2*rhs.z + (self.m.3).2*rhs.w,
-            w: (self.m.0).3*rhs.x + (self.m.1).3*rhs.y + (self.m.2).3*rhs.z + (self.m.3).3*rhs.w,
-        }
-    }
-}
 
-extern "C" {
-    fn M4x4_SSE(a: *const f32, b: *const f32, a: *mut f32);
+        let col1 = self.m.0;
+        let col2 = self.m.1;
+        let col3 = self.m.2;
+        let col4 = self.m.3;
+
+        let xxxx = f32x4(rhs.x, rhs.x, rhs.x, rhs.x);
+        let yyyy = f32x4(rhs.y, rhs.y, rhs.y, rhs.y);
+        let zzzz = f32x4(rhs.z, rhs.z, rhs.z, rhs.z);
+        let wwww = f32x4(rhs.w, rhs.w, rhs.w, rhs.w);
+
+        unsafe { Vec4::from_simd(simd_add(
+            simd_add(
+                simd_mul(col1, xxxx),
+                simd_mul(col2, yyyy)),
+            simd_add(
+                simd_mul(col3, zzzz),
+                simd_mul(col4, wwww)))) }
+    }
 }
 
 impl Mul for Mat4 {
@@ -241,93 +248,24 @@ impl Mul for Mat4 {
 
     fn mul(self, rhs: Mat4) -> Mat4 {
 
-        /*let mut res: Mat4 = unsafe { mem::uninitialized() };
+        let mut res: Mat4 = unsafe { mem::uninitialized() };
 
         {
-            let a = self.as_array();
-            let b = rhs.as_simd_tuple();
-            let mut c = res.as_simd_array_mut();
+            let b = rhs.as_array();
+            let mut c = res.as_vec4_array_mut();
 
-            let row1 = b.0;
-            let row2 = b.1;
-            let row3 = b.2;
-            let row4 = b.3;
+            for i in 0..4 {
 
-            for i in 0..3 {
+                let x = unsafe { *b.get_unchecked(4*i + 0) };
+                let y = unsafe { *b.get_unchecked(4*i + 1) };
+                let z = unsafe { *b.get_unchecked(4*i + 2) };
+                let w = unsafe { *b.get_unchecked(4*i + 3) };
 
-                let value1 = unsafe { *a.get_unchecked(4*i + 0) };
-                let value2 = unsafe { *a.get_unchecked(4*i + 1) };
-                let value3 = unsafe { *a.get_unchecked(4*i + 2) };
-                let value4 = unsafe { *a.get_unchecked(4*i + 3) };
-
-                let brod1 = f32x4(value1, value1, value1, value1);
-                let brod2 = f32x4(value2, value2, value2, value2);
-                let brod3 = f32x4(value3, value3, value3, value3);
-                let brod4 = f32x4(value4, value4, value4, value4);
-
-                let row = unsafe { simd_add(
-                    simd_add(
-                        simd_mul(brod1, row1),
-                        simd_mul(brod2, row2)),
-                    simd_add(
-                        simd_mul(brod3, row3),
-                        simd_mul(brod4, row4))) };
-
-                unsafe { *c.get_unchecked_mut(i) = row; }
+                unsafe { *c.get_unchecked_mut(i) = self * Vec4::xyzw(x, y, z, w); }
             }
         }
 
-        res*/
-
-        /*void M4x4_SSE(float *A, float *B, float *C) {
-            __m128 row1 = _mm_load_ps(&B[0]);
-            __m128 row2 = _mm_load_ps(&B[4]);
-            __m128 row3 = _mm_load_ps(&B[8]);
-            __m128 row4 = _mm_load_ps(&B[12]);
-            for(int i=0; i<4; i++) {
-                __m128 brod1 = _mm_set1_ps(A[4*i + 0]);
-                __m128 brod2 = _mm_set1_ps(A[4*i + 1]);
-                __m128 brod3 = _mm_set1_ps(A[4*i + 2]);
-                __m128 brod4 = _mm_set1_ps(A[4*i + 3]);
-                __m128 row = _mm_add_ps(
-                            _mm_add_ps(
-                                _mm_mul_ps(brod1, row1),
-                                _mm_mul_ps(brod2, row2)),
-                            _mm_add_ps(
-                                _mm_mul_ps(brod3, row3),
-                                _mm_mul_ps(brod4, row4)));
-                _mm_store_ps(&C[4*i], row);
-            }
-        }*/
-
-        Mat4 {
-            m: (
-                (
-                    (rhs.m.0).0*(self.m.0).0+(rhs.m.0).1*(self.m.1).0+(rhs.m.0).2*(self.m.2).0+(rhs.m.0).3*(self.m.3).0,
-                    (rhs.m.0).0*(self.m.0).1+(rhs.m.0).1*(self.m.1).1+(rhs.m.0).2*(self.m.2).1+(rhs.m.0).3*(self.m.3).1,
-                    (rhs.m.0).0*(self.m.0).2+(rhs.m.0).1*(self.m.1).2+(rhs.m.0).2*(self.m.2).2+(rhs.m.0).3*(self.m.3).2,
-                    (rhs.m.0).0*(self.m.0).3+(rhs.m.0).1*(self.m.1).3+(rhs.m.0).2*(self.m.2).3+(rhs.m.0).3*(self.m.3).3,
-                ),
-                (
-                    (rhs.m.1).0*(self.m.0).0+(rhs.m.1).1*(self.m.1).0+(rhs.m.1).2*(self.m.2).0+(rhs.m.1).3*(self.m.3).0,
-                    (rhs.m.1).0*(self.m.0).1+(rhs.m.1).1*(self.m.1).1+(rhs.m.1).2*(self.m.2).1+(rhs.m.1).3*(self.m.3).1,
-                    (rhs.m.1).0*(self.m.0).2+(rhs.m.1).1*(self.m.1).2+(rhs.m.1).2*(self.m.2).2+(rhs.m.1).3*(self.m.3).2,
-                    (rhs.m.1).0*(self.m.0).3+(rhs.m.1).1*(self.m.1).3+(rhs.m.1).2*(self.m.2).3+(rhs.m.1).3*(self.m.3).3,
-                ),
-                (
-                    (rhs.m.2).0*(self.m.0).0+(rhs.m.2).1*(self.m.1).0+(rhs.m.2).2*(self.m.2).0+(rhs.m.2).3*(self.m.3).0,
-                    (rhs.m.2).0*(self.m.0).1+(rhs.m.2).1*(self.m.1).1+(rhs.m.2).2*(self.m.2).1+(rhs.m.2).3*(self.m.3).1,
-                    (rhs.m.2).0*(self.m.0).2+(rhs.m.2).1*(self.m.1).2+(rhs.m.2).2*(self.m.2).2+(rhs.m.2).3*(self.m.3).2,
-                    (rhs.m.2).0*(self.m.0).3+(rhs.m.2).1*(self.m.1).3+(rhs.m.2).2*(self.m.2).3+(rhs.m.2).3*(self.m.3).3,
-                ),
-                (
-                    (rhs.m.3).0*(self.m.0).0+(rhs.m.3).1*(self.m.1).0+(rhs.m.3).2*(self.m.2).0+(rhs.m.3).3*(self.m.3).0,
-                    (rhs.m.3).0*(self.m.0).1+(rhs.m.3).1*(self.m.1).1+(rhs.m.3).2*(self.m.2).1+(rhs.m.3).3*(self.m.3).1,
-                    (rhs.m.3).0*(self.m.0).2+(rhs.m.3).1*(self.m.1).2+(rhs.m.3).2*(self.m.2).2+(rhs.m.3).3*(self.m.3).2,
-                    (rhs.m.3).0*(self.m.0).3+(rhs.m.3).1*(self.m.1).3+(rhs.m.3).2*(self.m.2).3+(rhs.m.3).3*(self.m.3).3,
-                )
-            ),
-        }
+        res
     }
 }
 
