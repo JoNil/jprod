@@ -2,7 +2,7 @@ use c_types::c_void;
 use core::marker::PhantomData;
 use core::mem;
 use gl;
-use win32;
+use utils;
 use window::GlContext;
 
 pub struct Ssbo {
@@ -15,7 +15,7 @@ impl Ssbo {
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
         if handle == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         Ssbo { handle: handle, marker: PhantomData }

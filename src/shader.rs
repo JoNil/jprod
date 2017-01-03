@@ -7,6 +7,7 @@ use pool::PoolAllocator;
 use shader_sources::get_shader_source;
 use shader_sources::ShaderId;
 use shader_sources::ShaderSource;
+use utils;
 use win32;
 use win32_types::*;
 use window::GlContext;
@@ -20,7 +21,7 @@ impl RawProgram {
     fn new() -> RawProgram {
         let handle = unsafe { gl::CreateProgram() };
         if handle == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         RawProgram {
@@ -45,7 +46,7 @@ impl RawShader {
     fn new(shader_type: u32) -> RawShader {
         let handle = unsafe { gl::CreateShader(shader_type) };
         if handle == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         RawShader {
@@ -150,7 +151,7 @@ impl Shader {
                 vertex: vertex,
             }
         } else {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 

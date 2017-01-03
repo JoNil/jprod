@@ -5,6 +5,7 @@ use core::default::Default;
 use core::mem;
 use core::ptr;
 use module::Module;
+use utils;
 use win32_types::*;
 
 #[link(name = "kernel32")]
@@ -38,8 +39,6 @@ extern "system" {
 
     fn QueryPerformanceCounter(time: *mut i64) -> i32;
     fn QueryPerformanceFrequency(frequency: *mut i64) -> i32;
-
-    fn DebugBreak() -> !;
 }
 
 pub fn output_debug_string(string: &[u8]) {
@@ -144,12 +143,6 @@ pub fn query_performance_frequency() -> i64 {
     unsafe { QueryPerformanceFrequency(&mut frequency as *mut _); }
 
     frequency
-}
-
-pub fn debug_break() -> ! {
-    unsafe {
-        DebugBreak();
-    }
 }
 
 type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
@@ -433,7 +426,7 @@ pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
     let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
 
     if ptr == ptr::null_mut() {
-        debug_break();
+        utils::debug_trap();
     }
 
     ptr

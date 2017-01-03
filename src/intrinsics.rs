@@ -639,7 +639,7 @@ extern {
     pub fn trap() -> ();
     /// The `llvm.debugtrap` intrinsic; known as `__builtin_debugtrap` in GCC.
     #[link_name = "llvm.debugtrap"]
-    pub fn debugtrap() -> ();
+    pub fn debugtrap() -> !;
     /// The `llvm.donothing` intrinsic.
     #[link_name = "llvm.donothing"]
     pub fn donothing() -> ();

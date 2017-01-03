@@ -1,9 +1,6 @@
+use core::mem;
+use intrinsics;
 
-// pub fn strlen(str: *const u8) -> usize {
-//
-//
-// }
-
-// pub fn cstr_to_slice(str: *const u8) -> &[u8] {
-//
-// }
+pub fn debug_trap() -> ! {
+    unsafe { intrinsics::debugtrap() };
+}

@@ -2,6 +2,7 @@ use core::default::Default;
 use core::mem;
 use core::ptr;
 use gl;
+use utils;
 use win32;
 use win32_types::*;
 
@@ -36,7 +37,7 @@ impl RawWindow {
         let window = win32::create_window(WINDOW_CLASS, WINDOW_NAME, visible);
 
         if window == ptr::null_mut() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         RawWindow { handle: window }
@@ -46,7 +47,7 @@ impl RawWindow {
 
         let dc = win32::get_dc(self.handle);
         if dc == ptr::null_mut() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         RawDc {
@@ -59,7 +60,7 @@ impl RawWindow {
 impl Drop for RawWindow {
     fn drop(&mut self) {
         if win32::destroy_window(self.handle) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 }
@@ -81,7 +82,7 @@ impl RawDc {
         };
 
         if context == ptr::null_mut() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         RawContext {
@@ -94,7 +95,7 @@ impl RawDc {
 impl Drop for RawDc {
     fn drop(&mut self) {
         if win32::release_dc(self.window.handle, self.handle) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 }
@@ -107,7 +108,7 @@ struct RawContext {
 impl RawContext {
     pub fn make_current(&self) {
         if win32::wgl_make_current(self.dc.handle, self.handle) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 }
@@ -115,11 +116,11 @@ impl RawContext {
 impl Drop for RawContext {
     fn drop(&mut self) {
         if win32::wgl_make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         if win32::wgl_delete_context(self.handle) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 }
@@ -173,7 +174,7 @@ impl Window {
     pub fn new() -> Window {
 
         if !win32::register_class(WINDOW_CLASS, window_proc) {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         {
@@ -264,7 +265,7 @@ impl Window {
 
     pub fn swap(&self) {
         if !win32::swap_buffers(self.context.dc.handle) {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 }
@@ -294,7 +295,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
                                          None,
                                          &mut suggested_pixel_format_index,
                                          &mut extended_pick) == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 
@@ -331,7 +332,7 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
 
         suggested_pixel_format_index = win32::choose_pixel_format(dc, &desired_pixel_format);
         if suggested_pixel_format_index == 0 {
-            win32::debug_break();
+            utils::debug_trap();
         }
     }
 
@@ -340,11 +341,11 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
                                     suggested_pixel_format_index,
                                     mem::size_of::<PixelFormatDescriptor>() as u32,
                                     &mut suggested_pixel_format) == 0 {
-        win32::debug_break();
+        utils::debug_trap();
     }
 
     if win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
-        win32::debug_break();
+        utils::debug_trap();
     }
 }
 

@@ -1,4 +1,5 @@
 use core::ptr;
+use utils;
 use win32;
 use win32_types::*;
 
@@ -22,7 +23,7 @@ impl Module {
 
         let ptr = win32::get_proc_address(self.handle, proc_index);
         if ptr.is_null() {
-            win32::debug_break();
+            utils::debug_trap();
         }
         ptr
     }

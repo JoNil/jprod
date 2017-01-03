@@ -5,6 +5,7 @@ use core::cell::Cell;
 use core::mem;
 use core::ptr;
 use core::slice;
+use utils;
 use win32;
 
 pub struct Pool {
@@ -19,7 +20,7 @@ impl Pool {
         let memory = win32::virtual_alloc(size) as *mut u8;
 
         if memory == ptr::null_mut() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         Pool {
@@ -57,13 +58,13 @@ impl<'a> PoolAllocator<'a> {
     pub fn allocate_byte_slice(&'a self, size: usize) -> &'a mut [u8] {
 
         if self.borrowed.get() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         let offset = self.offset + self.used.get();
 
         if offset + size > self.pool.size {
-            win32::debug_break();   
+            utils::debug_trap();   
         }
 
         self.used.set(self.used.get() + size);
@@ -98,7 +99,7 @@ impl<'a> PoolAllocator<'a> {
     pub fn get_sub_allocator(&'a self) -> PoolAllocator<'a> {
         
         if self.borrowed.get() {
-            win32::debug_break();
+            utils::debug_trap();
         }
 
         self.borrowed.set(true);

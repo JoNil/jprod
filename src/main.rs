@@ -19,7 +19,6 @@
 
 // Optimizations
 // Debug break on release should be unrechable
-// Get sin, cos and sqrt from simd
 // asm version of memcpy with rep move, check chaos theory source
 // asm version of checkstack from ntdll or similar
 // Don't manually unroll matrix invert
@@ -137,7 +136,7 @@ fn main() {
         };
 
         camera.update(&window, dt as f32);
-
+        
         update_instance_data(&mut instance_data, &mut allocator, &mut rng);
 
         uniforms.vp = camera.get_view_projection();
@@ -171,7 +170,7 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
                                    _line: u32)
                                    -> ! {
 
-    win32::debug_break();
+    utils::debug_trap();
 }
 
 #[allow(non_upper_case_globals)]
