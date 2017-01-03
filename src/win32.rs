@@ -425,9 +425,7 @@ pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
 
     let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
 
-    if ptr == ptr::null_mut() {
-        utils::debug_trap();
-    }
+    utils::debug_trap_if(ptr == ptr::null_mut());
 
     ptr
 }

@@ -18,7 +18,7 @@
 // Square wave
 
 // Optimizations
-// Debug break on release should be unrechable
+// sse version of matrix inverse or remove it compleatly
 // asm version of memcpy with rep move, check chaos theory source
 // asm version of checkstack from ntdll or similar
 // Don't manually unroll matrix invert
@@ -136,7 +136,7 @@ fn main() {
         };
 
         camera.update(&window, dt as f32);
-        
+
         update_instance_data(&mut instance_data, &mut allocator, &mut rng);
 
         uniforms.vp = camera.get_view_projection();

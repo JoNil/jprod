@@ -20,9 +20,8 @@ struct RawProgram {
 impl RawProgram {
     fn new() -> RawProgram {
         let handle = unsafe { gl::CreateProgram() };
-        if handle == 0 {
-            utils::debug_trap();
-        }
+        
+        utils::debug_trap_if(handle == 0);
 
         RawProgram {
             handle: handle,
@@ -45,9 +44,8 @@ struct RawShader {
 impl RawShader {
     fn new(shader_type: u32) -> RawShader {
         let handle = unsafe { gl::CreateShader(shader_type) };
-        if handle == 0 {
-            utils::debug_trap();
-        }
+        
+        utils::debug_trap_if(handle == 0);
 
         RawShader {
             handle: handle,
@@ -156,38 +154,40 @@ impl Shader {
     }
 
     pub fn reload_if_changed<'a>(&mut self, allocator: &PoolAllocator<'a>) {
-        let mut needs_update = false;
+        if cfg!(debug_assertions) {
+            let mut needs_update = false;
 
-        let mut vertex_file_attributes: FileAttributeData = Default::default();
-        win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
+            let mut vertex_file_attributes: FileAttributeData = Default::default();
+            win32::get_file_attributes(self.source.vertex_path, GET_FILE_EX_INFO_STANDARD, &mut vertex_file_attributes);
 
-        if win32::compare_file_time(&vertex_file_attributes.last_write_time, &self.source.vertex_filetime) == 1 {
-            needs_update = true;
-        }
+            if win32::compare_file_time(&vertex_file_attributes.last_write_time, &self.source.vertex_filetime) == 1 {
+                needs_update = true;
+            }
 
-        let mut fragment_file_attributes: FileAttributeData = Default::default();
-        win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
+            let mut fragment_file_attributes: FileAttributeData = Default::default();
+            win32::get_file_attributes(self.source.fragment_path, GET_FILE_EX_INFO_STANDARD, &mut fragment_file_attributes);
 
-        if win32::compare_file_time(&fragment_file_attributes.last_write_time, &self.source.fragment_filetime) == 1 {
-            needs_update = true;
-        }
+            if win32::compare_file_time(&fragment_file_attributes.last_write_time, &self.source.fragment_filetime) == 1 {
+                needs_update = true;
+            }
 
-        if needs_update {
-            let local_allocator = allocator.get_sub_allocator();
+            if needs_update {
+                let local_allocator = allocator.get_sub_allocator();
 
-            if let (Some(fragment_file), Some(vertex_file)) =
-                (File::open(self.source.fragment_path), File::open(self.source.vertex_path)) {
+                if let (Some(fragment_file), Some(vertex_file)) =
+                    (File::open(self.source.fragment_path), File::open(self.source.vertex_path)) {
 
-                let vertex_source = vertex_file.read_entire_file(&local_allocator);
-                let fragment_source = fragment_file.read_entire_file(&local_allocator);
+                    let vertex_source = vertex_file.read_entire_file(&local_allocator);
+                    let fragment_source = fragment_file.read_entire_file(&local_allocator);
 
-                self.source.vertex_filetime = vertex_file_attributes.last_write_time;
-                self.source.fragment_filetime = fragment_file_attributes.last_write_time;
+                    self.source.vertex_filetime = vertex_file_attributes.last_write_time;
+                    self.source.fragment_filetime = fragment_file_attributes.last_write_time;
 
-                if let Some((program, fragment, vertex)) = load_shader(fragment_source, vertex_source) {
-                    self.program = program;
-                    self.fragment = fragment;
-                    self.vertex = vertex;
+                    if let Some((program, fragment, vertex)) = load_shader(fragment_source, vertex_source) {
+                        self.program = program;
+                        self.fragment = fragment;
+                        self.vertex = vertex;
+                    }
                 }
             }
         }

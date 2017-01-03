@@ -36,9 +36,7 @@ impl RawWindow {
     fn new(visible: bool) -> RawWindow {
         let window = win32::create_window(WINDOW_CLASS, WINDOW_NAME, visible);
 
-        if window == ptr::null_mut() {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(window == ptr::null_mut());
 
         RawWindow { handle: window }
     }
@@ -46,9 +44,8 @@ impl RawWindow {
     fn get_dc(self) -> RawDc {
 
         let dc = win32::get_dc(self.handle);
-        if dc == ptr::null_mut() {
-            utils::debug_trap();
-        }
+
+        utils::debug_trap_if(dc == ptr::null_mut());
 
         RawDc {
             window: self,
@@ -59,9 +56,7 @@ impl RawWindow {
 
 impl Drop for RawWindow {
     fn drop(&mut self) {
-        if win32::destroy_window(self.handle) == 0 {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(win32::destroy_window(self.handle) == 0);
     }
 }
 
@@ -81,9 +76,7 @@ impl RawDc {
             win32::wgl_create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
         };
 
-        if context == ptr::null_mut() {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(context == ptr::null_mut());
 
         RawContext {
             dc: self,
@@ -94,9 +87,7 @@ impl RawDc {
 
 impl Drop for RawDc {
     fn drop(&mut self) {
-        if win32::release_dc(self.window.handle, self.handle) == 0 {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(win32::release_dc(self.window.handle, self.handle) == 0);
     }
 }
 
@@ -107,21 +98,14 @@ struct RawContext {
 
 impl RawContext {
     pub fn make_current(&self) {
-        if win32::wgl_make_current(self.dc.handle, self.handle) == 0 {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(win32::wgl_make_current(self.dc.handle, self.handle) == 0);
     }
 }
 
 impl Drop for RawContext {
     fn drop(&mut self) {
-        if win32::wgl_make_current(ptr::null_mut(), ptr::null_mut()) == 0 {
-            utils::debug_trap();
-        }
-
-        if win32::wgl_delete_context(self.handle) == 0 {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(win32::wgl_make_current(ptr::null_mut(), ptr::null_mut()) == 0);
+        utils::debug_trap_if(win32::wgl_delete_context(self.handle) == 0);
     }
 }
 
@@ -173,9 +157,7 @@ pub struct Window {
 impl Window {
     pub fn new() -> Window {
 
-        if !win32::register_class(WINDOW_CLASS, window_proc) {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(!win32::register_class(WINDOW_CLASS, window_proc));
 
         {
             let initial_winow = RawWindow::new(false);
@@ -264,9 +246,7 @@ impl Window {
     }
 
     pub fn swap(&self) {
-        if !win32::swap_buffers(self.context.dc.handle) {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(!win32::swap_buffers(self.context.dc.handle));
     }
 }
 
@@ -290,13 +270,11 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
     let mut extended_pick = 0;
 
     if !initial {
-        if win32::wgl_choose_pixel_format(dc,
-                                         Some(WINDOW_ATTRIBS),
-                                         None,
-                                         &mut suggested_pixel_format_index,
-                                         &mut extended_pick) == 0 {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(win32::wgl_choose_pixel_format(dc,
+                Some(WINDOW_ATTRIBS),
+                None,
+                &mut suggested_pixel_format_index,
+                &mut extended_pick) == 0);
     }
 
     if extended_pick == 0 {
@@ -331,23 +309,17 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
         };
 
         suggested_pixel_format_index = win32::choose_pixel_format(dc, &desired_pixel_format);
-        if suggested_pixel_format_index == 0 {
-            utils::debug_trap();
-        }
+        
+        utils::debug_trap_if(suggested_pixel_format_index == 0);
     }
 
     let mut suggested_pixel_format = unsafe { mem::uninitialized() };
-    if win32::describe_pixel_format(dc,
-                                    suggested_pixel_format_index,
-                                    mem::size_of::<PixelFormatDescriptor>() as u32,
-                                    &mut suggested_pixel_format) == 0 {
-        utils::debug_trap();
-    }
+    utils::debug_trap_if(
+            win32::describe_pixel_format(
+                    dc,
+                    suggested_pixel_format_index,
+                    mem::size_of::<PixelFormatDescriptor>() as u32,
+                    &mut suggested_pixel_format) == 0);
 
-    if win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0 {
-        utils::debug_trap();
-    }
+    utils::debug_trap_if(win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) == 0);
 }
-
-
-

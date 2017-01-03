@@ -22,9 +22,9 @@ impl Module {
     pub fn get_proc_address(&self, proc_index: isize) -> Proc {
 
         let ptr = win32::get_proc_address(self.handle, proc_index);
-        if ptr.is_null() {
-            utils::debug_trap();
-        }
+        
+        utils::debug_trap_if(ptr.is_null());
+
         ptr
     }
 }

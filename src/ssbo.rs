@@ -14,9 +14,8 @@ impl Ssbo {
     pub fn new(_: &GlContext) -> Ssbo {
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
-        if handle == 0 {
-            utils::debug_trap();
-        }
+
+        utils::debug_trap_if(handle == 0);
 
         Ssbo { handle: handle, marker: PhantomData }
     }

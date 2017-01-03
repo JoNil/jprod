@@ -19,9 +19,7 @@ impl Pool {
 
         let memory = win32::virtual_alloc(size) as *mut u8;
 
-        if memory == ptr::null_mut() {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(memory == ptr::null_mut());
 
         Pool {
             memory: memory,
@@ -57,15 +55,11 @@ pub struct PoolAllocator<'a> {
 impl<'a> PoolAllocator<'a> {
     pub fn allocate_byte_slice(&'a self, size: usize) -> &'a mut [u8] {
 
-        if self.borrowed.get() {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(self.borrowed.get());
 
         let offset = self.offset + self.used.get();
 
-        if offset + size > self.pool.size {
-            utils::debug_trap();   
-        }
+        utils::debug_trap_if(offset + size > self.pool.size);
 
         self.used.set(self.used.get() + size);
 
@@ -98,9 +92,7 @@ impl<'a> PoolAllocator<'a> {
 
     pub fn get_sub_allocator(&'a self) -> PoolAllocator<'a> {
         
-        if self.borrowed.get() {
-            utils::debug_trap();
-        }
+        utils::debug_trap_if(self.borrowed.get());
 
         self.borrowed.set(true);
 
