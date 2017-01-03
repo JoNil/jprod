@@ -9,9 +9,9 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
+// Dna shaped rombs
 // Profiling? Gpu and cpu time. Telemetry?
 // Defered rendering
-// Dna shaped rombs
 // Imgui
 // Camera path
 // Audio output
