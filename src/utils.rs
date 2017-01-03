@@ -1,5 +1,6 @@
 use intrinsics;
 
+#[inline(always)]
 pub fn debug_trap_if(cond: bool) -> () {
 
     let inverse_cond = !cond;
@@ -13,6 +14,7 @@ pub fn debug_trap_if(cond: bool) -> () {
     }
 }
 
+#[inline(always)]
 pub fn debug_trap() -> ! {
     unsafe { intrinsics::debugtrap() };
 }
