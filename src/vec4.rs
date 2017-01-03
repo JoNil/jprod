@@ -9,6 +9,8 @@ use core::ops::Sub;
 use core::ops::SubAssign;
 use f32;
 
+#[repr(simd)]
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct Vec4 {
     pub x: f32,

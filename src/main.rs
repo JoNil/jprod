@@ -1,5 +1,9 @@
 #![feature(lang_items)]
 #![feature(link_args)]
+#![feature(link_llvm_intrinsics)]
+#![feature(platform_intrinsics)]
+#![feature(repr_simd)]
+#![feature(simd_ffi)]
 
 #![cfg_attr(not(test), no_main)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
@@ -21,7 +25,7 @@
 // Don't manually unroll matrix invert and multiply
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED mul.o")]
 extern "C" {}
 
 extern crate rlibc;
@@ -36,6 +40,7 @@ mod camera;
 mod f32;
 mod file;
 mod gl;
+mod intrinsics;
 mod mat4;
 mod mesh;
 mod module;
@@ -43,6 +48,7 @@ mod pool;
 mod random;
 mod shader;
 mod shader_sources;
+mod simdty;
 mod ssbo;
 mod time;
 mod utils;
