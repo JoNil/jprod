@@ -10,8 +10,7 @@ use core::ops::MulAssign;
 use core::ops::Neg;
 use core::ops::Sub;
 use core::ops::SubAssign;
-use f32;
-use intrinsics::*;
+use intrinsics;
 use simdty::f32x4;
 
 #[repr(simd)]
@@ -88,24 +87,17 @@ impl Vec4 {
         }
     }
 
-    pub fn to_simd(self) -> f32x4 {
+    fn to_simd(self) -> f32x4 {
         unsafe { mem::transmute(self) }
     }
 
-    pub fn as_simd(&self) -> &f32x4 {
-        unsafe { mem::transmute(self) }
-    }
-
-    pub fn as_simd_mut(&mut self) -> &mut f32x4 {
-        unsafe { mem::transmute(self) }
-    }
-
+    #[inline(never)]
     pub fn length(self) -> f32 {
-        f32::sqrt(self.dot(self))
+        Vec4::splat(self.dot(self)).sqrt_x4().x
     }
 
     pub fn pairwise_mul(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_mul(self.to_simd(), rhs.to_simd())) }
+        unsafe { Vec4::from_simd(intrinsics::simd_mul(self.to_simd(), rhs.to_simd())) }
     }
 
     pub fn dot(self, rhs: Vec4) -> f32 {
@@ -132,13 +124,17 @@ impl Vec4 {
     pub fn normalized(self) -> Vec4 {
         self / self.length()
     }
+
+    pub fn sqrt_x4(self) -> Vec4 {
+        unsafe { Vec4::from_simd(intrinsics::sqrt_v4f32(self.to_simd())) }
+    }
 }
 
 impl Add for Vec4 {
     type Output = Vec4;
 
     fn add(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_add(self.to_simd(), rhs.to_simd())) }
+        unsafe { Vec4::from_simd(intrinsics::simd_add(self.to_simd(), rhs.to_simd())) }
     }
 }
 
@@ -152,7 +148,7 @@ impl Div<f32> for Vec4 {
     type Output = Vec4;
 
     fn div(self, rhs: f32) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_div(self.to_simd(), f32x4(rhs, rhs, rhs, rhs))) }
+        unsafe { Vec4::from_simd(intrinsics::simd_div(self.to_simd(), Vec4::splat(rhs).to_simd())) }
     }
 }
 
@@ -166,7 +162,7 @@ impl Mul<f32> for Vec4 {
     type Output = Vec4;
 
     fn mul(self, rhs: f32) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_mul(self.to_simd(), f32x4(rhs, rhs, rhs, rhs))) }
+        self.pairwise_mul(Vec4::splat(rhs))
     }
 }
 
@@ -174,7 +170,7 @@ impl Mul<Vec4> for f32 {
     type Output = Vec4;
 
     fn mul(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_mul(f32x4(self, self, self, self), rhs.to_simd())) }
+        Vec4::splat(self).pairwise_mul(rhs)
     }
 }
 
@@ -201,7 +197,7 @@ impl Sub for Vec4 {
     type Output = Vec4;
 
     fn sub(self, rhs: Vec4) -> Vec4 {
-        unsafe { Vec4::from_simd(simd_sub(self.to_simd(), rhs.to_simd())) }
+        unsafe { Vec4::from_simd(intrinsics::simd_sub(self.to_simd(), rhs.to_simd())) }
     }
 }
 

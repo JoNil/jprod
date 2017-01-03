@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use vec4::Vec4;
 use win32;
 
 pub use core::f32::*;
@@ -17,7 +18,7 @@ pub fn tan(a: f32) -> f32 {
 }
 
 pub fn sqrt(a: f32) -> f32 {
-    win32::sqrt(a as f64) as f32
+    Vec4::splat(a).sqrt_x4().x
 }
 
 pub fn min(a: f32, b: f32) -> f32 {
