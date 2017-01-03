@@ -19,7 +19,6 @@
 // asm version of memcpy with rep move, check chaos theory source
 // asm version of checkstack from ntdll or similar
 // Don't manually unroll matrix invert and multiply
-// Remove whitespace from shaders
 // Load kernal32 stuff by ordinal
 
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]

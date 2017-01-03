@@ -201,9 +201,9 @@ static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
     1501 + 355, // GetKeyState
 ];
 
-pub fn message_box(text: &[u8], caption: &[u8], box_type: u32) {
+pub fn message_box(text: &[u8], caption: &[u8]) {
     unsafe {
-        mem::transmute::<_, MessageBoxATy>(*USER_API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), box_type);
+        mem::transmute::<_, MessageBoxATy>(*USER_API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), 0x00000030);
     }
 }
 

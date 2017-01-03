@@ -206,7 +206,7 @@ fn print_shader_error(shader: u32) {
 
     unsafe { gl::GetShaderInfoLog(shader, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
 
-    win32::output_debug_string(&info);
+    win32::message_box(&info, b"\0");
 }
 
 fn print_program_error(program: u32) {
@@ -217,5 +217,5 @@ fn print_program_error(program: u32) {
 
     unsafe { gl::GetProgramInfoLog(program, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
 
-    win32::output_debug_string(&info);
+    win32::message_box(&info, b"\0");
 }

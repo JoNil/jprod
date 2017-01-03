@@ -23,6 +23,104 @@ fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     Ok(s)
 }
 
+fn trim_whitespace(s: &str) -> String {
+
+    let mut temp = s.to_owned();
+
+    let matches = &[
+        ("\r\n", "\n"),
+        ("\n\n", "\n"),
+
+        ("  ", " "),
+
+        ("\n{", "{"),
+        ("{\n", "{"),
+        (" {", "{"),
+        ("{ ", "{"),
+
+        ("\n}", "}"),
+        ("}\n", "}"),
+        (" }", "}"),
+        ("} ", "}"),
+
+        ("\n)", ")"),
+        (")\n", ")"),
+        (" )", ")"),
+        (") ", ")"),
+
+        ("\n(", "("),
+        ("(\n", "("),
+        (" (", "("),
+        ("( ", "("),
+
+        ("\n;", ";"),
+        (";\n", ";"),
+        (" ;", ";"),
+        ("; ", ";"),
+
+        ("\n,", ","),
+        (",\n", ","),
+        (" ,", ","),
+        (", ", ","),
+
+        ("\n+", "+"),
+        ("+\n", "+"),
+        (" +", "+"),
+        ("+ ", "+"),
+
+        ("\n-", "-"),
+        ("-\n", "-"),
+        (" -", "-"),
+        ("- ", "-"),
+
+        ("\n*", "*"),
+        ("*\n", "*"),
+        (" *", "*"),
+        ("* ", "*"),
+
+
+        ("\n/", "/"),
+        ("/\n", "/"),
+        (" /", "/"),
+        ("/ ", "/"),
+
+        ("\n%", "%"),
+        ("%\n", "%"),
+        (" %", "%"),
+        ("% ", "%"),
+
+        ("\n=", "="),
+        ("=\n", "="),
+        (" =", "="),
+        ("= ", "="),
+    ];
+
+    loop {
+
+        let begin_len = temp.len();
+
+        for &(pattern, value) in matches.iter() {
+
+            loop {
+
+                let old_len = temp.len();
+
+                temp = temp.replace(pattern, value);
+
+                if temp.len() == old_len {
+                    break;
+                }
+            }
+        }
+
+        if temp.len() == begin_len {
+            break;
+        }
+    }
+
+    temp
+}
+
 fn write_file<P: AsRef<Path>>(path: P, data: &str) -> Result<(), Error> {
     let mut f = try!(File::create(path));
     try!(f.write_all(data.as_bytes()));
@@ -100,11 +198,11 @@ fn main() {
             };         
 
             if extension == "vs" {
-                shader.vertex_source = Some(read_file(entry.path()).unwrap());
+                shader.vertex_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
                 shader.vertex_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
                 shader.vertex_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
             } else if extension == "ps" {
-                shader.fragment_source = Some(read_file(entry.path()).unwrap());
+                shader.fragment_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
                 shader.fragment_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
                 shader.fragment_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
             }
