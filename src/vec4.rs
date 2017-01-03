@@ -92,20 +92,32 @@ impl Vec4 {
     }
 
     pub fn length(self) -> f32 {
-        f32::sqrt(self.x*self.x + self.y*self.y + self.z*self.z + self.w*self.w)
+        f32::sqrt(self.dot(self))
+    }
+
+    pub fn pairwise_mul(self, rhs: Vec4) -> Vec4 {
+        unsafe { Vec4::from_simd(simd_mul(self.to_simd(), rhs.to_simd())) }
     }
 
     pub fn dot(self, rhs: Vec4) -> f32 {
-        self.x*rhs.x + self.y*rhs.y + self.z*rhs.z + self.w*rhs.w
+
+        let temp = self.pairwise_mul(rhs);
+
+        temp.x + temp.y + temp.z + temp.w
     }
 
     pub fn cross(self, rhs: Vec4) -> Vec4 {
-        Vec4 {
-            x: self.y*rhs.z - self.z*rhs.y,
-            y: self.z*rhs.x - self.x*rhs.z,
-            z: self.x*rhs.y - self.y*rhs.x,
-            w: 0.0,
-        }
+
+        let a = Vec4::xyzw(self.y, self.z, self.x, 0.0);
+        let b = Vec4::xyzw(rhs.z, rhs.x, rhs.y, 0.0);
+
+        let c = Vec4::xyzw(self.z, self.x, self.y, 0.0);
+        let d = Vec4::xyzw(rhs.y, rhs.z, rhs.x, 0.0);
+
+        let temp1 = a.pairwise_mul(b);
+        let temp2 = c.pairwise_mul(d);
+
+        temp1 - temp2
     }
 
     pub fn normalized(self) -> Vec4 {
@@ -123,7 +135,7 @@ impl Add for Vec4 {
 
 impl AddAssign for Vec4 {
     fn add_assign(&mut self, rhs: Vec4) {
-        *self = unsafe { Vec4::from_simd(simd_add(self.to_simd(), rhs.to_simd())) }
+        *self = *self + rhs;
     }
 }
 
@@ -137,7 +149,7 @@ impl Div<f32> for Vec4 {
 
 impl DivAssign<f32> for Vec4 {
     fn div_assign(&mut self, rhs: f32) {
-        *self = unsafe { Vec4::from_simd(simd_div(self.to_simd(), f32x4(rhs, rhs, rhs, rhs))) };
+        *self = *self / rhs;
     }
 }
 
@@ -159,7 +171,7 @@ impl Mul<Vec4> for f32 {
 
 impl MulAssign<f32> for Vec4 {
     fn mul_assign(&mut self, rhs: f32) {
-        *self = unsafe { Vec4::from_simd(simd_mul(self.to_simd(), f32x4(rhs, rhs, rhs, rhs))) };
+        *self = *self * rhs;
     }
 }
 
@@ -186,6 +198,6 @@ impl Sub for Vec4 {
 
 impl SubAssign for Vec4 {
     fn sub_assign(&mut self, rhs: Vec4) {
-        *self = unsafe { Vec4::from_simd(simd_sub(self.to_simd(), rhs.to_simd())) };
+        *self = *self - rhs;
     }
 }
