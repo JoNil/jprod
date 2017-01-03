@@ -52,6 +52,15 @@ impl Vec4 {
         }
     }
 
+    pub fn splat(a: f32) -> Vec4 {
+        Vec4 {
+            x: a,
+            y: a,
+            z: a,
+            w: a,
+        }
+    }
+
     pub fn from_simd(simd: f32x4) -> Vec4 {
         Vec4 {
             x: simd.0,

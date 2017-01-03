@@ -4,18 +4,16 @@ use core::mem;
 use core::ops::Mul;
 use core::ops::MulAssign;
 use f32;
-use intrinsics::*;
-use simdty::f32x4;
 use vec4::Vec4;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Copy, Clone)]
 #[repr(C)]
 pub struct Mat4 {
     pub m: (
-        f32x4,
-        f32x4,
-        f32x4,
-        f32x4,
+        Vec4,
+        Vec4,
+        Vec4,
+        Vec4,
     ),
 }
 
@@ -24,10 +22,10 @@ impl Mat4 {
     pub fn identity() -> Mat4 {
         Mat4 {
             m: (
-                f32x4(1.0, 0.0, 0.0, 0.0),
-                f32x4(0.0, 1.0, 0.0, 0.0),
-                f32x4(0.0, 0.0, 1.0, 0.0),
-                f32x4(0.0, 0.0, 0.0, 1.0),
+                Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
+                Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
+                Vec4::xyzw(0.0, 0.0, 1.0, 0.0),
+                Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
             ),
         }
     }
@@ -35,10 +33,10 @@ impl Mat4 {
     pub fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
         Mat4 {
             m: (
-                f32x4(x.x, x.y, x.z, 0.0),
-                f32x4(y.x, y.y, y.z, 0.0),
-                f32x4(z.x, z.y, z.z, 0.0),
-                f32x4(0.0, 0.0, 0.0, 1.0),
+                Vec4::xyzw(x.x, x.y, x.z, 0.0),
+                Vec4::xyzw(y.x, y.y, y.z, 0.0),
+                Vec4::xyzw(z.x, z.y, z.z, 0.0),
+                Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
             ),
         }
     }
@@ -47,10 +45,10 @@ impl Mat4 {
     pub fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m: (
-                f32x4(1.0, 0.0, 0.0, 0.0),
-                f32x4(0.0, 1.0, 0.0, 0.0),
-                f32x4(0.0, 0.0, 1.0, 0.0),
-                f32x4(pos.x, pos.y, pos.z, 1.0),
+                Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
+                Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
+                Vec4::xyzw(0.0, 0.0, 1.0, 0.0),
+                Vec4::xyzw(pos.x, pos.y, pos.z, 1.0),
             ),
         }   
     }
@@ -64,29 +62,29 @@ impl Mat4 {
         let t = 1.0 - c;
         let a = axis.normalized();
 
-        (temp.m.0).0 = c + a.x*a.x*t;
-        (temp.m.1).1 = c + a.y*a.y*t;
-        (temp.m.2).2 = c + a.z*a.z*t;
+        temp.m.0.x = c + a.x*a.x*t;
+        temp.m.1.y = c + a.y*a.y*t;
+        temp.m.2.z = c + a.z*a.z*t;
 
         {
             let tmp1 = a.x*a.y*t;
             let tmp2 = a.z*s;
-            (temp.m.0).1 = tmp1 + tmp2;
-            (temp.m.1).0 = tmp1 - tmp2;
+            temp.m.0.y = tmp1 + tmp2;
+            temp.m.1.x = tmp1 - tmp2;
         }
 
         {
             let tmp1 = a.x*a.z*t;
             let tmp2 = a.y*s;
-            (temp.m.0).2 = tmp1 - tmp2;
-            (temp.m.2).0 = tmp1 + tmp2;
+            temp.m.0.z = tmp1 - tmp2;
+            temp.m.2.x = tmp1 + tmp2;
         }
 
         {
             let tmp1 = a.y*a.z*t;
             let tmp2 = a.x*s;
-            (temp.m.1).2 = tmp1 + tmp2;
-            (temp.m.2).1 = tmp1 - tmp2;
+            temp.m.1.z = tmp1 + tmp2;
+            temp.m.2.y = tmp1 - tmp2;
         }
 
         temp
@@ -95,10 +93,10 @@ impl Mat4 {
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         Mat4 {
             m: (
-                f32x4(2.0*near/(right-left), 0.0, 0.0, 0.0),
-                f32x4(0.0, 2.0*near/(top-bottom), 0.0, 0.0),
-                f32x4((right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1.0),
-                f32x4(0.0, 0.0, -2.0*far*near/(far-near), 0.0),
+                Vec4::xyzw(2.0*near/(right-left), 0.0, 0.0, 0.0),
+                Vec4::xyzw(0.0, 2.0*near/(top-bottom), 0.0, 0.0),
+                Vec4::xyzw((right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1.0),
+                Vec4::xyzw(0.0, 0.0, -2.0*far*near/(far-near), 0.0),
             ),
         }
     }
@@ -113,10 +111,10 @@ impl Mat4 {
     pub fn transposed(&self) -> Mat4 {
         Mat4 {
             m: (
-                f32x4((self.m.0).0, (self.m.1).0, (self.m.2).0, (self.m.3).0),
-                f32x4((self.m.0).1, (self.m.1).1, (self.m.2).1, (self.m.3).1),
-                f32x4((self.m.0).2, (self.m.1).2, (self.m.2).2, (self.m.3).2),
-                f32x4((self.m.0).3, (self.m.1).3, (self.m.2).3, (self.m.3).3),
+                Vec4::xyzw(self.m.0.x, self.m.1.x, self.m.2.x, self.m.3.x),
+                Vec4::xyzw(self.m.0.y, self.m.1.y, self.m.2.y, self.m.3.y),
+                Vec4::xyzw(self.m.0.z, self.m.1.z, self.m.2.z, self.m.3.z),
+                Vec4::xyzw(self.m.0.w, self.m.1.w, self.m.2.w, self.m.3.w),
             )
         }
     }
@@ -182,14 +180,6 @@ impl Mat4 {
         unsafe { mem::transmute(&mut self.m) }
     }
 
-    pub fn as_simd_array(&self) -> &[f32x4; 4] {
-        unsafe { mem::transmute(&self.m) }
-    }
-
-    pub fn as_simd_array_mut(&mut self) -> &mut [f32x4; 4] {
-        unsafe { mem::transmute(&mut self.m) }
-    }
-
     pub fn as_vec4_array(&self) -> &[Vec4; 4] {
         unsafe { mem::transmute(&self.m) }
     }
@@ -228,18 +218,13 @@ impl Mul<Vec4> for Mat4 {
         let col3 = self.m.2;
         let col4 = self.m.3;
 
-        let xxxx = f32x4(rhs.x, rhs.x, rhs.x, rhs.x);
-        let yyyy = f32x4(rhs.y, rhs.y, rhs.y, rhs.y);
-        let zzzz = f32x4(rhs.z, rhs.z, rhs.z, rhs.z);
-        let wwww = f32x4(rhs.w, rhs.w, rhs.w, rhs.w);
+        let xxxx = Vec4::splat(rhs.x);
+        let yyyy = Vec4::splat(rhs.y);
+        let zzzz = Vec4::splat(rhs.z);
+        let wwww = Vec4::splat(rhs.w);
 
-        unsafe { Vec4::from_simd(simd_add(
-            simd_add(
-                simd_mul(col1, xxxx),
-                simd_mul(col2, yyyy)),
-            simd_add(
-                simd_mul(col3, zzzz),
-                simd_mul(col4, wwww)))) }
+        (col1.pairwise_mul(xxxx) + col2.pairwise_mul(yyyy)) +
+        (col3.pairwise_mul(zzzz) + col4.pairwise_mul(wwww))
     }
 }
 
