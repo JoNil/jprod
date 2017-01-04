@@ -3,7 +3,6 @@
 use c_types::c_void;
 use core::cell::Cell;
 use core::mem;
-use core::ptr;
 use core::slice;
 use utils;
 use win32;
@@ -19,7 +18,7 @@ impl Pool {
 
         let memory = win32::virtual_alloc(size) as *mut u8;
 
-        utils::debug_trap_if(memory == ptr::null_mut());
+        utils::debug_trap_if(memory.is_null());
 
         Pool {
             memory: memory,

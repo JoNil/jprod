@@ -4,7 +4,6 @@ use c_types::*;
 use core::default::Default;
 use core::mem;
 use core::ptr;
-use module::Module;
 use utils;
 use win32_types::*;
 
@@ -63,7 +62,11 @@ pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
 
 pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
-    unsafe { LoadLibraryA(&*file_name.get_unchecked(0)) }
+    let handle = unsafe { LoadLibraryA(&*file_name.get_unchecked(0)) };
+
+    utils::debug_trap_if(handle.is_null());
+
+    handle
 }
 
 pub fn free_library(module: ModuleHandle) {
@@ -73,7 +76,16 @@ pub fn free_library(module: ModuleHandle) {
 
 pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
 
-    unsafe { GetProcAddress(module, proc_index as *const u8) }
+    let ptr = unsafe { GetProcAddress(module, proc_index as *const u8) };
+
+    utils::debug_trap_if(ptr.is_null());
+
+    ptr
+}
+
+pub fn get_proc_address_name(module: ModuleHandle, name: &[u8]) -> Proc {
+
+    unsafe { GetProcAddress(module, &*name.get_unchecked(0)) }
 }
 
 pub fn get_file_attributes(file_name: &[u8], info_level_id: i32, file_information: &mut FileAttributeData) -> i32 {
@@ -423,9 +435,13 @@ pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
 
 pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
 
-    let ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
+    let mut ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
 
-    utils::debug_trap_if(ptr == ptr::null_mut());
+    if ptr.is_null() {
+        ptr = unsafe { get_proc_address_name(OPENGL32, name) };
+    }
+
+    utils::debug_trap_if(ptr.is_null());
 
     ptr
 }
@@ -486,49 +502,49 @@ pub fn wgl_swap_interval(interval: i32) -> i32 {
     unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(*GL_EXT_API.get_unchecked(3))(interval) }
 }
 
+static mut USER32: ModuleHandle = 0 as *mut _;
+static mut GDI32: ModuleHandle = 0 as *mut _;
+static mut NTDLL: ModuleHandle = 0 as *mut _;
+static mut OPENGL32: ModuleHandle = 0 as *mut _;
+
 pub fn init() {
 
-    if let Some(user32) = Module::new(b"user32.dll\0") {
+    unsafe {
+        USER32 = load_library(b"user32.dll\0");
+        GDI32 = load_library(b"Gdi32.dll\0");
+        NTDLL = load_library(b"NTDLL.dll\0");
+        OPENGL32 = load_library(b"Opengl32.dll\0");
+    }
 
-        for (ordinal, i) in USER_FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                (*USER_API.get_unchecked_mut(i)) = user32.get_proc_address(*ordinal as isize) as usize;
-            }
+    for (i, ordinal) in USER_FUNCTION_ORDINALS.iter().enumerate() {
+        unsafe {
+            (*USER_API.get_unchecked_mut(i)) = get_proc_address(USER32, *ordinal as isize) as usize;
         }
     }
 
-    if let Some(gdi32) = Module::new(b"Gdi32.dll\0") {
-
-        for (ordinal, i) in GDI_FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                (*GDI_API.get_unchecked_mut(i)) = gdi32.get_proc_address(*ordinal as isize) as usize;
-            }
+    for (i, ordinal) in GDI_FUNCTION_ORDINALS.iter().enumerate() {
+        unsafe {
+            (*GDI_API.get_unchecked_mut(i)) = get_proc_address(GDI32, *ordinal as isize) as usize;
         }
     }
 
-    if let Some(nt) = Module::new(b"NTDLL.dll\0") {
-
-        for (ordinal, i) in NT_FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                (*NT_API.get_unchecked_mut(i)) = nt.get_proc_address(*ordinal as isize) as usize;
-            }
+    for (i, ordinal) in NT_FUNCTION_ORDINALS.iter().enumerate() {
+        unsafe {
+            (*NT_API.get_unchecked_mut(i)) = get_proc_address(NTDLL, *ordinal as isize) as usize;
         }
     }
 
-    if let Some(opengl32) = Module::new(b"Opengl32.dll\0") {
-
-        for (ordinal, i) in GL_FUNCTION_ORDINALS.iter().zip(0..) {
-            unsafe {
-                (*GL_API.get_unchecked_mut(i)) = opengl32.get_proc_address(*ordinal as isize) as usize;
-            }
+    for (i, ordinal) in GL_FUNCTION_ORDINALS.iter().enumerate() {
+        unsafe {
+            (*GL_API.get_unchecked_mut(i)) = get_proc_address(OPENGL32, *ordinal as isize) as usize;
         }
     }
 }
 
 pub fn wgl_load_extensions() {
-    for (name, i) in GL_EXT_NAMES.iter().zip(0..) {
+    for (i, name) in GL_EXT_NAMES.iter().enumerate() {
         unsafe {
-        (*GL_EXT_API.get_unchecked_mut(i)) = wgl_get_proc_address(*name) as usize;
+            (*GL_EXT_API.get_unchecked_mut(i)) = wgl_get_proc_address(*name) as usize;
+        }
     }
-}
 }

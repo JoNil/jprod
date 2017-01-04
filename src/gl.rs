@@ -4580,6 +4580,7 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     // Misc
     (ClearBufferfvIdx, b"glClearBufferfv\0"),
     (ViewportIndexedfIdx, b"glViewportIndexedf\0"),
+    (EnableIdx, b"glEnable"),
 ];
 
 #[allow(mutable_transmutes)]

@@ -33,6 +33,33 @@ impl Vec4 {
         }
     }
 
+    pub fn x() -> Vec4 {
+        Vec4 {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+            w: 0.0,
+        }
+    }
+
+    pub fn y() -> Vec4 {
+        Vec4 {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+            w: 0.0,
+        }
+    }
+
+    pub fn z() -> Vec4 {
+        Vec4 {
+            x: 0.0,
+            y: 0.0,
+            z: 1.0,
+            w: 0.0,
+        }
+    }
+
     pub fn xyz(x: f32, y: f32, z: f32) -> Vec4 {
         Vec4 {
             x: x,

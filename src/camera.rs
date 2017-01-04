@@ -39,12 +39,39 @@ impl Camera {
     }
 
     pub fn update(&mut self, window: &Window, dt: f32) {
-    
+
+        {
+            let size = window.get_size();
+
+            self.projection = Mat4::perspective(90.0, size.0 as f32 / size.1 as f32, 0.01, 1000.0);
+        }
+
         let actions = window.get_actions();
 
-        let size = window.get_size();
+        if actions.forward.active {
+            self.pos -= self.forward * dt;
+        }
+        if actions.backward.active {
+            self.pos += self.forward * dt;
+        }
+        if actions.right.active {
+            self.pos -= self.right * dt;
+        }
+        if actions.left.active {
+            self.pos += self.right * dt;
+        }
+        if actions.up.active {
+            self.pos -= self.up * dt;
+        }
+        if actions.down.active {
+            self.pos += self.up * dt;
+        }
 
-        self.projection = Mat4::perspective(90.0, size.0 as f32 / size.1 as f32, 0.01, 1000.0);
+        if actions.reset_camera.active || actions.reset_camera.half_transition_count > 1  {
+            self.pos = Vec4::xyz(0.0, 0.0, 1.0);
+            self.x_angle = 0.0;
+            self.y_angle = 0.0;
+        }
 
         {
             let mouse_offset = get_mouse_offset(window);
@@ -67,25 +94,6 @@ impl Camera {
             self.up = self.right.cross(self.forward).normalized();
 
             self.previus_mouse_offset = mouse_offset;
-        }
-
-        if actions.forward.active {
-            self.pos -= self.forward * dt;
-        }
-        if actions.backward.active {
-            self.pos += self.forward * dt;
-        }
-        if actions.right.active {
-            self.pos -= self.right * dt;
-        }
-        if actions.left.active {
-            self.pos += self.right * dt;
-        }
-        if actions.up.active {
-            self.pos -= self.up * dt;
-        }
-        if actions.down.active {
-            self.pos += self.up * dt;
         }
     }
 

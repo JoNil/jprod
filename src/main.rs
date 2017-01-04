@@ -16,6 +16,7 @@
 // Camera path
 // Audio output
 // Square wave
+// Emulate gameboy sound chip?
 
 // Optimizations
 // Load kernal32 stuff by ordinal
@@ -38,7 +39,6 @@ mod gl;
 mod intrinsics;
 mod mat4;
 mod mesh;
-mod module;
 mod pool;
 mod random;
 mod shader;
@@ -61,22 +61,29 @@ use random::Rng;
 use shader::Shader;
 use shader_sources::ShaderId;
 use ssbo::Ssbo;
+use vec4::Vec4;
 use window::Window;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng) {
 
     let allocator = pool.get_sub_allocator();
 
-    let mvps = allocator.allocate_slice::<[[f32; 4]; 4]>(5000);
+    let mvps = allocator.allocate_slice::<Mat4>(5000);
 
-    for mvp in mvps.iter_mut() {
+    let a = 0.3;
+    let b = 1.0;
+    let f = 10.0;
+    let len = mvps.len();
 
-        unsafe {
-            (*mvp.get_unchecked_mut(0)) = [0.01, 0.0, 0.0, 0.0];
-            (*mvp.get_unchecked_mut(1)) = [0.0, 0.01, 0.0, 0.0];
-            (*mvp.get_unchecked_mut(2)) = [0.0, 0.0, 0.01, 0.0];
-            (*mvp.get_unchecked_mut(3)) = [rng.next_f32() - 0.5, rng.next_f32() - 0.5, 0.0, 1.0];
-        }
+    for (i, mvp) in mvps.iter_mut().enumerate() {
+
+        let t = i as f32 / len as f32;
+
+        let x = a * f32::cos(f*t);
+        let z = a * f32::sin(f*t);
+        let y = b * t;
+
+        *mvp = Mat4::translate(Vec4::xyz(x, y, z)) * Mat4::scale(0.05, 0.05, 0.05);
      }
 
     instance_data.upload_slice(mvps);

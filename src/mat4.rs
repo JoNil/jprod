@@ -54,6 +54,17 @@ impl Mat4 {
         }   
     }
 
+    pub fn scale(x: f32, y: f32, z: f32) -> Mat4 {
+        Mat4 {
+            m: (
+                Vec4::xyzw(x,  0.0, 0.0, 0.0),
+                Vec4::xyzw(0.0,  y, 0.0, 0.0),
+                Vec4::xyzw(0.0, 0.0,  z, 0.0),
+                Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
+            ),
+        }   
+    }
+
     pub fn rotate(angle: f32, axis: Vec4) -> Mat4 {
         
         let mut temp = Mat4::identity();

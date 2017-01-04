@@ -36,7 +36,7 @@ impl RawWindow {
     fn new(visible: bool) -> RawWindow {
         let window = win32::create_window(WINDOW_CLASS, WINDOW_NAME, visible);
 
-        utils::debug_trap_if(window == ptr::null_mut());
+        utils::debug_trap_if(window.is_null());
 
         RawWindow { handle: window }
     }
@@ -45,7 +45,7 @@ impl RawWindow {
 
         let dc = win32::get_dc(self.handle);
 
-        utils::debug_trap_if(dc == ptr::null_mut());
+        utils::debug_trap_if(dc.is_null());
 
         RawDc {
             window: self,
@@ -76,7 +76,7 @@ impl RawDc {
             win32::wgl_create_context_attribs(self.handle, ptr::null_mut(), WGL_ATTRIBS)
         };
 
-        utils::debug_trap_if(context == ptr::null_mut());
+        utils::debug_trap_if(context.is_null());
 
         RawContext {
             dc: self,
@@ -134,6 +134,8 @@ pub struct Actions {
     pub down: ButtonState,
 
     pub left_mouse: ButtonState,
+
+    pub reset_camera: ButtonState,
 }
 
 impl Actions {
@@ -146,6 +148,8 @@ impl Actions {
         self.down.half_transition_count = 0;
 
         self.left_mouse.half_transition_count = 0;
+
+        self.reset_camera.half_transition_count = 0;
     }
 }
 
@@ -177,6 +181,8 @@ impl Window {
 
         gl::init();
 
+        unsafe { gl::Enable(gl::DEPTH_TEST) };
+
         Window { context: context, actions: Default::default() }
     }
 
@@ -206,6 +212,7 @@ impl Window {
                         'G' => self.actions.right.process_message(is_down),
                         'A' => self.actions.up.process_message(is_down),
                         'Z' => self.actions.down.process_message(is_down),
+                        'Q' => self.actions.reset_camera.process_message(is_down),
                         _ => (),
                     }
                 }
