@@ -18,7 +18,6 @@
 // Square wave
 
 // Optimizations
-// asm version of memcpy with rep move, check chaos theory source
 // Load kernal32 stuff by ordinal
 
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
