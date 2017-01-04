@@ -1,6 +1,18 @@
 #![allow(dead_code)]
 
 extern "platform-intrinsic" {
+    pub fn simd_eq<T, U>(x: T, y: T) -> U;
+    pub fn simd_ne<T, U>(x: T, y: T) -> U;
+    pub fn simd_lt<T, U>(x: T, y: T) -> U;
+    pub fn simd_le<T, U>(x: T, y: T) -> U;
+    pub fn simd_gt<T, U>(x: T, y: T) -> U;
+    pub fn simd_ge<T, U>(x: T, y: T) -> U;
+
+    pub fn simd_shuffle2<T, U>(v: T, w: T, idx: [u32; 2]) -> U;
+    pub fn simd_shuffle4<T, U>(v: T, w: T, idx: [u32; 4]) -> U;
+    pub fn simd_shuffle8<T, U>(v: T, w: T, idx: [u32; 8]) -> U;
+    pub fn simd_shuffle16<T, U>(v: T, w: T, idx: [u32; 16]) -> U;
+
     pub fn simd_add<T>(x: T, y: T) -> T;
     pub fn simd_sub<T>(x: T, y: T) -> T;
     pub fn simd_mul<T>(x: T, y: T) -> T;

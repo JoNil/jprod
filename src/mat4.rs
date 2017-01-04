@@ -5,6 +5,7 @@ use core::ops::Mul;
 use core::ops::MulAssign;
 use f32;
 use vec4::Vec4;
+use intrinsics;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -119,57 +120,140 @@ impl Mat4 {
         }
     }
 
-    pub fn inverted(&self) -> Option<Mat4> {
+    pub fn inverted(&self) -> Mat4 {
         let mut res = Mat4::identity();
 
         {
-            let d = self.as_flat_tuple();
-            let res_d = res.as_flat_tuple_mut();
+            let row0;
+            let mut row1;
+            let mut row2;
+            let mut row3;
 
-            res_d.0 = d.5 * d.10 * d.15 - d.5 * d.11 * d.14 - d.9 * d.6 * d.15 + d.9 * d.7 * d.14 +d.13 * d.6 * d.11 - d.13 * d.7 * d.10;
-            res_d.1 = -d.1 * d.10 * d.15 + d.1 * d.11 * d.14 + d.9 * d.2 * d.15 - d.9 * d.3 * d.14 - d.13 * d.2 * d.11 + d.13 * d.3 * d.10;
-            res_d.2 = d.1 * d.6 * d.15 - d.1 * d.7 * d.14 - d.5 * d.2 * d.15 + d.5 * d.3 * d.14 + d.13 * d.2 * d.7 - d.13 * d.3 * d.6;
-            res_d.3 = -d.1 * d.6 * d.11 + d.1 * d.7 * d.10 + d.5 * d.2 * d.11 - d.5 * d.3 * d.10 - d.9 * d.2 * d.7 + d.9 * d.3 * d.6;
-            res_d.4 = -d.4 * d.10 * d.15 + d.4 * d.11 * d.14 + d.8 * d.6 * d.15 - d.8 * d.7 * d.14 - d.12 * d.6 * d.11 + d.12 * d.7 * d.10;
-            res_d.5 = d.0 * d.10 * d.15 - d.0 * d.11 * d.14 - d.8 * d.2 * d.15 + d.8 * d.3 * d.14 + d.12 * d.2 * d.11 - d.12 * d.3 * d.10;
-            res_d.6 = -d.0 * d.6 * d.15 + d.0 * d.7 * d.14 + d.4 * d.2 * d.15 - d.4 * d.3 * d.14 - d.12 * d.2 * d.7 + d.12 * d.3 * d.6;
-            res_d.7 = d.0 * d.6 * d.11 - d.0 * d.7 * d.10 - d.4 * d.2 * d.11 + d.4 * d.3 * d.10 + d.8 * d.2 * d.7 - d.8 * d.3 * d.6;
-            res_d.8 = d.4 * d.9 * d.15 - d.4 * d.11 * d.13 - d.8 * d.5 * d.15 + d.8 * d.7 * d.13 + d.12 * d.5 * d.11 - d.12 * d.7 * d.9;
-            res_d.9 = -d.0 * d.9 * d.15 + d.0 * d.11 * d.13 + d.8 * d.1 * d.15 - d.8 * d.3 * d.13 - d.12 * d.1 * d.11 + d.12 * d.3 * d.9;
-            res_d.10 = d.0 * d.5 * d.15 - d.0 * d.7 * d.13 - d.4 * d.1 * d.15 + d.4 * d.3 * d.13 + d.12 * d.1 * d.7 - d.12 * d.3 * d.5;
-            res_d.11 = -d.0 * d.5 * d.11 + d.0 * d.7 * d.9 + d.4 * d.1 * d.11 - d.4 * d.3 * d.9 - d.8 * d.1 * d.7 + d.8 * d.3 * d.5;
-            res_d.12 = -d.4 * d.9 * d.14 + d.4 * d.10 * d.13 +d.8 * d.5 * d.14 - d.8 * d.6 * d.13 - d.12 * d.5 * d.10 + d.12 * d.6 * d.9;
-            res_d.13 = d.0 * d.9 * d.14 - d.0 * d.10 * d.13 - d.8 * d.1 * d.14 + d.8 * d.2 * d.13 + d.12 * d.1 * d.10 - d.12 * d.2 * d.9;
-            res_d.14 = -d.0 * d.5 * d.14 + d.0 * d.6 * d.13 + d.4 * d.1 * d.14 - d.4 * d.2 * d.13 - d.12 * d.1 * d.6 + d.12 * d.2 * d.5;
-            res_d.15 = d.0 * d.5 * d.10 - d.0 * d.6 * d.9 - d.4 * d.1 * d.10 + d.4 * d.2 * d.9 + d.8 * d.1 * d.6 - d.8 * d.2 * d.5;
+            let mut det;
+            let mut tmp1;
 
-            let mut det = d.0 * res_d.0 + d.1 * res_d.4 + d.2 * res_d.8 + d.3 * res_d.12;
+            /* Load matrix: */
 
-            if det == 0.0 {
-                return None;
-            }
+            let mut col0 = self.m.0;
+            let mut col1 = self.m.1;
+            let mut col2 = self.m.2;
+            let mut col3 = self.m.3;
 
-            det = 1.0 / det;
+            /* Transpose: */
 
-            res_d.0 *= det;
-            res_d.1 *= det;
-            res_d.2 *= det;
-            res_d.3 *= det;
-            res_d.4 *= det;
-            res_d.5 *= det;
-            res_d.6 *= det;
-            res_d.7 *= det;
-            res_d.8 *= det;
-            res_d.9 *= det;
-            res_d.10 *= det;
-            res_d.11 *= det;
-            res_d.12 *= det;
-            res_d.13 *= det;
-            res_d.14 *= det;
-            res_d.15 *= det;
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col0.to_simd(), col2.to_simd(), [0, 4, 1, 5]) });
+            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col3.to_simd(), [0, 4, 1, 5]) });
+
+            row0 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row1.to_simd(), [0, 4, 1, 5]) });
+            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row1.to_simd(), [2, 6, 3, 7]) });
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col0.to_simd(), col2.to_simd(), [2, 6, 3, 7]) });
+            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col3.to_simd(), [2, 6, 3, 7]) });
+
+            row2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row3.to_simd(), [0, 4, 1, 5]) });
+            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row3.to_simd(), [2, 6, 3, 7]) });
+
+            /* Compute adjoint: */
+
+            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row1.to_simd(), row1.to_simd(), [2, 3, 0, 1]) });
+            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row3.to_simd(), row3.to_simd(), [2, 3, 0, 1]) });
+
+            tmp1 = row2.pairwise_mul(row3);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+
+            col0 = row1.pairwise_mul(tmp1);
+            col1 = row0.pairwise_mul(tmp1);
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col0 = row1.pairwise_mul(tmp1) - col0;
+            col1 = row0.pairwise_mul(tmp1) - col1;
+            col1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col1.to_simd(), [2, 3, 4, 5]) });
+
+            tmp1 = row1.pairwise_mul(row2);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+
+            col0 = row3.pairwise_mul(tmp1) + col0;
+            col3 = row0.pairwise_mul(tmp1);
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col0 = col0 - row3.pairwise_mul(tmp1);
+            col3 = row0.pairwise_mul(tmp1) - col3;
+            col3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col3.to_simd(), col3.to_simd(), [2, 3, 4, 5]) });
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row1.to_simd(), row1.to_simd(), [2, 3, 4, 5]) }).pairwise_mul(row3);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            row2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row2.to_simd(), row2.to_simd(), [2, 3, 4, 5]) });
+
+            col0 = row2.pairwise_mul(tmp1) + col0;
+            col2 = row0.pairwise_mul(tmp1);
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col0 = col0 - row2.pairwise_mul(tmp1);
+            col2 = row0.pairwise_mul(tmp1) - col2;
+            col2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col2.to_simd(), col2.to_simd(), [2, 3, 4, 5]) });
+
+            tmp1 = row0.pairwise_mul(row1);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+
+            col2 = row3.pairwise_mul(tmp1) + col2;
+            col3 = row2.pairwise_mul(tmp1) - col3;
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col2 = row3.pairwise_mul(tmp1) - col2;
+            col3 = col3 - row2.pairwise_mul(tmp1);
+
+            tmp1 = row0.pairwise_mul(row3);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+
+            col1 = col1 - row2.pairwise_mul(tmp1);
+            col2 = row1.pairwise_mul(tmp1) + col2;
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col1 = row2.pairwise_mul(tmp1) + col1;
+            col2 = col2 - row1.pairwise_mul(tmp1);
+
+            tmp1 = row0.pairwise_mul(row2);
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+
+            col1 = row3.pairwise_mul(tmp1) + col1;
+            col3 = col3 - row1.pairwise_mul(tmp1);
+
+            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+
+            col1 = col1 - row3.pairwise_mul(tmp1);
+            col3 = row1.pairwise_mul(tmp1) + col3;
+
+            /* Compute determinant: */
+
+            det = row0.pairwise_mul(col0);
+            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [2, 3, 4, 5]) }) + det;
+            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [1, 0, 7, 6]) }) + det;
+
+            /* Compute reciprocal of determinant: */
+
+            det = Vec4::splat(1.0).pairwise_div(det);
+
+            /* Multiply matrix of cofactors with reciprocal of determinant: */
+
+            col0 = col0.pairwise_mul(det);
+            col1 = col1.pairwise_mul(det);
+            col2 = col2.pairwise_mul(det);
+            col3 = col3.pairwise_mul(det);
+
+            /* Store inverted matrix: */
+
+            res.m.0 = col0;
+            res.m.1 = col1;
+            res.m.2 = col2;
+            res.m.3 = col3;
         }
 
-        Some(res)
+        res
     }
 
     pub fn as_array(&self) -> &[f32; 16] {

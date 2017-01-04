@@ -87,7 +87,7 @@ impl Vec4 {
         }
     }
 
-    fn to_simd(self) -> f32x4 {
+    pub fn to_simd(self) -> f32x4 {
         unsafe { mem::transmute(self) }
     }
 
@@ -98,6 +98,10 @@ impl Vec4 {
 
     pub fn pairwise_mul(self, rhs: Vec4) -> Vec4 {
         unsafe { Vec4::from_simd(intrinsics::simd_mul(self.to_simd(), rhs.to_simd())) }
+    }
+
+    pub fn pairwise_div(self, rhs: Vec4) -> Vec4 {
+        unsafe { Vec4::from_simd(intrinsics::simd_div(self.to_simd(), rhs.to_simd())) }
     }
 
     pub fn dot(self, rhs: Vec4) -> f32 {

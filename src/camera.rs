@@ -94,7 +94,7 @@ impl Camera {
         let pos = Mat4::translate(self.pos);
         let rot = Mat4::axis(self.right, self.up, -self.forward);
 
-        self.projection * (pos * rot).inverted().unwrap_or(Mat4::identity())
+        self.projection * (pos * rot).inverted()
     }
 }
 
