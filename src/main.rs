@@ -170,11 +170,6 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
     utils::debug_trap();
 }
 
-#[cfg(all(not(test), not(feature = "use_std")))]
-#[allow(non_snake_case)]
-#[no_mangle]
-pub extern "system" fn __chkstk() {}
-
 #[allow(non_upper_case_globals)]
 #[no_mangle]
 pub static NvOptimusEnablement: i32 = 1;

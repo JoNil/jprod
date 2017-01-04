@@ -91,7 +91,6 @@ impl Vec4 {
         unsafe { mem::transmute(self) }
     }
 
-    #[inline(never)]
     pub fn length(self) -> f32 {
         Vec4::splat(self.dot(self)).sqrt_x4().x
     }

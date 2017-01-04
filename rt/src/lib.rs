@@ -12,7 +12,6 @@ pub unsafe extern fn memcpy(dest: *mut u8, src: *const u8,
     return dest;
 }
 
-
 #[no_mangle]
 pub unsafe extern fn memmove(dest: *mut u8, src: *const u8,
                              n: usize) -> *mut u8 {
@@ -55,6 +54,9 @@ pub unsafe extern fn memcmp(s1: *const u8, s2: *const u8, n: usize) -> i32 {
     }
     return 0;
 }
+
+#[no_mangle]
+pub unsafe extern fn __chkstk() {}
 
 #[cfg(test)]
 mod test {
