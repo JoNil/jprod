@@ -126,8 +126,8 @@ fn pool_test() {
         assert_eq!(allocator1.used.get(), 0);
 
         {
-            let alloc_1 = allocator1.allocate(5);
-            let alloc_2 = allocator1.allocate(5);
+            let alloc_1 = allocator1.allocate_slice::<u8>(5);
+            let alloc_2 = allocator1.allocate_slice::<u8>(5);
 
             assert_eq!(allocator1.used.get(), 10);
             assert_eq!(alloc_1.len(), 5);
@@ -142,8 +142,8 @@ fn pool_test() {
                 assert_eq!(sub_alloc_1.used.get(), 0);
                 assert_eq!(sub_alloc_1.offset, 10);
 
-                let alloc_3 = sub_alloc_1.allocate(5);
-                let alloc_4 = sub_alloc_1.allocate(5);
+                let alloc_3 = sub_alloc_1.allocate_slice::<u8>(5);
+                let alloc_4 = sub_alloc_1.allocate_slice::<u8>(5);
 
                 assert_eq!(sub_alloc_1.used.get(), 10);
                 assert_eq!(alloc_3.len(), 5);
@@ -155,7 +155,7 @@ fn pool_test() {
                 //let mut sub_alloc_2 = allocator1.get_sub_allocator(); // Should panic
             }
 
-            let alloc_5 = allocator1.allocate(5);
+            let alloc_5 = allocator1.allocate_slice::<u8>(5);
 
             assert_eq!(alloc_5.len(), 5);
         }
@@ -165,8 +165,8 @@ fn pool_test() {
         let allocator2 = pool.get_allocator();
 
         {
-            let alloc_1 = allocator2.allocate(5);
-            let alloc_2 = allocator2.allocate(5);
+            let alloc_1 = allocator2.allocate_slice::<u8>(5);
+            let alloc_2 = allocator2.allocate_slice::<u8>(5);
 
             assert_eq!(allocator2.used.get(), 10);
             assert_eq!(alloc_1.len(), 5);

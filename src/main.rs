@@ -24,7 +24,7 @@
 #[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
 
-extern crate rlibc;
+extern crate rt;
 
 #[cfg(feature = "use_std")]
 mod core {

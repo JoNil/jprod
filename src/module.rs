@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use core::ptr;
 use utils;
 use win32;
