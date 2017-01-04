@@ -24,7 +24,7 @@
 // Don't manually unroll matrix invert
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
 
 extern crate rlibc;
@@ -172,6 +172,11 @@ pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
 
     utils::debug_trap();
 }
+
+#[cfg(all(not(test), not(feature = "use_std")))]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "system" fn __chkstk() {}
 
 #[allow(non_upper_case_globals)]
 #[no_mangle]
