@@ -6,7 +6,6 @@ use vec4::Vec4;
 pub use core::f32::*;
 pub use core::f32::consts::*;
 
-#[inline(never)]
 pub fn sin(a: f32) -> f32 {
 
     let mut res: f32 = unsafe { mem::uninitialized() };

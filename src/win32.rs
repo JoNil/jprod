@@ -377,28 +377,6 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { mem::transmute::<_, SwapBuffersTy>(*GDI_API.get_unchecked(3))(dc) != 0 }
 }
 
-type SinTy = unsafe extern "system" fn(a: f64) -> f64;
-type CosTy = unsafe extern "system" fn(a: f64) -> f64;
-type SqrtTy = unsafe extern "system" fn(a: f64) -> f64;
-
-const NT_FUNCTION_COUNT: usize = 2;
-
-static mut NT_API: [usize; NT_FUNCTION_COUNT] = [ 0; NT_FUNCTION_COUNT];
-
-static NT_FUNCTION_ORDINALS: [u16; NT_FUNCTION_COUNT] = [
-    7 + 2217, // sin
-
-    7 + 2179, // cos
-];
-
-pub fn sin(a: f64) -> f64 {
-    unsafe { mem::transmute::<_, SinTy>(*NT_API.get_unchecked(0))(a) }
-}
-
-pub fn cos(a: f64) -> f64 {
-    unsafe { mem::transmute::<_, CosTy>(*NT_API.get_unchecked(1))(a) }
-}
-
 type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
 type WglDeleteContextTy = unsafe extern "system" fn(glrc: GlrcHandle) -> i32;
 type WglMakeCurrentTy = unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32;
@@ -504,7 +482,6 @@ pub fn wgl_swap_interval(interval: i32) -> i32 {
 
 static mut USER32: ModuleHandle = 0 as *mut _;
 static mut GDI32: ModuleHandle = 0 as *mut _;
-static mut NTDLL: ModuleHandle = 0 as *mut _;
 static mut OPENGL32: ModuleHandle = 0 as *mut _;
 
 pub fn init() {
@@ -512,7 +489,6 @@ pub fn init() {
     unsafe {
         USER32 = load_library(b"user32.dll\0");
         GDI32 = load_library(b"Gdi32.dll\0");
-        NTDLL = load_library(b"NTDLL.dll\0");
         OPENGL32 = load_library(b"Opengl32.dll\0");
     }
 
@@ -525,12 +501,6 @@ pub fn init() {
     for (i, ordinal) in GDI_FUNCTION_ORDINALS.iter().enumerate() {
         unsafe {
             (*GDI_API.get_unchecked_mut(i)) = get_proc_address(GDI32, *ordinal as isize) as usize;
-        }
-    }
-
-    for (i, ordinal) in NT_FUNCTION_ORDINALS.iter().enumerate() {
-        unsafe {
-            (*NT_API.get_unchecked_mut(i)) = get_proc_address(NTDLL, *ordinal as isize) as usize;
         }
     }
 
