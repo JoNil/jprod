@@ -4,31 +4,19 @@ use core::mem;
 use core::num::Wrapping;
 
 pub struct Rng {
-    x: Wrapping<u32>,
-    y: Wrapping<u32>,
-    z: Wrapping<u32>,
-    w: Wrapping<u32>,
+    seed: Wrapping<u32>,
 }
 
 impl Rng {
     pub fn new_unseeded() -> Rng {
         Rng {
-            x: Wrapping(0x66126c8d),
-            y: Wrapping(0xfdf79948),
-            z: Wrapping(0xc01a50a2),
-            w: Wrapping(0x5d0c8363),
+            seed: Wrapping(0x66126c8d),
         }
     }
 
      pub fn next_u32(&mut self) -> u32 {
-        let x = self.x;
-        let t = x ^ (x << 11);
-        self.x = self.y;
-        self.y = self.z;
-        self.z = self.w;
-        let w_ = self.w;
-        self.w = w_ ^ (w_ >> 19) ^ (t ^ (t >> 8));
-        self.w.0
+        self.seed = self.seed*Wrapping(214013) + Wrapping(2531011);
+        self.seed.0
     }
 
     pub fn next_u64(&mut self) -> u64 {
