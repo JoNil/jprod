@@ -1,3 +1,4 @@
+#![feature(abi_vectorcall)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![feature(link_llvm_intrinsics)]
@@ -96,10 +97,10 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
             let offset_z = rng.next_f32() * rs;
 
             *mvp =
-                Mat4::rotate_deg(4.0 * time, Vec4::y()) *
-                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z)) *
-                Mat4::random_rotation(&mut rng) *
-                Mat4::scale(s);
+                Mat4::rotate_deg(4.0 * time, Vec4::y()).mul(
+                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
+                Mat4::random_rotation(&mut rng)).mul(
+                Mat4::scale(s));
 
         } else {
             let t = 2.0 * (i - len / 2) as f32 / len as f32;
@@ -113,10 +114,10 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
             let offset_z = rng.next_f32() * rs;
 
             *mvp = 
-                Mat4::rotate_deg(180.0 + 4.0 * time, Vec4::y()) *
-                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z)) *
-                Mat4::random_rotation(&mut rng) *
-                Mat4::scale(s);
+                Mat4::rotate_deg(180.0 + 4.0 * time, Vec4::y()).mul(
+                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
+                Mat4::random_rotation(&mut rng)).mul(
+                Mat4::scale(s));
         }
      }
 

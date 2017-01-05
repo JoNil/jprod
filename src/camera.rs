@@ -49,22 +49,22 @@ impl Camera {
         let actions = window.get_actions();
 
         if actions.forward.active {
-            self.pos -= self.forward * dt;
+            self.pos = self.pos.sub(self.forward.mul(dt));
         }
         if actions.backward.active {
-            self.pos += self.forward * dt;
+            self.pos = self.pos.add(self.forward.mul(dt));
         }
         if actions.right.active {
-            self.pos -= self.right * dt;
+            self.pos = self.pos.sub(self.right.mul(dt));
         }
         if actions.left.active {
-            self.pos += self.right * dt;
+            self.pos = self.pos.add(self.right.mul(dt));
         }
         if actions.up.active {
-            self.pos -= self.up * dt;
+            self.pos = self.pos.sub(self.up.mul(dt));
         }
         if actions.down.active {
-            self.pos += self.up * dt;
+            self.pos = self.pos.add(self.up.mul(dt));
         }
 
         if actions.reset_camera.active || actions.reset_camera.half_transition_count > 1  {
@@ -87,10 +87,10 @@ impl Camera {
             let y_axis = Vec4::xyz(0.0, 1.0, 0.0);
             let neg_z_axis = Vec4::xyz(0.0, 0.0, -1.0);
 
-            let rotated_dir_x = Mat4::rotate(self.x_angle, y_axis) * neg_z_axis.with_w_1();
+            let rotated_dir_x = Mat4::rotate(self.x_angle, y_axis).transform(neg_z_axis.with_w_1());
 
             self.right = rotated_dir_x.cross(y_axis).normalized();
-            self.forward = (Mat4::rotate(self.y_angle, self.right) * rotated_dir_x.with_w_1()).normalized();
+            self.forward = Mat4::rotate(self.y_angle, self.right).transform(rotated_dir_x.with_w_1()).normalized();
             self.up = self.right.cross(self.forward).normalized();
 
             self.previus_mouse_offset = mouse_offset;
@@ -100,9 +100,9 @@ impl Camera {
     pub fn get_view_projection(&self) -> Mat4 {
 
         let pos = Mat4::translate(self.pos);
-        let rot = Mat4::axis(self.right, self.up, -self.forward);
+        let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 
-        self.projection * (pos * rot).inverted()
+        self.projection.mul(pos.mul(rot).inverted())
     }
 }
 

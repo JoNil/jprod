@@ -1,8 +1,6 @@
 #![allow(dead_code)]
 
 use core::mem;
-use core::ops::Mul;
-use core::ops::MulAssign;
 use f32;
 use intrinsics;
 use random::Rng;
@@ -21,7 +19,7 @@ pub struct Mat4 {
 
 impl Mat4 {
 
-    pub fn identity() -> Mat4 {
+    pub extern "vectorcall" fn identity() -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
@@ -32,7 +30,7 @@ impl Mat4 {
         }
     }
 
-    pub fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
+    pub extern "vectorcall" fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(x.x, x.y, x.z, 0.0),
@@ -43,7 +41,7 @@ impl Mat4 {
         }
     }
 
-    pub fn translate(pos: Vec4) -> Mat4 {
+    pub extern "vectorcall" fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
@@ -54,7 +52,7 @@ impl Mat4 {
         }   
     }
 
-    pub fn scale_xyz(x: f32, y: f32, z: f32) -> Mat4 {
+    pub extern "vectorcall" fn scale_xyz(x: f32, y: f32, z: f32) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(x,  0.0, 0.0, 0.0),
@@ -65,7 +63,7 @@ impl Mat4 {
         }   
     }
 
-    pub fn scale(s: f32) -> Mat4 {
+    pub extern "vectorcall" fn scale(s: f32) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(s,  0.0, 0.0, 0.0),
@@ -76,11 +74,11 @@ impl Mat4 {
         }   
     }
 
-    pub fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
+    pub extern "vectorcall" fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
         Mat4::rotate(angle * f32::PI / 180.0, axis)
     }
 
-    pub fn rotate(angle: f32, axis: Vec4) -> Mat4 {
+    pub extern "vectorcall" fn rotate(angle: f32, axis: Vec4) -> Mat4 {
         
         let mut temp = Mat4::identity();
 
@@ -117,7 +115,7 @@ impl Mat4 {
         temp
     }
 
-    pub fn random_rotation(rng: &mut Rng) -> Mat4 {
+    pub extern "vectorcall" fn random_rotation(rng: &mut Rng) -> Mat4 {
 
         let a = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
         let b = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
@@ -128,7 +126,7 @@ impl Mat4 {
         Mat4::axis(a, c, d)
     }
 
-    pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
+    pub extern "vectorcall" fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(2.0*near/(right-left), 0.0, 0.0, 0.0),
@@ -139,14 +137,14 @@ impl Mat4 {
         }
     }
 
-    pub fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
+    pub extern "vectorcall" fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
 
         let height = near*f32::tan(horizontal_fov*f32::PI/360.0);
         let width = height*aspect_ratio;
         Mat4::frustum(-width, width, -height, height, near, far)
     }
 
-    pub fn transposed(&self) -> Mat4 {
+    pub extern "vectorcall" fn transposed(&self) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(self.m.0.x, self.m.1.x, self.m.2.x, self.m.3.x),
@@ -157,7 +155,7 @@ impl Mat4 {
         }
     }
 
-    pub fn inverted(&self) -> Mat4 {
+    pub extern "vectorcall" fn inverted(&self) -> Mat4 {
         let mut res = Mat4::identity();
 
         {
@@ -203,73 +201,73 @@ impl Mat4 {
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col0 = row1.pairwise_mul(tmp1) - col0;
-            col1 = row0.pairwise_mul(tmp1) - col1;
+            col0 = row1.pairwise_mul(tmp1).sub(col0);
+            col1 = row0.pairwise_mul(tmp1).sub(col1);
             col1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col1.to_simd(), [2, 3, 4, 5]) });
 
             tmp1 = row1.pairwise_mul(row2);
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
 
-            col0 = row3.pairwise_mul(tmp1) + col0;
+            col0 = row3.pairwise_mul(tmp1).add(col0);
             col3 = row0.pairwise_mul(tmp1);
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col0 = col0 - row3.pairwise_mul(tmp1);
-            col3 = row0.pairwise_mul(tmp1) - col3;
+            col0 = col0.sub(row3.pairwise_mul(tmp1));
+            col3 = row0.pairwise_mul(tmp1).sub(col3);
             col3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col3.to_simd(), col3.to_simd(), [2, 3, 4, 5]) });
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row1.to_simd(), row1.to_simd(), [2, 3, 4, 5]) }).pairwise_mul(row3);
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
             row2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row2.to_simd(), row2.to_simd(), [2, 3, 4, 5]) });
 
-            col0 = row2.pairwise_mul(tmp1) + col0;
+            col0 = row2.pairwise_mul(tmp1).add(col0);
             col2 = row0.pairwise_mul(tmp1);
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col0 = col0 - row2.pairwise_mul(tmp1);
-            col2 = row0.pairwise_mul(tmp1) - col2;
+            col0 = col0.sub(row2.pairwise_mul(tmp1));
+            col2 = row0.pairwise_mul(tmp1).sub(col2);
             col2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col2.to_simd(), col2.to_simd(), [2, 3, 4, 5]) });
 
             tmp1 = row0.pairwise_mul(row1);
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
 
-            col2 = row3.pairwise_mul(tmp1) + col2;
-            col3 = row2.pairwise_mul(tmp1) - col3;
+            col2 = row3.pairwise_mul(tmp1).add(col2);
+            col3 = row2.pairwise_mul(tmp1).sub(col3);
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col2 = row3.pairwise_mul(tmp1) - col2;
-            col3 = col3 - row2.pairwise_mul(tmp1);
+            col2 = row3.pairwise_mul(tmp1).sub(col2);
+            col3 = col3.sub(row2.pairwise_mul(tmp1));
 
             tmp1 = row0.pairwise_mul(row3);
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
 
-            col1 = col1 - row2.pairwise_mul(tmp1);
-            col2 = row1.pairwise_mul(tmp1) + col2;
+            col1 = col1.sub(row2.pairwise_mul(tmp1));
+            col2 = row1.pairwise_mul(tmp1).add(col2);
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col1 = row2.pairwise_mul(tmp1) + col1;
-            col2 = col2 - row1.pairwise_mul(tmp1);
+            col1 = row2.pairwise_mul(tmp1).add(col1);
+            col2 = col2.sub(row1.pairwise_mul(tmp1));
 
             tmp1 = row0.pairwise_mul(row2);
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
 
-            col1 = row3.pairwise_mul(tmp1) + col1;
-            col3 = col3 - row1.pairwise_mul(tmp1);
+            col1 = row3.pairwise_mul(tmp1).add(col1);
+            col3 = col3.sub(row1.pairwise_mul(tmp1));
 
             tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
 
-            col1 = col1 - row3.pairwise_mul(tmp1);
-            col3 = row1.pairwise_mul(tmp1) + col3;
+            col1 = col1.sub(row3.pairwise_mul(tmp1));
+            col3 = row1.pairwise_mul(tmp1).add(col3);
 
             /* Compute determinant: */
 
             det = row0.pairwise_mul(col0);
-            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [2, 3, 4, 5]) }) + det;
-            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [1, 0, 7, 6]) }) + det;
+            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [2, 3, 4, 5]) }).add(det);
+            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [1, 0, 7, 6]) }).add(det);
 
             /* Compute reciprocal of determinant: */
 
@@ -293,23 +291,23 @@ impl Mat4 {
         res
     }
 
-    pub fn as_array(&self) -> &[f32; 16] {
+    pub extern "vectorcall" fn as_array(&self) -> &[f32; 16] {
         unsafe { mem::transmute(&self.m) }
     }
 
-    pub fn as_array_mut(&mut self) -> &mut [f32; 16] {
+    pub extern "vectorcall" fn as_array_mut(&mut self) -> &mut [f32; 16] {
         unsafe { mem::transmute(&mut self.m) }
     }
 
-    pub fn as_vec4_array(&self) -> &[Vec4; 4] {
+    pub extern "vectorcall" fn as_vec4_array(&self) -> &[Vec4; 4] {
         unsafe { mem::transmute(&self.m) }
     }
 
-    pub fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
+    pub extern "vectorcall" fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
         unsafe { mem::transmute(&mut self.m) }
     }
 
-    pub fn as_flat_tuple(&self) -> &(
+    pub extern "vectorcall" fn as_flat_tuple(&self) -> &(
         f32, f32, f32, f32,
         f32, f32, f32, f32,
         f32, f32, f32, f32,
@@ -318,7 +316,7 @@ impl Mat4 {
         unsafe { mem::transmute(&self.m) }
     }
 
-    pub fn as_flat_tuple_mut(&mut self) -> &mut (
+    pub extern "vectorcall" fn as_flat_tuple_mut(&mut self) -> &mut (
         f32, f32, f32, f32,
         f32, f32, f32, f32,
         f32, f32, f32, f32,
@@ -326,13 +324,8 @@ impl Mat4 {
     {
         unsafe { mem::transmute(&mut self.m) }
     }
-}
 
-impl Mul<Vec4> for Mat4 {
-    type Output = Vec4;
-
-    #[inline(always)]
-    fn mul(self, rhs: Vec4) -> Vec4 {
+    pub extern "vectorcall" fn transform(self, rhs: Vec4) -> Vec4 {
 
         let col1 = self.m.0;
         let col2 = self.m.1;
@@ -344,15 +337,11 @@ impl Mul<Vec4> for Mat4 {
         let zzzz = Vec4::splat(rhs.z);
         let wwww = Vec4::splat(rhs.w);
 
-        (col1.pairwise_mul(xxxx) + col2.pairwise_mul(yyyy)) +
-        (col3.pairwise_mul(zzzz) + col4.pairwise_mul(wwww))
+        (col1.pairwise_mul(xxxx).add(col2.pairwise_mul(yyyy))).add(
+        (col3.pairwise_mul(zzzz).add(col4.pairwise_mul(wwww))))
     }
-}
 
-impl Mul for Mat4 {
-    type Output = Mat4;
-
-    fn mul(self, rhs: Mat4) -> Mat4 {
+    pub extern "vectorcall" fn mul(self, rhs: Mat4) -> Mat4 {
 
         let mut res: Mat4 = unsafe { mem::uninitialized() };
 
@@ -367,16 +356,10 @@ impl Mul for Mat4 {
                 let z = unsafe { *b.get_unchecked(4*i + 2) };
                 let w = unsafe { *b.get_unchecked(4*i + 3) };
 
-                unsafe { *c.get_unchecked_mut(i) = self * Vec4::xyzw(x, y, z, w); }
+                unsafe { *c.get_unchecked_mut(i) = self.transform(Vec4::xyzw(x, y, z, w)); }
             }
         }
 
         res
-    }
-}
-
-impl MulAssign for Mat4 {
-    fn mul_assign(&mut self, rhs: Mat4) {
-        *self = *self * rhs
     }
 }
