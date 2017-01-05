@@ -4,8 +4,9 @@ use core::mem;
 use core::ops::Mul;
 use core::ops::MulAssign;
 use f32;
-use vec4::Vec4;
 use intrinsics;
+use random::Rng;
+use vec4::Vec4;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -42,7 +43,6 @@ impl Mat4 {
         }
     }
 
-
     pub fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m: (
@@ -54,7 +54,7 @@ impl Mat4 {
         }   
     }
 
-    pub fn scale(x: f32, y: f32, z: f32) -> Mat4 {
+    pub fn scale_xyz(x: f32, y: f32, z: f32) -> Mat4 {
         Mat4 {
             m: (
                 Vec4::xyzw(x,  0.0, 0.0, 0.0),
@@ -63,6 +63,21 @@ impl Mat4 {
                 Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
             ),
         }   
+    }
+
+    pub fn scale(s: f32) -> Mat4 {
+        Mat4 {
+            m: (
+                Vec4::xyzw(s,  0.0, 0.0, 0.0),
+                Vec4::xyzw(0.0,  s, 0.0, 0.0),
+                Vec4::xyzw(0.0, 0.0,  s, 0.0),
+                Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
+            ),
+        }   
+    }
+
+    pub fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
+        Mat4::rotate(angle * f32::PI / 180.0, axis)
     }
 
     pub fn rotate(angle: f32, axis: Vec4) -> Mat4 {
@@ -102,6 +117,17 @@ impl Mat4 {
         temp
     }
 
+    pub fn random_rotation(rng: &mut Rng) -> Mat4 {
+
+        let a = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
+        let b = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
+
+        let c = a.cross(b);
+        let d = a.cross(c);
+        
+        Mat4::axis(a, c, d)
+    }
+
     pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         Mat4 {
             m: (
@@ -115,7 +141,7 @@ impl Mat4 {
 
     pub fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
 
-        let height = near*f32::tan(horizontal_fov*f32::consts::PI/360.0);
+        let height = near*f32::tan(horizontal_fov*f32::PI/360.0);
         let width = height*aspect_ratio;
         Mat4::frustum(-width, width, -height, height, near, far)
     }

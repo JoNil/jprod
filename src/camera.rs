@@ -81,7 +81,7 @@ impl Camera {
                 self.y_angle += self.previus_mouse_offset.1 - mouse_offset.1;
             }
 
-            self.y_angle = f32::clamp(self.y_angle, -f32::consts::FRAC_PI_2 + 0.01, f32::consts::FRAC_PI_2 - 0.01);
+            self.y_angle = f32::clamp(self.y_angle, -f32::FRAC_PI_2 + 0.01, f32::FRAC_PI_2 - 0.01);
             //self.x_angle = self.x_angle % 2.0*f32::consts::PI;
 
             let y_axis = Vec4::xyz(0.0, 1.0, 0.0);

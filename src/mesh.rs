@@ -134,4 +134,3 @@ impl Mesh {
         unsafe { gl::UseProgram(0); }
     }
 }
-

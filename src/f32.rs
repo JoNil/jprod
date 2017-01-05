@@ -4,6 +4,7 @@ use vec4::Vec4;
 use win32;
 
 pub use core::f32::*;
+pub use core::f32::consts::*;
 
 pub fn sin(a: f32) -> f32 {
     win32::sin(a as f64) as f32

@@ -9,11 +9,11 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
-// Dna shaped rombs
+// More intressting dna snake :)
+// Camera path
 // Profiling? Gpu and cpu time. Telemetry?
 // Defered rendering
 // Imgui
-// Camera path
 // Audio output
 // Square wave
 // Emulate gameboy sound chip?
@@ -35,6 +35,7 @@ mod c_types;
 mod camera;
 mod f32;
 mod file;
+mod gen;
 mod gl;
 mod intrinsics;
 mod mat4;
@@ -64,26 +65,59 @@ use ssbo::Ssbo;
 use vec4::Vec4;
 use window::Window;
 
-fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, rng: &mut Rng) {
+const INSTANCE_COUNT: i32 = 10000;
+
+fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
 
     let allocator = pool.get_sub_allocator();
 
-    let mvps = allocator.allocate_slice::<Mat4>(5000);
+    let mvps = allocator.allocate_slice::<Mat4>(INSTANCE_COUNT as usize);
 
+    let mut rng = Rng::new_unseeded();
+    
+    let b = 10.0;
     let a = 0.3;
-    let b = 1.0;
-    let f = 10.0;
+    let f = 5.0 * b;
     let len = mvps.len();
+    let s = 0.01;
+    let rs = 0.1;
 
     for (i, mvp) in mvps.iter_mut().enumerate() {
 
-        let t = i as f32 / len as f32;
+        if i < len / 2 {
+            let t = 2.0 * i as f32 / len as f32;
 
-        let x = a * f32::cos(f*t);
-        let z = a * f32::sin(f*t);
-        let y = b * t;
+            let x = a * f32::cos(f*t);
+            let z = a * f32::sin(f*t);
+            let y = b * t - b / 2.0;
 
-        *mvp = Mat4::translate(Vec4::xyz(x, y, z)) * Mat4::scale(0.05, 0.05, 0.05);
+            let offset_x = rng.next_f32() * rs;
+            let offset_y = rng.next_f32() * rs;
+            let offset_z = rng.next_f32() * rs;
+
+            *mvp =
+                Mat4::rotate_deg(4.0 * time, Vec4::y()) *
+                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z)) *
+                Mat4::random_rotation(&mut rng) *
+                Mat4::scale(s);
+
+        } else {
+            let t = 2.0 * (i - len / 2) as f32 / len as f32;
+
+            let x = a * f32::cos(f*t);
+            let z = a * f32::sin(f*t);
+            let y = b * t - b / 2.0;
+
+            let offset_x = rng.next_f32() * rs;
+            let offset_y = rng.next_f32() * rs;
+            let offset_z = rng.next_f32() * rs;
+
+            *mvp = 
+                Mat4::rotate_deg(180.0 + 4.0 * time, Vec4::y()) *
+                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z)) *
+                Mat4::random_rotation(&mut rng) *
+                Mat4::scale(s);
+        }
      }
 
     instance_data.upload_slice(mvps);
@@ -99,19 +133,18 @@ fn main() {
 
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
-    let mut rng = Rng::new_unseeded();
     let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window);
 
-    let triangle = [
-        [  0.0, 1.0, 0.0   ],
-        [ -1.0, -1.0, 0.0  ],
-        [  1.0, -1.0, 0.0  ],
-    ];
-
-    mesh.upload(&triangle);
+    {
+        let sub_allocator = allocator.get_sub_allocator();
+        {
+            let tetrahedron = gen::tetrahedron(&sub_allocator);
+            mesh.upload(tetrahedron);
+        }
+    }
 
     let mut instance_data = Ssbo::new(&window);
     let mut uniform_data = Ssbo::new(&window);
@@ -131,24 +164,25 @@ fn main() {
 
         shader.reload_if_changed(&allocator);
 
-        let dt = {
+        let (dt, time) = {
             let now = time::now_s();
             let dt = last - now;
             last = now;
-            dt
+
+            (dt, (now - start) as f32)
         };
 
         camera.update(&window, dt as f32);
 
-        update_instance_data(&mut instance_data, &mut allocator, &mut rng);
+        update_instance_data(&mut instance_data, &mut allocator, time);
 
         uniforms.vp = camera.get_view_projection();
-        uniforms.time = (time::now_s() - start) as f32;
+        uniforms.time = time;
         uniform_data.upload(&uniforms);
 
         window.update_viewport();
         window.clear([ 0.0, 0.5, 0.0, 1.0 ]);
-        mesh.draw_instanced(&shader, &instance_data, &uniform_data, 5000);
+        mesh.draw_instanced(&shader, &instance_data, &uniform_data, INSTANCE_COUNT);
         window.swap();
     }
 }
