@@ -13,3 +13,4 @@ Opt
 14336 - Play with dna shape
 13824 - Use vectorcall on all simd stuff
 13312 - Don't have two copies of generator code
+13312 - Remove ntdll sin/cos in asm
