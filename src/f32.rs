@@ -19,7 +19,7 @@ pub fn tan(a: f32) -> f32 {
 }
 
 pub fn sqrt(a: f32) -> f32 {
-    Vec4::splat(a).sqrt_x4().x
+    Vec4::splat(a).pairwise_sqrt().x
 }
 
 pub fn min(a: f32, b: f32) -> f32 {
