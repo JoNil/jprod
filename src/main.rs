@@ -1,4 +1,5 @@
 #![feature(abi_vectorcall)]
+#![feature(asm)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![feature(link_llvm_intrinsics)]
@@ -66,7 +67,7 @@ use ssbo::Ssbo;
 use vec4::Vec4;
 use window::Window;
 
-const INSTANCE_COUNT: i32 = 200000;
+const INSTANCE_COUNT: i32 = 200_000;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
 

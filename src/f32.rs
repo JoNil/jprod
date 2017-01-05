@@ -1,21 +1,64 @@
 #![allow(dead_code)]
 
+use core::mem;
 use vec4::Vec4;
-use win32;
 
 pub use core::f32::*;
 pub use core::f32::consts::*;
 
+#[inline(never)]
 pub fn sin(a: f32) -> f32 {
-    win32::sin(a as f64) as f32
+
+    let mut res: f32 = unsafe { mem::uninitialized() };
+
+    unsafe { asm!(
+        r##"
+            flds $1;
+            fsin;
+            fstps $0;
+        "##
+        : "=*m"(&mut res as *mut f32)
+        : "*m"(&a as *const f32)
+    ) };
+
+    res
 }
 
 pub fn cos(a: f32) -> f32 {
-    win32::cos(a as f64) as f32
+    
+    let mut res: f32 = unsafe { mem::uninitialized() };
+
+    unsafe { asm!(
+        r##"
+            flds $1;
+            fcos;
+            fstps $0;
+        "##
+        : "=*m"(&mut res as *mut f32)
+        : "*m"(&a as *const f32)
+    ) };
+
+    res
 }
 
 pub fn tan(a: f32) -> f32 {
-    sin(a) / cos(a)
+    
+    let mut res_sin: f32 = unsafe { mem::uninitialized() };
+    let mut res_cos: f32 = unsafe { mem::uninitialized() };
+
+    unsafe { asm!(
+        r##"
+            flds $2;
+            fsincos;
+            fstps $1;
+            fstps $0;
+        "##
+        : "=*m"(&mut res_sin as *mut f32)
+        , "=*m"(&mut res_cos as *mut f32)
+        : "*m"(&a as *const f32)
+    ) };
+
+    res_sin / res_cos
 }
 
 pub fn sqrt(a: f32) -> f32 {
