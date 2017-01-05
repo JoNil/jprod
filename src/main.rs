@@ -66,7 +66,7 @@ use ssbo::Ssbo;
 use vec4::Vec4;
 use window::Window;
 
-const INSTANCE_COUNT: i32 = 10000;
+const INSTANCE_COUNT: i32 = 100000;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
 
