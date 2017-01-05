@@ -1,0 +1,15 @@
+Opt
+18432
+17920 - Trim shader whitespace
+17408 - Native cpu
+16384 - Inline mat4 mul
+16896 - Simd mul
+15872 - Simd vec mat mul
+15360 - Simd ops on vec
+15360 - Simd ops cross and dot
+13824 - No hot reloading on release
+13312 - Optimize away debug traps in release mode
+11776 - Simd invert!!!
+14336 - Play with dna shape
+13824 - Use vectorcall on all simd stuff
+13312 - Don't have two copies of generator code

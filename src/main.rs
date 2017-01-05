@@ -79,46 +79,37 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
     let b = 10.0;
     let a = 0.3;
     let f = 5.0 * b;
-    let len = mvps.len();
     let s = 0.01;
     let rs = 0.1;
 
-    for (i, mvp) in mvps.iter_mut().enumerate() {
+    let len = mvps.len() / 2;
+    let mut i = 0;
+    let mut offset = 0.0;
 
-        if i < len / 2 {
-            let t = 2.0 * i as f32 / len as f32;
+    for mvp in mvps.iter_mut() {
 
-            let x = a * f32::cos(f*t);
-            let z = a * f32::sin(f*t);
-            let y = b * t - b / 2.0;
-
-            let offset_x = rng.next_f32() * rs;
-            let offset_y = rng.next_f32() * rs;
-            let offset_z = rng.next_f32() * rs;
-
-            *mvp =
-                Mat4::rotate_deg(4.0 * time, Vec4::y()).mul(
-                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
-                Mat4::random_rotation(&mut rng)).mul(
-                Mat4::scale(s));
-
-        } else {
-            let t = 2.0 * (i - len / 2) as f32 / len as f32;
-
-            let x = a * f32::cos(f*t);
-            let z = a * f32::sin(f*t);
-            let y = b * t - b / 2.0;
-
-            let offset_x = rng.next_f32() * rs;
-            let offset_y = rng.next_f32() * rs;
-            let offset_z = rng.next_f32() * rs;
-
-            *mvp = 
-                Mat4::rotate_deg(180.0 + 4.0 * time, Vec4::y()).mul(
-                Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
-                Mat4::random_rotation(&mut rng)).mul(
-                Mat4::scale(s));
+        if i == len {
+            i = 0;
+            offset = 180.0;
         }
+
+        let t = i as f32 / len as f32;
+
+        let x = a * f32::cos(f*t);
+        let z = a * f32::sin(f*t);
+        let y = b * t - b / 2.0;
+
+        let offset_x = rng.next_f32() * rs;
+        let offset_y = rng.next_f32() * rs;
+        let offset_z = rng.next_f32() * rs;
+
+        *mvp =
+            Mat4::rotate_deg(offset + 4.0 * time, Vec4::y()).mul(
+            Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
+            Mat4::random_rotation(&mut rng)).mul(
+            Mat4::scale(s));
+
+        i += 1;
      }
 
     instance_data.upload_slice(mvps);
