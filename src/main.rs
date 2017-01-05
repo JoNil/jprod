@@ -37,6 +37,7 @@ mod c_types;
 mod camera;
 mod f32;
 mod file;
+mod framebuffer;
 mod gen;
 mod gl;
 mod intrinsics;
@@ -56,6 +57,7 @@ mod win32_types;
 mod window;
 
 use camera::Camera;
+use framebuffer::Framebuffer;
 use mat4::Mat4;
 use mesh::Mesh;
 use pool::Pool;
@@ -67,7 +69,7 @@ use ssbo::Ssbo;
 use vec4::Vec4;
 use window::Window;
 
-const INSTANCE_COUNT: i32 = 200_000;
+const INSTANCE_COUNT: i32 = 20_000;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
 
@@ -130,6 +132,8 @@ fn main() {
 
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window);
+
+    let mut g_buffer = Framebuffer::new(&window);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
