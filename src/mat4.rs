@@ -120,8 +120,8 @@ impl Mat4 {
         let a = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
         let b = Vec4::xyz(rng.next_f32() - 0.5, rng.next_f32() - 0.5, rng.next_f32() - 0.5).normalized();
 
-        let c = a.cross(b);
-        let d = a.cross(c);
+        let c = a.cross(b).normalized();
+        let d = a.cross(c).normalized();
         
         Mat4::axis(a, c, d)
     }
