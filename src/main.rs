@@ -49,6 +49,7 @@ mod shader;
 mod shader_sources;
 mod simdty;
 mod ssbo;
+mod texture;
 mod time;
 mod utils;
 mod vec4;
