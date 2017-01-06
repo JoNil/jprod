@@ -4,11 +4,11 @@ use c_types::c_void;
 use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
-use gl;
-use shader::Shader;
-use ssbo::Ssbo;
+use super::Context;
+use super::gl;
+use super::shader::Shader;
+use super::ssbo::Ssbo;
 use utils;
-use window::GlContext;
 
 struct RawVao {
     handle: u32,
@@ -61,7 +61,7 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(_: &GlContext) -> Mesh {
+    pub fn new(_: &Context) -> Mesh {
         
         let vao = RawVao::new();
         let vbo = RawVbo::new();
@@ -110,7 +110,7 @@ impl Mesh {
         utils::debug_trap_if(self.length == 0);
 
         unsafe {
-            gl::UseProgram(shader.get_program());
+            gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
             gl::DrawArrays(gl::TRIANGLES, 0, self.length);
@@ -125,7 +125,7 @@ impl Mesh {
         utils::debug_trap_if(self.length == 0 || count <= 0);
 
         unsafe {
-            gl::UseProgram(shader.get_program());
+            gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle());

@@ -1,7 +1,7 @@
 use core::default::Default;
 use core::mem;
 use core::ptr;
-use gl;
+use gfx;
 use utils;
 use win32;
 use win32_types::*;
@@ -25,8 +25,6 @@ static WINDOW_ATTRIBS: &'static [i32] = &[
     WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
     0,
 ];
-
-pub unsafe trait GlContext { }
 
 struct RawWindow {
     handle: WindowHandle,
@@ -179,9 +177,7 @@ impl Window {
 
         context.make_current();
 
-        gl::init();
-
-        unsafe { gl::Enable(gl::DEPTH_TEST) };
+        gfx::init();
 
         Window { context: context, actions: Default::default() }
     }
@@ -239,17 +235,12 @@ impl Window {
     }
 
     pub fn update_viewport(&self) {
-            let size = self.get_size();
-            unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
+        let size = self.get_size();
+        gfx::viewport(self, size.0, size.1);
     }
 
     pub fn clear(&self, color: [f32; 4]) {
-
-        unsafe { gl::ClearBufferfv(gl::COLOR, 0, &color as *const f32); }
-
-        let depth = [ 1.0f32 ];
-
-        unsafe { gl::ClearBufferfv(gl::DEPTH, 0, &depth as *const f32); }
+        gfx::clear(self, color);
     }
 
     pub fn swap(&self) {
@@ -257,7 +248,7 @@ impl Window {
     }
 }
 
-unsafe impl GlContext for Window {}
+unsafe impl gfx::Context for Window {}
 
 extern "system" fn window_proc(handle: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
 

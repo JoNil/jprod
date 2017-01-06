@@ -1,7 +1,12 @@
 use core::marker::PhantomData;
-use gl;
+use super::Context;
+use super::gl;
+use super::texture::Texture;
 use utils;
-use window::GlContext;
+
+pub enum Attachment {
+    Color_0 = gl::COLOR_ATTACHMENT0 as isize,
+}
 
 struct RawFramebuffer {
     handle: u32,
@@ -32,11 +37,27 @@ pub struct Framebuffer {
 }
 
 impl Framebuffer {
-    pub fn new(_: &GlContext) -> Framebuffer {
+    pub fn new(_: &Context) -> Framebuffer {
         let framebuffer = RawFramebuffer::new();
 
         Framebuffer {
             framebuffer: framebuffer,
+        }
+    }
+
+    pub fn attach(&mut self, texture: &Texture, attachment_point: Attachment) {
+
+        unsafe {
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
+
+            gl::FramebufferTexture2D(
+                gl::FRAMEBUFFER,
+                attachment_point as u32,
+                gl::TEXTURE_2D,
+                texture.get_handle(),
+                0);
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
         }
     }
 }

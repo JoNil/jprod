@@ -1,10 +1,10 @@
 use core::marker::PhantomData;
 use core::ptr;
-use gl;
+use super::Context;
+use super::gl;
 use utils;
-use window::GlContext;
 
-pub enum TextureFormat {
+pub enum Format {
     Rgb_f32,
 }
 
@@ -14,10 +14,10 @@ struct GlEnums {
     component_type: u32,
 }
 
-impl TextureFormat {
+impl Format {
     fn get_gl_enums(&self) -> GlEnums {
         match self {
-            &TextureFormat::Rgb_f32 => {
+            &Format::Rgb_f32 => {
                 GlEnums {
                     internal_format: gl::RGB32F,
                     format: gl::RGB,
@@ -56,7 +56,7 @@ pub struct Texture {
 }
 
 impl Texture {
-    pub fn new(_: &GlContext) -> Texture {
+    pub fn new(_: &Context) -> Texture {
         let texture = RawTexture::new();
 
         Texture {
@@ -64,7 +64,7 @@ impl Texture {
         }
     }
 
-    pub fn allocate(&mut self, width: i32, height: i32, format: TextureFormat) {
+    pub fn allocate(&mut self, width: i32, height: i32, format: Format) {
 
         let enums = format.get_gl_enums();
 
@@ -90,5 +90,9 @@ impl Texture {
 
             gl::BindTexture(gl::TEXTURE_2D, 0);
         }
+    }
+
+    pub(super) fn get_handle(&self) -> u32 {
+        self.texture.handle
     }
 }

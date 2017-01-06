@@ -4563,14 +4563,12 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (DeleteBuffersIdx, b"glDeleteBuffers\0"),
     (BindBufferIdx, b"glBindBuffer\0"),
     (BindBufferBaseIdx, b"glBindBufferBase\0"),
-
     (BufferDataIdx, b"glBufferData\0"),
 
     // Vertex Array Object functions
     (GenVertexArraysIdx, b"glGenVertexArrays\0"),
     (DeleteVertexArraysIdx, b"glDeleteVertexArrays\0"),
     (BindVertexArrayIdx, b"glBindVertexArray\0"),
-
     (EnableVertexAttribArrayIdx, b"glEnableVertexAttribArray\0"),
     (VertexAttribPointerIdx, b"glVertexAttribPointer\0"),
 
@@ -4585,6 +4583,9 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     // Framebuffer
     (GenFramebuffersIdx, b"glGenFramebuffers\0"),
     (DeleteFramebuffersIdx, b"glDeleteFramebuffers\0"),
+    (BindFramebufferIdx, b"glBindFramebuffer\0"),
+    (FramebufferTexture2DIdx, b"glFramebufferTexture2D\0"),
+    (NamedFramebufferDrawBuffersIdx, b"glNamedFramebufferDrawBuffers\0"),
 
     // Texture
     (GenTexturesIdx, b"glGenTextures\0"),

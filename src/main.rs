@@ -4,6 +4,7 @@
 #![feature(link_args)]
 #![feature(link_llvm_intrinsics)]
 #![feature(platform_intrinsics)]
+#![feature(pub_restricted)]
 #![feature(repr_simd)]
 #![feature(simd_ffi)]
 
@@ -37,20 +38,15 @@ mod c_types;
 mod camera;
 mod f32;
 mod file;
-mod framebuffer;
 mod g_buffer;
 mod gen;
-mod gl;
+mod gfx;
 mod intrinsics;
 mod mat4;
-mod mesh;
 mod pool;
 mod random;
-mod shader;
 mod shader_sources;
 mod simdty;
-mod ssbo;
-mod texture;
 mod time;
 mod utils;
 mod vec4;
@@ -59,16 +55,16 @@ mod win32_types;
 mod window;
 
 use camera::Camera;
-use framebuffer::Framebuffer;
 use g_buffer::GBuffer;
+use gfx::framebuffer::Framebuffer;
+use gfx::mesh::Mesh;
+use gfx::shader::Shader;
+use gfx::ssbo::Ssbo;
 use mat4::Mat4;
-use mesh::Mesh;
 use pool::Pool;
 use pool::PoolAllocator;
 use random::Rng;
-use shader::Shader;
 use shader_sources::ShaderId;
-use ssbo::Ssbo;
 use vec4::Vec4;
 use window::Window;
 

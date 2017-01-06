@@ -1,9 +1,9 @@
 use c_types::c_void;
 use core::marker::PhantomData;
 use core::mem;
-use gl;
+use super::Context;
+use super::gl;
 use utils;
-use window::GlContext;
 
 pub struct Ssbo {
     handle: u32,
@@ -11,7 +11,7 @@ pub struct Ssbo {
 }
 
 impl Ssbo {
-    pub fn new(_: &GlContext) -> Ssbo {
+    pub fn new(_: &Context) -> Ssbo {
         
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
@@ -46,11 +46,9 @@ impl Ssbo {
         unsafe { self.upload_inner(&*data.get_unchecked(0) as *const T as *const c_void, (data.len() * mem::size_of::<T>()) as isize) };
     }
 
-    // TODO(jonil): Should not be public! Make module for raw gl abstractions
-    pub fn get_handle(&self) -> u32 {
+    pub(super) fn get_handle(&self) -> u32 {
         self.handle
     }
-
 }
 
 impl Drop for Ssbo {

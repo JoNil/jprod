@@ -2,15 +2,15 @@ use core::default::Default;
 use core::marker::PhantomData;
 use core::ptr;
 use file::File;
-use gl;
 use pool::PoolAllocator;
 use shader_sources::get_shader_source;
 use shader_sources::ShaderId;
 use shader_sources::ShaderSource;
+use super::Context;
+use super::gl;
 use utils;
 use win32;
 use win32_types::*;
-use window::GlContext;
 
 struct RawProgram {
     handle: u32,
@@ -137,7 +137,7 @@ pub struct Shader {
 }
 
 impl Shader {
-    pub fn new(_: &GlContext, id: ShaderId) -> Shader {
+    pub fn new(_: &Context, id: ShaderId) -> Shader {
 
         let source = get_shader_source(id);
 
@@ -193,8 +193,7 @@ impl Shader {
         }
     }
 
-    // TODO(jonil): Should not be public! Make module for raw gl abstractions
-    pub fn get_program(&self) -> u32 {
+    pub(super) fn get_program_handle(&self) -> u32 {
         self.program.handle
     }
 }
