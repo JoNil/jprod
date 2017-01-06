@@ -107,9 +107,7 @@ impl Mesh {
 
     pub fn draw(&self, shader: &Shader) {
 
-        if self.length == 0 {
-            return;
-        }
+        utils::debug_trap_if(self.length == 0);
 
         unsafe {
             gl::UseProgram(shader.get_program());
@@ -124,9 +122,7 @@ impl Mesh {
 
     pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
 
-        if self.length == 0 || count <= 0 {
-            return;
-        }
+        utils::debug_trap_if(self.length == 0 || count <= 0);
 
         unsafe {
             gl::UseProgram(shader.get_program());
