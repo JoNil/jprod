@@ -66,20 +66,23 @@ impl Mesh {
         let vao = RawVao::new();
         let vbo = RawVbo::new();
 
-        unsafe { gl::BindVertexArray(vao.handle); }
-        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, vbo.handle); }
+        unsafe {
 
-        unsafe { gl::EnableVertexAttribArray(0); }
-        unsafe { gl::VertexAttribPointer(
+            gl::BindVertexArray(vao.handle);
+            gl::BindBuffer(gl::ARRAY_BUFFER, vbo.handle);
+
+            gl::EnableVertexAttribArray(0);
+            gl::VertexAttribPointer(
                 0,              // attribute
                 3,              // size
                 gl::FLOAT,      // type
                 0,              // normalized?
                 0,              // stride
-                ptr::null()); } // array buffer offset
+                ptr::null());   // array buffer offset
 
-        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
-        unsafe { gl::BindVertexArray(0); }
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
+            gl::BindVertexArray(0);
+        }
 
         Mesh { vao: vao, vbo: vbo, length: 0 }
     }
@@ -88,14 +91,18 @@ impl Mesh {
 
         self.length = data.len() as i32;
 
-        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo.handle); }
+        unsafe {
 
-        unsafe { gl::BufferData(gl::ARRAY_BUFFER,
+            gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo.handle);
+
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
                 (3 * data.len() * mem::size_of::<f32>()) as isize,
                 &*(*data.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
-                gl::STATIC_DRAW); }
+                gl::STATIC_DRAW);
 
-        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, 0); }
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0); 
+        }
     }
 
     pub fn draw(&self, shader: &Shader) {
@@ -104,13 +111,15 @@ impl Mesh {
             return;
         }
 
-        unsafe { gl::UseProgram(shader.get_program()); }
-        unsafe { gl::BindVertexArray(self.vao.handle); }
+        unsafe {
+            gl::UseProgram(shader.get_program());
+            gl::BindVertexArray(self.vao.handle);
 
-        unsafe { gl::DrawArrays(gl::TRIANGLES, 0, self.length); }
+            gl::DrawArrays(gl::TRIANGLES, 0, self.length);
 
-        unsafe { gl::BindVertexArray(0); }
-        unsafe { gl::UseProgram(0); }
+            gl::BindVertexArray(0);
+            gl::UseProgram(0);
+        }
     }
 
     pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
@@ -119,18 +128,20 @@ impl Mesh {
             return;
         }
 
-        unsafe { gl::UseProgram(shader.get_program()); }
-        unsafe { gl::BindVertexArray(self.vao.handle); }
+        unsafe {
+            gl::UseProgram(shader.get_program());
+            gl::BindVertexArray(self.vao.handle);
 
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle()); }
-        unsafe { gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, instance_data.get_handle()); }
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle()); }
-        unsafe { gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, uniform_data.get_handle()); }
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, instance_data.get_handle());
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, uniform_data.get_handle());
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
 
-        unsafe { gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count); }
-        
-        unsafe { gl::BindVertexArray(0); }
-        unsafe { gl::UseProgram(0); }
+            gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count);
+            
+            gl::BindVertexArray(0);
+            gl::UseProgram(0);
+        }
     }
 }

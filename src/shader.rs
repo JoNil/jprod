@@ -66,14 +66,14 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
     let fragment = RawShader::new(gl::FRAGMENT_SHADER);
     let vertex = RawShader::new(gl::VERTEX_SHADER);
 
-    {
-        let frag_pointer: *const u8 = unsafe { &*fragment_source.get_unchecked(0) };
+    unsafe {
+        let frag_pointer: *const u8 = &*fragment_source.get_unchecked(0);
         let frag_size: i32 = fragment_source.len() as i32;
-        unsafe { gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size) };
-        unsafe { gl::CompileShader(fragment.handle) };
+        gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size);
+        gl::CompileShader(fragment.handle);
 
         let mut frag_status = 0;
-        unsafe { gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status) };
+        gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status);
 
         if frag_status == 0 {
             print_shader_error(fragment.handle);
@@ -81,14 +81,14 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
         }
     }
 
-    {
-        let vert_pointer: *const u8 = unsafe { &*vertex_source.get_unchecked(0) };
+    unsafe {
+        let vert_pointer: *const u8 = &*vertex_source.get_unchecked(0);
         let vert_size: i32 = vertex_source.len() as i32;
-        unsafe { gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size) };
-        unsafe { gl::CompileShader(vertex.handle) };
+        gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size);
+        gl::CompileShader(vertex.handle);
 
         let mut vert_status = 0;
-        unsafe { gl::GetShaderiv(vertex.handle, gl::COMPILE_STATUS, &mut vert_status) };
+        gl::GetShaderiv(vertex.handle, gl::COMPILE_STATUS, &mut vert_status);
 
         if vert_status == 0 {
             print_shader_error(vertex.handle);
@@ -96,14 +96,14 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
         }
     }
 
-    {
-        unsafe { gl::AttachShader(program.handle, fragment.handle) };
-        unsafe { gl::AttachShader(program.handle, vertex.handle) };
+    unsafe {
+        gl::AttachShader(program.handle, fragment.handle);
+        gl::AttachShader(program.handle, vertex.handle);
 
-        unsafe { gl::LinkProgram(program.handle) };
+        gl::LinkProgram(program.handle);
 
         let mut program_status = 0;
-        unsafe { gl::GetProgramiv(program.handle, gl::LINK_STATUS, &mut program_status) };
+        gl::GetProgramiv(program.handle, gl::LINK_STATUS, &mut program_status);
 
         if program_status == 0 {
             print_program_error(program.handle);
@@ -111,11 +111,11 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
         }
     }
 
-    {
-        unsafe { gl::ValidateProgram(program.handle) };
+    unsafe {
+        gl::ValidateProgram(program.handle);
 
         let mut program_valid = 0;
-        unsafe { gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid) };
+        gl::GetProgramiv(program.handle, gl::VALIDATE_STATUS, &mut program_valid);
 
         if program_valid == 0 {
             return None;

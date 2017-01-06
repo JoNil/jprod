@@ -4589,6 +4589,10 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     // Texture
     (GenTexturesIdx, b"glGenTextures\0"),
     (DeleteTexturesIdx, b"glDeleteTextures\0"),
+    (BindTextureIdx, b"glBindTexture\0"),
+    (ActiveTextureIdx, b"glActiveTexture\0"),
+    (TexImage2DIdx, b"glTexImage2D\0"),
+    (TexParameteriIdx, b"glTexParameteri\0"),
 ];
 
 #[allow(mutable_transmutes)]

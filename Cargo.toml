@@ -23,4 +23,7 @@ panic = "abort"
 debug = true
 
 [profile.dev]
+opt-level = 1
+debug-assertions = true
 panic = "abort"
+debug = true

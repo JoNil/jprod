@@ -82,8 +82,7 @@ impl Mat4 {
         
         let mut temp = Mat4::identity();
 
-        let c = f32::cos(angle);
-        let s = f32::sin(angle);
+        let (s, c) = f32::sin_cos(angle);
         let t = 1.0 - c;
         let a = axis.normalized();
 

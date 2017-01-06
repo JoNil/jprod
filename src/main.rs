@@ -101,8 +101,10 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
 
         let t = i as f32 / len as f32;
 
-        let x = a * f32::cos(f*t);
-        let z = a * f32::sin(f*t);
+        let (sin_ft, cos_ft) = f32::sin_cos(f*t);
+
+        let x = a * cos_ft;
+        let z = a * sin_ft;
         let y = b * t - b / 2.0;
 
         let offset_x = rng.next_f32() * rs;

@@ -12,6 +12,7 @@ pub struct Ssbo {
 
 impl Ssbo {
     pub fn new(_: &GlContext) -> Ssbo {
+        
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
 
@@ -21,14 +22,18 @@ impl Ssbo {
     }
 
     fn upload_inner(&mut self, data: *const c_void, size: isize) {
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.handle); }
+        unsafe {
 
-        unsafe { gl::BufferData(gl::SHADER_STORAGE_BUFFER,
-            size,
-            data,
-            gl::STATIC_DRAW); }
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.handle);
 
-        unsafe { gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0); }
+            gl::BufferData(
+                gl::SHADER_STORAGE_BUFFER,
+                size,
+                data,
+                gl::STATIC_DRAW);
+
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
+        }
     }
 
     pub fn upload<T: Copy>(&mut self, data: &T) {

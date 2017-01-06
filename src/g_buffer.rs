@@ -1,6 +1,7 @@
 use framebuffer::Framebuffer;
 use texture::Texture;
-use window::GlContext;
+use texture::TextureFormat;
+use window::Window;
 
 pub struct GBuffer {
 	framebuffer: Framebuffer,
@@ -8,10 +9,14 @@ pub struct GBuffer {
 }
 
 impl GBuffer {
-	pub fn new(context: &GlContext) -> GBuffer {
+	pub fn new(window: &Window) -> GBuffer {
 
-		let framebuffer = Framebuffer::new(context);
-		let texture = Texture::new(context);
+		let framebuffer = Framebuffer::new(window);
+		let mut texture = Texture::new(window);
+
+        let size = window.get_size();
+
+        texture.allocate(size.0, size.1, TextureFormat::Rgb_f32);
 
 		GBuffer {
 			framebuffer: framebuffer,

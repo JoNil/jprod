@@ -40,8 +40,7 @@ pub fn cos(a: f32) -> f32 {
     res
 }
 
-pub fn tan(a: f32) -> f32 {
-    
+pub fn sin_cos(a: f32) -> (f32, f32) {
     let mut res_sin: f32 = unsafe { mem::uninitialized() };
     let mut res_cos: f32 = unsafe { mem::uninitialized() };
 
@@ -56,6 +55,13 @@ pub fn tan(a: f32) -> f32 {
         , "=*m"(&mut res_cos as *mut f32)
         : "*m"(&a as *const f32)
     ) };
+
+    (res_sin, res_cos)
+}
+
+pub fn tan(a: f32) -> f32 {
+    
+    let (res_sin, res_cos) = sin_cos(a);
 
     res_sin / res_cos
 }
