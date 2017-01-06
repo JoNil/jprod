@@ -17,9 +17,9 @@ impl GBuffer {
 
         let size = window.get_size();
 
-        texture.allocate(size.0, size.1, Format::Rgb_f32);
+        texture.allocate(size.0, size.1, Format::RgbF32);
 
-        framebuffer.attach(&texture, Attachment::Color_0);
+        framebuffer.attach(&texture, Attachment::Color0);
 
 		GBuffer {
 			framebuffer: framebuffer,

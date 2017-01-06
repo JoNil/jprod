@@ -5,7 +5,7 @@ use super::texture::Texture;
 use utils;
 
 pub enum Attachment {
-    Color_0 = gl::COLOR_ATTACHMENT0 as isize,
+    Color0 = gl::COLOR_ATTACHMENT0 as isize,
 }
 
 struct RawFramebuffer {

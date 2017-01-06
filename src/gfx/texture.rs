@@ -5,7 +5,7 @@ use super::gl;
 use utils;
 
 pub enum Format {
-    Rgb_f32,
+    RgbF32,
 }
 
 struct GlEnums {
@@ -17,7 +17,7 @@ struct GlEnums {
 impl Format {
     fn get_gl_enums(&self) -> GlEnums {
         match self {
-            &Format::Rgb_f32 => {
+            &Format::RgbF32 => {
                 GlEnums {
                     internal_format: gl::RGB32F,
                     format: gl::RGB,

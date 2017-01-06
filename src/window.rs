@@ -177,9 +177,11 @@ impl Window {
 
         context.make_current();
 
-        gfx::init();
+        let res = Window { context: context, actions: Default::default() };
 
-        Window { context: context, actions: Default::default() }
+        gfx::init(&res);
+
+        res
     }
 
     pub fn update(&mut self) {

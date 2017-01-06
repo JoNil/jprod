@@ -56,7 +56,6 @@ mod window;
 
 use camera::Camera;
 use g_buffer::GBuffer;
-use gfx::framebuffer::Framebuffer;
 use gfx::mesh::Mesh;
 use gfx::shader::Shader;
 use gfx::ssbo::Ssbo;

@@ -7,7 +7,7 @@ pub mod texture;
 
 pub unsafe trait Context { }
 
-pub fn init() {
+pub fn init(_: &Context) {
     gl::init();
 
     unsafe { gl::Enable(gl::DEPTH_TEST) };
