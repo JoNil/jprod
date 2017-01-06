@@ -38,6 +38,7 @@ mod camera;
 mod f32;
 mod file;
 mod framebuffer;
+mod g_buffer;
 mod gen;
 mod gl;
 mod intrinsics;
@@ -59,6 +60,7 @@ mod window;
 
 use camera::Camera;
 use framebuffer::Framebuffer;
+use g_buffer::GBuffer;
 use mat4::Mat4;
 use mesh::Mesh;
 use pool::Pool;
@@ -134,7 +136,7 @@ fn main() {
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window);
 
-    let mut g_buffer = Framebuffer::new(&window);
+    let mut g_buffer = GBuffer::new(&window);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
