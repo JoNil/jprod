@@ -241,7 +241,7 @@ impl Window {
         gfx::viewport(self, size.0, size.1);
     }
 
-    pub fn clear(&self, color: [f32; 4]) {
+    pub fn clear(&self, color: &[f32; 4]) {
         gfx::clear(self, color);
     }
 

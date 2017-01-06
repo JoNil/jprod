@@ -13,13 +13,10 @@ pub fn init(_: &Context) {
     unsafe { gl::Enable(gl::DEPTH_TEST) };
 }
 
-pub fn clear(_: &Context, color: [f32; 4]) {
-
-    let depth = [ 1.0f32 ];
-
+pub fn clear(_: &Context, color: &[f32; 4]) {
     unsafe {
-        gl::ClearBufferfv(gl::COLOR, 0, &color as *const f32);
-        gl::ClearBufferfv(gl::DEPTH, 0, &depth as *const f32);
+        gl::ClearBufferfv(gl::COLOR, 0, color as *const _);
+        gl::ClearBufferfv(gl::DEPTH, 0, &[ 1.0f32 ] as *const _);
     }
 }
 

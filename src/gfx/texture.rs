@@ -6,6 +6,7 @@ use utils;
 
 pub enum Format {
     RgbF32,
+    DepthF32,
 }
 
 struct GlEnums {
@@ -15,12 +16,19 @@ struct GlEnums {
 }
 
 impl Format {
-    fn get_gl_enums(&self) -> GlEnums {
+    fn get_gl_enums(self) -> GlEnums {
         match self {
-            &Format::RgbF32 => {
+            Format::RgbF32 => {
                 GlEnums {
                     internal_format: gl::RGB32F,
                     format: gl::RGB,
+                    component_type: gl::FLOAT,
+                }
+            }
+            Format::DepthF32 => {
+                GlEnums {
+                    internal_format: gl::DEPTH_COMPONENT32F,
+                    format: gl::DEPTH_COMPONENT,
                     component_type: gl::FLOAT,
                 }
             }

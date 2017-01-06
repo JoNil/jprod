@@ -8,12 +8,16 @@ use utils;
 
 pub enum Attachment {
     Color0 = gl::COLOR_ATTACHMENT0 as isize,
+    Color1 = gl::COLOR_ATTACHMENT1 as isize,
+    Depth = gl::DEPTH_ATTACHMENT as isize,
 }
 
 impl Attachment {
     fn get_index(self) -> i32 {
         match self {
             Attachment::Color0 => 0,
+            Attachment::Color1 => 1,
+            Attachment::Depth => utils::debug_trap(),
         }
     }
 }
@@ -71,12 +75,23 @@ impl Framebuffer {
         }
     }
 
-    pub fn clear(&mut self, attachment: Attachment,  value: [f32; 4]) {
+    pub fn clear(&mut self, attachment: Attachment,  value: &[f32; 4]) {
 
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
-            gl::ClearBufferfv(gl::COLOR, attachment.get_index(), &value as *const f32);
+            gl::ClearBufferfv(gl::COLOR, attachment.get_index(), value as *const _);
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+        }
+    }
+
+    pub fn clear_depth(&mut self, value: &[f32; 1]) {
+
+        unsafe {
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
+
+            gl::ClearBufferfv(gl::DEPTH, 0, value as *const _);
 
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
         }
