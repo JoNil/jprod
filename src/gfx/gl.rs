@@ -4583,9 +4583,9 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     // Framebuffer
     (GenFramebuffersIdx, b"glGenFramebuffers\0"),
     (DeleteFramebuffersIdx, b"glDeleteFramebuffers\0"),
-    (BindFramebufferIdx, b"glBindFramebuffer\0"),
     (FramebufferTexture2DIdx, b"glFramebufferTexture2D\0"),
-    (NamedFramebufferDrawBuffersIdx, b"glNamedFramebufferDrawBuffers\0"),
+    (BindFramebufferIdx, b"glBindFramebuffer\0"),
+    (DrawBuffersIdx, b"glDrawBuffers\0"),
 
     // Texture
     (GenTexturesIdx, b"glGenTextures\0"),

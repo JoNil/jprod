@@ -179,7 +179,7 @@ fn main() {
 
         window.update_viewport();
         window.clear([ 0.0, 0.5, 0.0, 1.0 ]);
-        mesh.draw_instanced(&shader, &instance_data, &uniform_data, INSTANCE_COUNT);
+        mesh.draw_instanced(&shader, None, &instance_data, &uniform_data, INSTANCE_COUNT);
         window.swap();
     }
 }

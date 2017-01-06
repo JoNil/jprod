@@ -5,6 +5,7 @@ use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
 use super::Context;
+use super::framebuffer::Framebuffer;
 use super::gl;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
@@ -120,11 +121,20 @@ impl Mesh {
         }
     }
 
-    pub fn draw_instanced(&self, shader: &Shader, instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
+    pub fn draw_instanced(&self, shader: &Shader, target: Option<&Framebuffer>,
+            instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
 
         utils::debug_trap_if(self.length == 0 || count <= 0);
 
         unsafe {
+
+            if let Some(framebuffer) = target {
+                gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer.get_handle());
+
+                let bufs: [u32; 1] = [ gl::COLOR_ATTACHMENT0 ];
+                gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
+            }
+
             gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
@@ -138,6 +148,13 @@ impl Mesh {
             
             gl::BindVertexArray(0);
             gl::UseProgram(0);
+
+            if let Some(_) = target {
+                gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+                let bufs: [u32; 1] = [ gl::BACK_LEFT ];
+                gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
+            }
         }
     }
 }
