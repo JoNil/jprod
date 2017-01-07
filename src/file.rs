@@ -1,6 +1,6 @@
 use pool::PoolAllocator;
+use win32::types::*;
 use win32;
-use win32_types::*;
 
 pub struct File {
 	handle: Handle,

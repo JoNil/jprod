@@ -5,7 +5,7 @@ use core::default::Default;
 use core::mem;
 use core::ptr;
 use utils;
-use win32_types::*;
+use win32::types::*;
 
 #[link(name = "kernel32")]
 #[allow(dead_code)]
@@ -27,7 +27,7 @@ extern "system" {
             share_mode: u32,
             security_attributes: *const c_void,
             creation_disposition: u32,
-            flags_and_attributes: u32,
+                flags_and_attributes: u32,
             template_file: Handle) -> Handle;
     fn CloseHandle(handle: Handle) -> i32;
     fn GetFileSize(handle: Handle, file_size_high: *mut u32) -> u32;

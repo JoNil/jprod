@@ -49,7 +49,6 @@ mod simdty;
 mod time;
 mod utils;
 mod win32;
-mod win32_types;
 mod window;
 
 use camera::Camera;

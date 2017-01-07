@@ -9,8 +9,8 @@ use shader_sources::ShaderSource;
 use super::Context;
 use super::gl;
 use utils;
+use win32::types::*;
 use win32;
-use win32_types::*;
 
 struct RawProgram {
     handle: u32,

@@ -3,8 +3,8 @@ use core::mem;
 use core::ptr;
 use gfx;
 use utils;
+use win32::types::*;
 use win32;
-use win32_types::*;
 
 static WINDOW_NAME: &'static [u8] = b"JProd\n\0";
 static WINDOW_CLASS: &'static [u8] = b"C\0";
