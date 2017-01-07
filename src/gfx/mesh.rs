@@ -9,6 +9,7 @@ use super::framebuffer::Framebuffer;
 use super::gl;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
+use super::texture::Texture;
 use utils;
 
 struct RawVao {
@@ -106,8 +107,12 @@ impl Mesh {
         }
     }
 
-    pub fn draw(&self, shader: &Shader, uniform_data: &Ssbo) {
-
+    pub fn draw(
+        &self,
+        shader: &Shader,
+        uniform_data: &Ssbo,
+        texture: Option<&Texture>,)
+    {
         utils::debug_trap_if(self.length == 0);
 
         unsafe {
@@ -124,9 +129,15 @@ impl Mesh {
         }
     }
 
-    pub fn draw_instanced(&self, shader: &Shader, target: Option<&Framebuffer>,
-            instance_data: &Ssbo, uniform_data: &Ssbo, count: i32) {
-
+    pub fn draw_instanced(
+        &self,
+        shader: &Shader,
+        target: Option<&Framebuffer>,
+        uniform_data: &Ssbo,
+        instance_data: &Ssbo,
+        texture: Option<&Texture>,
+        count: i32) 
+    {
         utils::debug_trap_if(self.length == 0 || count <= 0);
 
         unsafe {
