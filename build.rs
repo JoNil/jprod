@@ -215,7 +215,7 @@ fn main() {
         shader_ids.push_str("pub enum ShaderId {\n");
 
         for keys in shaders.keys() {
-            shader_ids.push_str(keys);
+            shader_ids.push_str(&format!("{},", keys));
             shader_ids.push_str("\n");
         }
 

@@ -106,13 +106,16 @@ impl Mesh {
         }
     }
 
-    pub fn draw(&self, shader: &Shader) {
+    pub fn draw(&self, shader: &Shader, uniform_data: &Ssbo) {
 
         utils::debug_trap_if(self.length == 0);
 
         unsafe {
             gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
+
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform_data.get_handle());
 
             gl::DrawArrays(gl::TRIANGLES, 0, self.length);
 
@@ -138,10 +141,10 @@ impl Mesh {
             gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle());
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, instance_data.get_handle());
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, uniform_data.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform_data.get_handle());
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, instance_data.get_handle());
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
 
             gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count);

@@ -64,7 +64,7 @@ use random::Rng;
 use shader_sources::ShaderId;
 use window::Window;
 
-const INSTANCE_COUNT: i32 = 20_000;
+const INSTANCE_COUNT: i32 = 100_000;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
 
@@ -130,14 +130,19 @@ fn main() {
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window);
 
+    //let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
+    let mut quad_mesh = Mesh::new(&window);
+
     let mut g_buffer = GBuffer::new(&window);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
-        {
-            let tetrahedron = gen::tetrahedron(&sub_allocator);
-            mesh.upload(tetrahedron);
-        }
+        
+        let tetrahedron = gen::tetrahedron(&sub_allocator);
+        mesh.upload(tetrahedron);
+
+        let quad = gen::quad(&sub_allocator);
+        quad_mesh.upload(quad);
     }
 
     let mut instance_data = Ssbo::new(&window);
@@ -178,7 +183,8 @@ fn main() {
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.5, 0.0, 1.0 ]);
-        mesh.draw_instanced(&shader, None, &instance_data, &uniform_data, INSTANCE_COUNT);
+        //mesh.draw_instanced(&shader, None, &instance_data, &uniform_data, INSTANCE_COUNT);
+        quad_mesh.draw_instanced(&shader, None, &instance_data, &uniform_data, INSTANCE_COUNT);
         window.swap();
     }
 }

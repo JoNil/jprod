@@ -4,16 +4,15 @@ layout(location = 0) in vec3 vertex_pos;
 
 out vec2 frag_uv;
 
-
-layout(std430, binding = 0) buffer instance_data
-{
-    mat4 m[];
-};
-
-layout(std430, binding = 1) buffer uniforms
+layout(std430, binding = 0) buffer uniforms
 {
     mat4 vp;
     float time;
+};
+
+layout(std430, binding = 1) buffer instance_data
+{
+    mat4 m[];
 };
 
 void main()

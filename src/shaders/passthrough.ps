@@ -1,0 +1,12 @@
+#version 450 core
+
+in vec2 frag_uv;
+
+layout(location = 0) out vec4 color;
+
+layout(binding = 0) uniform sampler2D tex;
+
+void main()
+{
+    color = vec4(frag_uv, 1.0, 1.0);
+}
