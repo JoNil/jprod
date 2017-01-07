@@ -36,20 +36,18 @@ mod core {
 
 mod c_types;
 mod camera;
-mod f32;
 mod file;
 mod g_buffer;
 mod gen;
 mod gfx;
 mod intrinsics;
-mod mat4;
+mod math;
 mod pool;
 mod random;
 mod shader_sources;
 mod simdty;
 mod time;
 mod utils;
-mod vec4;
 mod win32;
 mod win32_types;
 mod window;
@@ -59,12 +57,12 @@ use g_buffer::GBuffer;
 use gfx::mesh::Mesh;
 use gfx::shader::Shader;
 use gfx::ssbo::Ssbo;
-use mat4::Mat4;
+use math::Mat4;
+use math::Vec4;
 use pool::Pool;
 use pool::PoolAllocator;
 use random::Rng;
 use shader_sources::ShaderId;
-use vec4::Vec4;
 use window::Window;
 
 const INSTANCE_COUNT: i32 = 20_000;
@@ -96,7 +94,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
 
         let t = i as f32 / len as f32;
 
-        let (sin_ft, cos_ft) = f32::sin_cos(f*t);
+        let (sin_ft, cos_ft) = math::sin_cos(f*t);
 
         let x = a * cos_ft;
         let z = a * sin_ft;

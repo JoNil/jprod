@@ -1,10 +1,10 @@
 #![allow(dead_code)]
 
 use core::mem;
-use f32;
 use intrinsics;
+use math::Vec4;
+use math;
 use random::Rng;
-use vec4::Vec4;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -75,14 +75,14 @@ impl Mat4 {
     }
 
     pub extern "vectorcall" fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
-        Mat4::rotate(angle * f32::PI / 180.0, axis)
+        Mat4::rotate(angle * math::PI / 180.0, axis)
     }
 
     pub extern "vectorcall" fn rotate(angle: f32, axis: Vec4) -> Mat4 {
         
         let mut temp = Mat4::identity();
 
-        let (s, c) = f32::sin_cos(angle);
+        let (s, c) = math::sin_cos(angle);
         let t = 1.0 - c;
         let a = axis.normalized();
 
@@ -138,7 +138,7 @@ impl Mat4 {
 
     pub extern "vectorcall" fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
 
-        let height = near*f32::tan(horizontal_fov*f32::PI/360.0);
+        let height = near*math::tan(horizontal_fov*math::PI/360.0);
         let width = height*aspect_ratio;
         Mat4::frustum(-width, width, -height, height, near, far)
     }

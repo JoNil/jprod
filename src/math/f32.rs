@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use core::mem;
-use vec4::Vec4;
+use math::Vec4;
 
 pub use core::f32::*;
 pub use core::f32::consts::*;

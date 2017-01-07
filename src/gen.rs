@@ -1,4 +1,3 @@
-use f32;
 use pool::PoolAllocator;
 
 pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> &'a [[f32; 3]] {
