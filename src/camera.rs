@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use math::Mat4;
 use math::Vec4;
 use math;

@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use core::marker::PhantomData;
 use super::Context;
 use super::gl;
