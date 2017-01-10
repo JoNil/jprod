@@ -186,12 +186,11 @@ fn main() {
             Some(g_buffer.get_framebuffer()),
             &uniform_data,
             &instance_data,
-            None,
             INSTANCE_COUNT);
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.5, 0.0, 1.0 ]);
-        quad_mesh.draw(&quad_shader, &uniform_data, Some(g_buffer.get_color_texture()));
+        quad_mesh.draw(&quad_shader, &uniform_data, &[g_buffer.get_color_texture(), g_buffer.get_pos_texture()]);
         window.swap();
 
         utils::debug_trap_if(gfx::is_error(&window));

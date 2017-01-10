@@ -3,6 +3,7 @@
 layout(location = 0) in vec3 vertex_pos;
 
 out vec2 frag_uv;
+out vec3 frag_pos;
 
 layout(std430, binding = 0) buffer uniforms
 {
@@ -27,5 +28,8 @@ void main()
 
     frag_uv = rotated_vec.xy/2.0 + 0.5;
 
-    gl_Position = vp * m[gl_InstanceID] * rotated_vec;
+    vec4 pos = vp * m[gl_InstanceID] * rotated_vec;
+
+    frag_pos = pos.xyz;
+    gl_Position = pos;
 }

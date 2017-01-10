@@ -111,7 +111,7 @@ impl Mesh {
         &self,
         shader: &Shader,
         uniform_data: &Ssbo,
-        texture: Option<&Texture>,)
+        textures: &[&Texture])
     {
         utils::debug_trap_if(self.length == 0);
 
@@ -120,10 +120,10 @@ impl Mesh {
             gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
-            if let Some(tex) = texture {
-                gl::ActiveTexture(gl::TEXTURE0);
+            for (i, tex) in textures.iter().enumerate() {
+                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
                 gl::BindTexture(gl::TEXTURE_2D, tex.get_handle());
-                gl::Uniform1i(2, 0);
+                gl::Uniform1i(2 + i as i32, i as i32);
             }
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
@@ -131,8 +131,8 @@ impl Mesh {
 
             gl::DrawArrays(gl::TRIANGLES, 0, self.length);
 
-            if let Some(_) = texture {
-                gl::ActiveTexture(gl::TEXTURE0);
+            for (i, _) in textures.iter().enumerate() {
+                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
                 gl::BindTexture(gl::TEXTURE_2D, 0);   
             }
 
@@ -147,7 +147,6 @@ impl Mesh {
         target: Option<&Framebuffer>,
         uniform_data: &Ssbo,
         instance_data: &Ssbo,
-        _texture: Option<&Texture>,
         count: i32) 
     {
         utils::debug_trap_if(self.length == 0 || count <= 0);

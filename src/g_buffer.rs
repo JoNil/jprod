@@ -8,7 +8,7 @@ use window::Window;
 pub struct GBuffer {
     framebuffer: Framebuffer,
     color_texture: Texture,
-    _pos_texture: Texture,
+    pos_texture: Texture,
     _depth_texture: Texture,
 }
 
@@ -36,7 +36,7 @@ impl GBuffer {
         GBuffer {
             framebuffer: framebuffer,
             color_texture: color_texture,
-            _pos_texture: pos_texture,
+            pos_texture: pos_texture,
             _depth_texture: depth_texture,
         }
     }
@@ -53,5 +53,9 @@ impl GBuffer {
 
     pub fn get_color_texture(&self) -> &Texture {
         &self.color_texture
+    }
+
+    pub fn get_pos_texture(&self) -> &Texture {
+        &self.pos_texture
     }
 }
