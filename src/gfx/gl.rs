@@ -4549,6 +4549,8 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (GetProgramivIdx, b"glGetProgramiv\0"),
     (UseProgramIdx, b"glUseProgram\0"),
 
+    (Uniform1iIdx, b"glUniform1i\0"),
+
     // Shader functions
     (CreateShaderIdx, b"glCreateShader\0"),
     (DeleteShaderIdx, b"glDeleteShader\0"),
@@ -4575,17 +4577,13 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (DrawArraysIdx, b"glDrawArrays\0"),
     (DrawArraysInstancedIdx, b"glDrawArraysInstanced\0"),
 
-    // Misc
-    (ClearBufferfvIdx, b"glClearBufferfv\0"),
-    (ViewportIndexedfIdx, b"glViewportIndexedf\0"),
-    (EnableIdx, b"glEnable\0"),
-
     // Framebuffer
     (GenFramebuffersIdx, b"glGenFramebuffers\0"),
     (DeleteFramebuffersIdx, b"glDeleteFramebuffers\0"),
     (FramebufferTexture2DIdx, b"glFramebufferTexture2D\0"),
     (BindFramebufferIdx, b"glBindFramebuffer\0"),
     (DrawBuffersIdx, b"glDrawBuffers\0"),
+    (CheckFramebufferStatusIdx, b"glCheckFramebufferStatus\0"),
 
     // Texture
     (GenTexturesIdx, b"glGenTextures\0"),
@@ -4594,6 +4592,13 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (ActiveTextureIdx, b"glActiveTexture\0"),
     (TexImage2DIdx, b"glTexImage2D\0"),
     (TexParameteriIdx, b"glTexParameteri\0"),
+
+    // Misc
+    (ClearBufferfvIdx, b"glClearBufferfv\0"),
+    (ViewportIndexedfIdx, b"glViewportIndexedf\0"),
+    (EnableIdx, b"glEnable\0"),
+    (GetErrorIdx, b"glGetError\0"),
+    (DebugMessageCallbackIdx, b"glDebugMessageCallback\0"),
 ];
 
 #[allow(mutable_transmutes)]

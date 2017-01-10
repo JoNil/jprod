@@ -20,7 +20,7 @@ pub fn quad<'a>(pool: &'a PoolAllocator<'a>) -> &'a [[f32; 3]] {
 
         let v = unsafe { verts.get_unchecked(*index.get_unchecked(i) as usize) };
 
-       *vert = [v.0 as f32 * 0.5, v.1 as f32 * 0.5, 0.0];
+       *vert = [v.0 as f32, v.1 as f32, 0.0];
     }
 
     quad

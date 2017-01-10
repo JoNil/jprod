@@ -2,11 +2,12 @@ use gfx::framebuffer::Attachment;
 use gfx::framebuffer::Framebuffer;
 use gfx::texture::Format;
 use gfx::texture::Texture;
+use utils;
 use window::Window;
 
 pub struct GBuffer {
     framebuffer: Framebuffer,
-    _color_texture: Texture,
+    color_texture: Texture,
     _pos_texture: Texture,
     _depth_texture: Texture,
 }
@@ -30,9 +31,11 @@ impl GBuffer {
         framebuffer.attach(&pos_texture, Attachment::Color1);
         framebuffer.attach(&depth_texture, Attachment::Depth);
 
+        utils::debug_trap_if(!framebuffer.is_compleate());
+
         GBuffer {
             framebuffer: framebuffer,
-            _color_texture: color_texture,
+            color_texture: color_texture,
             _pos_texture: pos_texture,
             _depth_texture: depth_texture,
         }
@@ -42,5 +45,13 @@ impl GBuffer {
         self.framebuffer.clear(Attachment::Color0, &[ 0.0, 0.0, 0.0, 1.0 ]);
         self.framebuffer.clear(Attachment::Color1, &[ 0.0, 0.0, 0.0, 0.0 ]);
         self.framebuffer.clear_depth(&[ 1.0 ]);
+    }
+
+    pub fn get_framebuffer(&self) -> &Framebuffer {
+        &self.framebuffer
+    }
+
+    pub fn get_color_texture(&self) -> &Texture {
+        &self.color_texture
     }
 }

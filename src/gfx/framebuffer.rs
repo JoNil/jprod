@@ -95,7 +95,20 @@ impl Framebuffer {
         }
     }
 
+    pub fn is_compleate(&self) -> bool {
+        unsafe {
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
+
+            let res = gl::CheckFramebufferStatus(gl::FRAMEBUFFER) == gl::FRAMEBUFFER_COMPLETE;
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+            res
+        }
+    }
+
     pub(super) fn get_handle(&self) -> u32 {
         self.framebuffer.handle
-    } 
+    }
 }

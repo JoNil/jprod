@@ -130,7 +130,7 @@ fn main() {
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window);
 
-    //let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
+    let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
     let mut quad_mesh = Mesh::new(&window);
 
     let mut g_buffer = GBuffer::new(&window);
@@ -162,6 +162,7 @@ fn main() {
         window.update();
 
         shader.reload_if_changed(&allocator);
+        quad_shader.reload_if_changed(&allocator);
 
         let (dt, time) = {
             let now = time::now_s();
@@ -180,12 +181,20 @@ fn main() {
         uniform_data.upload(&uniforms);
 
         g_buffer.clear();
+        mesh.draw_instanced(
+            &shader,
+            Some(g_buffer.get_framebuffer()),
+            &uniform_data,
+            &instance_data,
+            None,
+            INSTANCE_COUNT);
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.5, 0.0, 1.0 ]);
-        mesh.draw_instanced(&shader, None, &uniform_data, &instance_data, None, INSTANCE_COUNT);
-        //quad_mesh.draw_instanced(&shader, None, &instance_data, &uniform_data, INSTANCE_COUNT);
+        quad_mesh.draw(&quad_shader, &uniform_data, Some(g_buffer.get_color_texture()));
         window.swap();
+
+        utils::debug_trap_if(gfx::is_error(&window));
     }
 }
 
