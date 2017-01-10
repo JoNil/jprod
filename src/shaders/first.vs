@@ -28,8 +28,8 @@ void main()
 
     frag_uv = rotated_vec.xy/2.0 + 0.5;
 
-    vec4 pos = vp * m[gl_InstanceID] * rotated_vec;
+    vec4 pos = m[gl_InstanceID] * rotated_vec;
 
     frag_pos = pos.xyz;
-    gl_Position = pos;
+    gl_Position = vp * pos;
 }

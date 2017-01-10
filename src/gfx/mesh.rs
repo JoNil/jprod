@@ -156,7 +156,7 @@ impl Mesh {
             if let Some(framebuffer) = target {
                 gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer.get_handle());
 
-                let bufs: [u32; 1] = [ gl::COLOR_ATTACHMENT0 ];
+                let bufs: [u32; 2] = [ gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT1 ];
                 gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
             }
 
