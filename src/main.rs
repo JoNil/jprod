@@ -105,7 +105,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
         let offset_z = rng.next_f32() * rs;
 
         *mvp =
-            Mat4::rotate_deg(offset + 0.0 * time, Vec4::y()).mul(
+            Mat4::rotate_deg(offset + 4.0 * time, Vec4::y()).mul(
             Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
             Mat4::random_rotation(&mut rng)).mul(
             Mat4::scale(s));
@@ -129,7 +129,7 @@ fn main() {
     let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);
-    let mut mesh = Mesh::new(&window, Primitive::TriangleStrip);
+    let mut mesh = Mesh::new(&window, Primitive::Triangles);
 
     let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
@@ -139,7 +139,7 @@ fn main() {
     {
         let sub_allocator = allocator.get_sub_allocator();
         
-        let tetrahedron = gen::sphere(&sub_allocator, 32, 16);
+        let tetrahedron = gen::tetrahedron(&sub_allocator);
         mesh.upload(tetrahedron);
 
         let quad = gen::quad(&sub_allocator);

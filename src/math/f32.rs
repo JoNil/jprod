@@ -6,6 +6,7 @@ use math::Vec4;
 pub use core::f32::*;
 pub use core::f32::consts::*;
 
+#[inline(always)]
 pub fn sin(a: f32) -> f32 {
 
     let mut res: f32 = unsafe { mem::uninitialized() };
@@ -23,6 +24,7 @@ pub fn sin(a: f32) -> f32 {
     res
 }
 
+#[inline(always)]
 pub fn cos(a: f32) -> f32 {
     
     let mut res: f32 = unsafe { mem::uninitialized() };
@@ -40,6 +42,7 @@ pub fn cos(a: f32) -> f32 {
     res
 }
 
+#[inline(always)]
 pub fn sin_cos(a: f32) -> (f32, f32) {
     let mut res_sin: f32 = unsafe { mem::uninitialized() };
     let mut res_cos: f32 = unsafe { mem::uninitialized() };
@@ -59,6 +62,7 @@ pub fn sin_cos(a: f32) -> (f32, f32) {
     (res_sin, res_cos)
 }
 
+#[inline(always)]
 pub fn tan(a: f32) -> f32 {
     
     let (res_sin, res_cos) = sin_cos(a);

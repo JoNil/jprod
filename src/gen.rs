@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use math;
 use pool::PoolAllocator;
 use utils;
