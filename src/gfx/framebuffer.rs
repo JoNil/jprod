@@ -32,7 +32,7 @@ impl RawFramebuffer {
 
         unsafe { gl::GenFramebuffers(1, &mut handle as *mut _) };
 
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawFramebuffer { handle: handle, marker: PhantomData }
     }

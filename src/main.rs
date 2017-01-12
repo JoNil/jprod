@@ -54,6 +54,7 @@ mod window;
 use camera::Camera;
 use g_buffer::GBuffer;
 use gfx::mesh::Mesh;
+use gfx::mesh::Primitive;
 use gfx::shader::Shader;
 use gfx::ssbo::Ssbo;
 use math::Mat4;
@@ -104,7 +105,7 @@ fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'
         let offset_z = rng.next_f32() * rs;
 
         *mvp =
-            Mat4::rotate_deg(offset + 4.0 * time, Vec4::y()).mul(
+            Mat4::rotate_deg(offset + 0.0 * time, Vec4::y()).mul(
             Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
             Mat4::random_rotation(&mut rng)).mul(
             Mat4::scale(s));
@@ -128,17 +129,17 @@ fn main() {
     let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);
-    let mut mesh = Mesh::new(&window);
+    let mut mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
-    let mut quad_mesh = Mesh::new(&window);
+    let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     let mut g_buffer = GBuffer::new(&window);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
         
-        let tetrahedron = gen::tetrahedron(&sub_allocator);
+        let tetrahedron = gen::sphere(&sub_allocator, 32, 16);
         mesh.upload(tetrahedron);
 
         let quad = gen::quad(&sub_allocator);
@@ -189,11 +190,11 @@ fn main() {
             INSTANCE_COUNT);
 
         window.update_viewport();
-        window.clear(&[ 0.0, 0.5, 0.0, 1.0 ]);
+        window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(&quad_shader, &uniform_data, &[g_buffer.get_color_texture(), g_buffer.get_pos_texture()]);
         window.swap();
 
-        utils::debug_trap_if(gfx::is_error(&window));
+        utils::assert(gfx::is_error(&window));
     }
 }
 

@@ -19,8 +19,8 @@ layout(std430, binding = 1) buffer instance_data
 void main()
 {
     mat4 rot = mat4(
-        sin(time), cos(time), 0.0, 0.0,
-        cos(time), -sin(time), 0.0, 0.0,
+        sin(time*0.0), cos(time*0.001), 0.0, 0.0,
+        cos(time*0.0), -sin(time*0.0), 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0);
     

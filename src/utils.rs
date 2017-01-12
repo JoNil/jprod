@@ -1,7 +1,7 @@
 use intrinsics;
 
 #[inline(always)]
-pub fn debug_trap_if(cond: bool) -> () {
+pub fn assert(cond: bool) -> () {
 
     let inverse_cond = !cond;
 

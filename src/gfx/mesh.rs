@@ -22,7 +22,7 @@ impl RawVao {
         let mut handle = 0;
         unsafe { gl::GenVertexArrays(1, &mut handle as *mut _) };
 
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawVao { handle: handle, marker: PhantomData }
     }
@@ -44,7 +44,7 @@ impl RawVbo {
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
         
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawVbo { handle: handle, marker: PhantomData }
     }
@@ -56,14 +56,21 @@ impl Drop for RawVbo {
     }
 }
 
+#[derive(Copy, Clone)]
+pub enum Primitive {
+    Triangles = gl::TRIANGLES as isize,
+    TriangleStrip = gl::TRIANGLE_STRIP as isize,
+}
+
 pub struct Mesh {
     vao: RawVao,
     vbo: RawVbo,
     length: i32,
+    primitive: Primitive,
 }
 
 impl Mesh {
-    pub fn new(_: &Context) -> Mesh {
+    pub fn new(_: &Context, primitive: Primitive) -> Mesh {
         
         let vao = RawVao::new();
         let vbo = RawVbo::new();
@@ -86,7 +93,7 @@ impl Mesh {
             gl::BindVertexArray(0);
         }
 
-        Mesh { vao: vao, vbo: vbo, length: 0 }
+        Mesh { vao: vao, vbo: vbo, length: 0, primitive: primitive }
     }
 
     pub fn upload(&mut self, data: &[[f32; 3]]) {
@@ -113,7 +120,7 @@ impl Mesh {
         uniform_data: &Ssbo,
         textures: &[&Texture])
     {
-        utils::debug_trap_if(self.length == 0);
+        utils::assert(self.length == 0);
 
         unsafe {
 
@@ -129,7 +136,7 @@ impl Mesh {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
             gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform_data.get_handle());
 
-            gl::DrawArrays(gl::TRIANGLES, 0, self.length);
+            gl::DrawArrays(self.primitive as u32, 0, self.length);
 
             for (i, _) in textures.iter().enumerate() {
                 gl::ActiveTexture(gl::TEXTURE0 + i as u32);
@@ -149,7 +156,7 @@ impl Mesh {
         instance_data: &Ssbo,
         count: i32) 
     {
-        utils::debug_trap_if(self.length == 0 || count <= 0);
+        utils::assert(self.length == 0 || count <= 0);
 
         unsafe {
 
@@ -169,7 +176,7 @@ impl Mesh {
             gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, instance_data.get_handle());
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
 
-            gl::DrawArraysInstanced(gl::TRIANGLES, 0, self.length, count);
+            gl::DrawArraysInstanced(self.primitive as u32, 0, self.length, count);
             
             gl::BindVertexArray(0);
             gl::UseProgram(0);

@@ -31,7 +31,7 @@ impl GBuffer {
         framebuffer.attach(&pos_texture, Attachment::Color1);
         framebuffer.attach(&depth_texture, Attachment::Depth);
 
-        utils::debug_trap_if(!framebuffer.is_compleate());
+        utils::assert(!framebuffer.is_compleate());
 
         GBuffer {
             framebuffer: framebuffer,
@@ -42,7 +42,7 @@ impl GBuffer {
     }
 
     pub fn clear(&mut self) {
-        self.framebuffer.clear(Attachment::Color0, &[ 0.0, 0.0, 0.0, 0.0 ]);
+        self.framebuffer.clear(Attachment::Color0, &[ 0.0, 0.5, 0.0, 0.0 ]);
         self.framebuffer.clear(Attachment::Color1, &[ 0.0, 0.0, 0.0, 0.0 ]);
         self.framebuffer.clear_depth(&[ 1.0 ]);
     }

@@ -47,7 +47,7 @@ impl RawTexture {
         let mut handle = 0;
         unsafe { gl::GenTextures(1, &mut handle as *mut _) };
 
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawTexture { handle: handle, marker: PhantomData }
     }

@@ -21,7 +21,7 @@ impl RawProgram {
     fn new() -> RawProgram {
         let handle = unsafe { gl::CreateProgram() };
         
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawProgram {
             handle: handle,
@@ -45,7 +45,7 @@ impl RawShader {
     fn new(shader_type: u32) -> RawShader {
         let handle = unsafe { gl::CreateShader(shader_type) };
         
-        utils::debug_trap_if(handle == 0);
+        utils::assert(handle == 0);
 
         RawShader {
             handle: handle,
