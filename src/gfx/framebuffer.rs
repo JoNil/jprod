@@ -73,7 +73,7 @@ impl Framebuffer {
         }
     }
 
-    pub fn clear(&mut self, attachment: Attachment,  value: &[f32; 4]) {
+    pub fn clear(&mut self, attachment: Attachment, value: &[f32; 4]) {
 
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);

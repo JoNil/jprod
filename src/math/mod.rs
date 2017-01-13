@@ -1,4 +1,6 @@
+#[macro_use]
 mod vec4;
+
 mod mat4;
 mod f32;
 

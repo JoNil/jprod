@@ -118,3 +118,10 @@ impl Vec4 {
         unsafe { Vec4::from_simd(intrinsics::sqrt_v4f32(self.to_simd())) }
     }
 }
+
+#[macro_export]
+macro_rules! vec4_shuffle {
+    ($lhs:expr, $rhs:expr, $a:expr, $b:expr, $c:expr, $d:expr) => {
+        unsafe { $crate::math::Vec4::from_simd($crate::intrinsics::simd_shuffle4($lhs.to_simd(), $rhs.to_simd(), [$a, $b, $c, $d])) }
+    };
+}

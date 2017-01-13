@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use core::mem;
-use intrinsics;
 use math::Vec4;
 use math;
 use random::Rng;
@@ -175,89 +174,89 @@ impl Mat4 {
 
             /* Transpose: */
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col0.to_simd(), col2.to_simd(), [0, 4, 1, 5]) });
-            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col3.to_simd(), [0, 4, 1, 5]) });
+            tmp1 = vec4_shuffle!(col0, col2, 0, 4, 1, 5);
+            row1 = vec4_shuffle!(col1, col3, 0, 4, 1, 5);
 
-            row0 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row1.to_simd(), [0, 4, 1, 5]) });
-            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row1.to_simd(), [2, 6, 3, 7]) });
+            row0 = vec4_shuffle!(tmp1, row1, 0, 4, 1, 5);
+            row1 = vec4_shuffle!(tmp1, row1, 2, 6, 3, 7);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col0.to_simd(), col2.to_simd(), [2, 6, 3, 7]) });
-            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col3.to_simd(), [2, 6, 3, 7]) });
+            tmp1 = vec4_shuffle!(col0, col2, 2, 6, 3, 7);
+            row3 = vec4_shuffle!(col1, col3, 2, 6, 3, 7);
 
-            row2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row3.to_simd(), [0, 4, 1, 5]) });
-            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), row3.to_simd(), [2, 6, 3, 7]) });
+            row2 = vec4_shuffle!(tmp1, row3, 0, 4, 1, 5);
+            row3 = vec4_shuffle!(tmp1, row3, 2, 6, 3, 7);
 
             /* Compute adjoint: */
 
-            row1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row1.to_simd(), row1.to_simd(), [2, 3, 0, 1]) });
-            row3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row3.to_simd(), row3.to_simd(), [2, 3, 0, 1]) });
+            row1 = vec4_shuffle!(row1, row1, 2, 3, 0, 1);
+            row3 = vec4_shuffle!(row3, row3, 2, 3, 0, 1);
 
             tmp1 = row2.pairwise_mul(row3);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
 
             col0 = row1.pairwise_mul(tmp1);
             col1 = row0.pairwise_mul(tmp1);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col0 = row1.pairwise_mul(tmp1).sub(col0);
             col1 = row0.pairwise_mul(tmp1).sub(col1);
-            col1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col1.to_simd(), col1.to_simd(), [2, 3, 4, 5]) });
+            col1 = vec4_shuffle!(col1, col1, 2, 3, 4, 5);
 
             tmp1 = row1.pairwise_mul(row2);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
 
             col0 = row3.pairwise_mul(tmp1).add(col0);
             col3 = row0.pairwise_mul(tmp1);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col0 = col0.sub(row3.pairwise_mul(tmp1));
             col3 = row0.pairwise_mul(tmp1).sub(col3);
-            col3 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col3.to_simd(), col3.to_simd(), [2, 3, 4, 5]) });
+            col3 = vec4_shuffle!(col3, col3, 2, 3, 4, 5);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row1.to_simd(), row1.to_simd(), [2, 3, 4, 5]) }).pairwise_mul(row3);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
-            row2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(row2.to_simd(), row2.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(row1, row1, 2, 3, 4, 5).pairwise_mul(row3);
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
+            row2 = vec4_shuffle!(row2, row2, 2, 3, 4, 5);
 
             col0 = row2.pairwise_mul(tmp1).add(col0);
             col2 = row0.pairwise_mul(tmp1);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col0 = col0.sub(row2.pairwise_mul(tmp1));
             col2 = row0.pairwise_mul(tmp1).sub(col2);
-            col2 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(col2.to_simd(), col2.to_simd(), [2, 3, 4, 5]) });
+            col2 = vec4_shuffle!(col2, col2, 2, 3, 4, 5);
 
             tmp1 = row0.pairwise_mul(row1);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
 
             col2 = row3.pairwise_mul(tmp1).add(col2);
             col3 = row2.pairwise_mul(tmp1).sub(col3);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col2 = row3.pairwise_mul(tmp1).sub(col2);
             col3 = col3.sub(row2.pairwise_mul(tmp1));
 
             tmp1 = row0.pairwise_mul(row3);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
 
             col1 = col1.sub(row2.pairwise_mul(tmp1));
             col2 = row1.pairwise_mul(tmp1).add(col2);
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col1 = row2.pairwise_mul(tmp1).add(col1);
             col2 = col2.sub(row1.pairwise_mul(tmp1));
 
             tmp1 = row0.pairwise_mul(row2);
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [1, 0, 7, 6]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
 
             col1 = row3.pairwise_mul(tmp1).add(col1);
             col3 = col3.sub(row1.pairwise_mul(tmp1));
 
-            tmp1 = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(tmp1.to_simd(), tmp1.to_simd(), [2, 3, 4, 5]) });
+            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
 
             col1 = col1.sub(row3.pairwise_mul(tmp1));
             col3 = row1.pairwise_mul(tmp1).add(col3);
@@ -265,8 +264,8 @@ impl Mat4 {
             /* Compute determinant: */
 
             det = row0.pairwise_mul(col0);
-            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [2, 3, 4, 5]) }).add(det);
-            det = Vec4::from_simd(unsafe { intrinsics::simd_shuffle4(det.to_simd(), det.to_simd(), [1, 0, 7, 6]) }).add(det);
+            det = vec4_shuffle!(det, det, 2, 3, 4, 5).add(det);
+            det = vec4_shuffle!(det, det, 1, 0, 7, 6).add(det);
 
             /* Compute reciprocal of determinant: */
 
