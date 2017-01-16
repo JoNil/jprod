@@ -12,14 +12,15 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
+// Defered rendering
+//  - Normals
+//  - Light shader
+//  - Light list
 // More intressting dna snake :)
 // Camera path
 // Profiling? Gpu and cpu time. Telemetry?
-// Defered rendering
-// Imgui
 // Audio output
 // Square wave
-// Emulate gameboy sound chip?
 
 // Optimizations
 // Load kernal32 stuff by ordinal
