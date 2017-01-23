@@ -140,11 +140,11 @@ fn main() {
     {
         let sub_allocator = allocator.get_sub_allocator();
         
-        let tetrahedron = gen::tetrahedron(&sub_allocator);
-        mesh.upload(tetrahedron, tetrahedron);
+        let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&sub_allocator);
+        mesh.upload(tetrahedron_pos, tetrahedron_normals);
 
-        let quad = gen::quad(&sub_allocator);
-        quad_mesh.upload(quad, quad);
+        let (quad_pos, quad_normals) = gen::quad(&sub_allocator);
+        quad_mesh.upload(quad_pos, quad_normals);
     }
 
     let mut instance_data = Ssbo::new(&window);

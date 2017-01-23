@@ -51,6 +51,14 @@ impl Vec4 {
         Vec4 { x: self.x, y: self.y, z: self.z, w: 1.0 }
     }
 
+    pub extern "vectorcall" fn from_slice(slice: &[f32; 3]) -> Vec4 {
+        unsafe { Vec4 { x: *slice.get_unchecked(0), y: *slice.get_unchecked(1), z: *slice.get_unchecked(2), w: 0.0 } }
+    }
+
+    pub extern "vectorcall" fn to_slice(self) -> [f32; 3] {
+        [ self.x, self.y, self.z ]
+    }    
+
     pub extern "vectorcall" fn from_simd(simd: f32x4) -> Vec4 {
         Vec4 { x: simd.0, y: simd.1, z: simd.2, w: simd.3 }
     }
