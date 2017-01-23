@@ -192,7 +192,10 @@ fn main() {
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
-        quad_mesh.draw(&quad_shader, &uniform_data, &[g_buffer.get_color_texture(), g_buffer.get_pos_texture()]);
+        quad_mesh.draw(
+            &quad_shader,
+            &uniform_data,
+            &[g_buffer.get_color_texture(), g_buffer.get_pos_texture(),  g_buffer.get_normal_texture()]);
         window.swap();
 
         utils::assert(!gfx::is_error(&window));

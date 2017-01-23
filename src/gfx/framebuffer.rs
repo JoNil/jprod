@@ -48,19 +48,25 @@ impl Drop for RawFramebuffer {
 
 pub struct Framebuffer {
     framebuffer: RawFramebuffer,
+    render_targets: i32,
 }
 
 impl Framebuffer {
-    pub fn new(_: &Context) -> Framebuffer {
+    pub fn new(_: &Context, render_targets: i32) -> Framebuffer {
+
+        utils::assert(render_targets >= 0);
+        utils::assert(render_targets < 4);
+
         let framebuffer = RawFramebuffer::new();
 
         Framebuffer {
             framebuffer: framebuffer,
+            render_targets: render_targets,
         }
     }
 
     pub fn attach(&mut self, texture: &Texture, attachment: Attachment) {
-
+        
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
@@ -112,5 +118,12 @@ impl Framebuffer {
 
     pub(super) fn get_handle(&self) -> u32 {
         self.framebuffer.handle
+    }
+
+    pub(super) fn get_draw_buffer_spec(&self) -> (i32, [u32; 3]) {
+
+        let storage = [ gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT1, gl::COLOR_ATTACHMENT2 ];
+
+        (self.render_targets, storage)
     }
 }

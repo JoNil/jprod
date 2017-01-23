@@ -16,7 +16,7 @@ pub struct GBuffer {
 impl GBuffer {
     pub fn new(window: &Window) -> GBuffer {
 
-        let mut framebuffer = Framebuffer::new(window);
+        let mut framebuffer = Framebuffer::new(window, 3);
         
         let mut color_texture = Texture::new(window);
         let mut pos_texture = Texture::new(window);
