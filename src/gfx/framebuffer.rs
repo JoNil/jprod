@@ -7,6 +7,7 @@ use utils;
 pub enum Attachment {
     Color0 = gl::COLOR_ATTACHMENT0 as isize,
     Color1 = gl::COLOR_ATTACHMENT1 as isize,
+    Color2 = gl::COLOR_ATTACHMENT2 as isize,
     Depth = gl::DEPTH_ATTACHMENT as isize,
 }
 
@@ -15,6 +16,7 @@ impl Attachment {
         match self {
             Attachment::Color0 => 0,
             Attachment::Color1 => 1,
+            Attachment::Color2 => 2,
             Attachment::Depth => utils::debug_trap(),
         }
     }
@@ -32,7 +34,7 @@ impl RawFramebuffer {
 
         unsafe { gl::GenFramebuffers(1, &mut handle as *mut _) };
 
-        utils::assert(handle == 0);
+        utils::assert(handle != 0);
 
         RawFramebuffer { handle: handle, marker: PhantomData }
     }

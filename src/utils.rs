@@ -3,13 +3,11 @@ use intrinsics;
 #[inline(always)]
 pub fn assert(cond: bool) -> () {
 
-    let inverse_cond = !cond;
-
     if cfg!(not(debug_assertions)) {
-        unsafe { intrinsics::assume(inverse_cond) };
+        unsafe { intrinsics::assume(cond) };
     }
 
-    if !inverse_cond {
+    if !cond {
         unsafe { intrinsics::debugtrap() };
     }
 }

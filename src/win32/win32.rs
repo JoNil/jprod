@@ -64,7 +64,7 @@ pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 
     let handle = unsafe { LoadLibraryA(&*file_name.get_unchecked(0)) };
 
-    utils::assert(handle.is_null());
+    utils::assert(!handle.is_null());
 
     handle
 }
@@ -78,7 +78,7 @@ pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
 
     let ptr = unsafe { GetProcAddress(module, proc_index as *const u8) };
 
-    utils::assert(ptr.is_null());
+    utils::assert(!ptr.is_null());
 
     ptr
 }
@@ -419,7 +419,7 @@ pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
         ptr = unsafe { get_proc_address_name(OPENGL32, name) };
     }
 
-    utils::assert(ptr.is_null());
+    utils::assert(!ptr.is_null());
 
     ptr
 }

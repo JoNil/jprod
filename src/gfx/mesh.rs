@@ -22,7 +22,7 @@ impl RawVao {
         let mut handle = 0;
         unsafe { gl::GenVertexArrays(1, &mut handle as *mut _) };
 
-        utils::assert(handle == 0);
+        utils::assert(handle != 0);
 
         RawVao { handle: handle, marker: PhantomData }
     }
@@ -44,7 +44,7 @@ impl RawVbo {
         let mut handle = 0;
         unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
         
-        utils::assert(handle == 0);
+        utils::assert(handle != 0);
 
         RawVbo { handle: handle, marker: PhantomData }
     }
@@ -64,7 +64,8 @@ pub enum Primitive {
 
 pub struct Mesh {
     vao: RawVao,
-    vbo: RawVbo,
+    pos_vbo: RawVbo,
+    normal_vbo: RawVbo,
     length: i32,
     primitive: Primitive,
 }
@@ -73,16 +74,27 @@ impl Mesh {
     pub fn new(_: &Context, primitive: Primitive) -> Mesh {
         
         let vao = RawVao::new();
-        let vbo = RawVbo::new();
+        let pos_vbo = RawVbo::new();
+        let normal_vbo = RawVbo::new();
 
         unsafe {
 
             gl::BindVertexArray(vao.handle);
-            gl::BindBuffer(gl::ARRAY_BUFFER, vbo.handle);
 
+            gl::BindBuffer(gl::ARRAY_BUFFER, pos_vbo.handle);
             gl::EnableVertexAttribArray(0);
             gl::VertexAttribPointer(
                 0,              // attribute
+                3,              // size
+                gl::FLOAT,      // type
+                0,              // normalized?
+                0,              // stride
+                ptr::null());   // array buffer offset
+
+            gl::BindBuffer(gl::ARRAY_BUFFER, normal_vbo.handle);
+            gl::EnableVertexAttribArray(1);
+            gl::VertexAttribPointer(
+                1,              // attribute
                 3,              // size
                 gl::FLOAT,      // type
                 0,              // normalized?
@@ -93,21 +105,31 @@ impl Mesh {
             gl::BindVertexArray(0);
         }
 
-        Mesh { vao: vao, vbo: vbo, length: 0, primitive: primitive }
+        Mesh { vao: vao, pos_vbo: pos_vbo, normal_vbo: normal_vbo, length: 0, primitive: primitive }
     }
 
-    pub fn upload(&mut self, data: &[[f32; 3]]) {
+    pub fn upload(&mut self, verts: &[[f32; 3]], normals: &[[f32; 3]]) {
 
-        self.length = data.len() as i32;
+        utils::assert(verts.len() == normals.len());
+
+        self.length = verts.len() as i32;
 
         unsafe {
 
-            gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo.handle);
+            gl::BindBuffer(gl::ARRAY_BUFFER, self.pos_vbo.handle);
 
             gl::BufferData(
                 gl::ARRAY_BUFFER,
-                (3 * data.len() * mem::size_of::<f32>()) as isize,
-                &*(*data.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                (3 * verts.len() * mem::size_of::<f32>()) as isize,
+                &*(*verts.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                gl::STATIC_DRAW);
+
+            gl::BindBuffer(gl::ARRAY_BUFFER, self.normal_vbo.handle);
+
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                (3 * normals.len() * mem::size_of::<f32>()) as isize,
+                &*(*normals.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
                 gl::STATIC_DRAW);
 
             gl::BindBuffer(gl::ARRAY_BUFFER, 0); 
@@ -120,7 +142,7 @@ impl Mesh {
         uniform_data: &Ssbo,
         textures: &[&Texture])
     {
-        utils::assert(self.length == 0);
+        utils::assert(self.length != 0);
 
         unsafe {
 
@@ -156,7 +178,7 @@ impl Mesh {
         instance_data: &Ssbo,
         count: i32) 
     {
-        utils::assert(self.length == 0 || count <= 0);
+        utils::assert(self.length != 0 && count > 0);
 
         unsafe {
 

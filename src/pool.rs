@@ -18,7 +18,7 @@ impl Pool {
 
         let memory = win32::virtual_alloc(size) as *mut u8;
 
-        utils::assert(memory.is_null());
+        utils::assert(!memory.is_null());
 
         Pool {
             memory: memory,
@@ -54,11 +54,11 @@ pub struct PoolAllocator<'a> {
 impl<'a> PoolAllocator<'a> {
     pub fn allocate_byte_slice(&'a self, size: usize) -> &'a mut [u8] {
 
-        utils::assert(self.borrowed.get());
+        utils::assert(!self.borrowed.get());
 
         let offset = self.offset + self.used.get();
 
-        utils::assert(offset + size > self.pool.size);
+        utils::assert(offset + size < self.pool.size);
 
         self.used.set(self.used.get() + size);
 
@@ -91,7 +91,7 @@ impl<'a> PoolAllocator<'a> {
 
     pub fn get_sub_allocator(&'a self) -> PoolAllocator<'a> {
         
-        utils::assert(self.borrowed.get());
+        utils::assert(!self.borrowed.get());
 
         self.borrowed.set(true);
 

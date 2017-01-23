@@ -25,7 +25,7 @@
 // Optimizations
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
+#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED /FORCE")]
 extern "C" {}
 
 extern crate rt;
@@ -141,10 +141,10 @@ fn main() {
         let sub_allocator = allocator.get_sub_allocator();
         
         let tetrahedron = gen::tetrahedron(&sub_allocator);
-        mesh.upload(tetrahedron);
+        mesh.upload(tetrahedron, tetrahedron);
 
         let quad = gen::quad(&sub_allocator);
-        quad_mesh.upload(quad);
+        quad_mesh.upload(quad, quad);
     }
 
     let mut instance_data = Ssbo::new(&window);
@@ -195,7 +195,7 @@ fn main() {
         quad_mesh.draw(&quad_shader, &uniform_data, &[g_buffer.get_color_texture(), g_buffer.get_pos_texture()]);
         window.swap();
 
-        utils::assert(gfx::is_error(&window));
+        utils::assert(!gfx::is_error(&window));
     }
 }
 
