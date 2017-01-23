@@ -13,7 +13,6 @@
 
 // TODO:
 // Defered rendering
-//  - Normals
 //  - Light shader
 //  - Light list
 // More intressting dna snake :)
