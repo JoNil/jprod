@@ -33,7 +33,7 @@ impl GBuffer {
         framebuffer.attach(&color_texture, Attachment::Color0);
         framebuffer.attach(&pos_texture, Attachment::Color1);
         framebuffer.attach(&normal_texture, Attachment::Color2);
-        framebuffer.attach(&depth_texture, Attachment::Depth);
+        framebuffer.attach_depth(&depth_texture);
 
         utils::assert(framebuffer.is_compleate());
 

@@ -1,14 +1,15 @@
 use core::marker::PhantomData;
 use super::Context;
 use super::gl;
+use super::texture::Format;
 use super::texture::Texture;
 use utils;
 
+#[derive(Copy, Clone)]
 pub enum Attachment {
     Color0 = gl::COLOR_ATTACHMENT0 as isize,
     Color1 = gl::COLOR_ATTACHMENT1 as isize,
     Color2 = gl::COLOR_ATTACHMENT2 as isize,
-    Depth = gl::DEPTH_ATTACHMENT as isize,
 }
 
 impl Attachment {
@@ -17,7 +18,6 @@ impl Attachment {
             Attachment::Color0 => 0,
             Attachment::Color1 => 1,
             Attachment::Color2 => 2,
-            Attachment::Depth => utils::debug_trap(),
         }
     }
 }
@@ -66,6 +66,10 @@ impl Framebuffer {
     }
 
     pub fn attach(&mut self, texture: &Texture, attachment: Attachment) {
+
+        utils::assert(attachment.get_index() < self.render_targets);
+
+        utils::assert(texture.get_format() != Some(Format::DepthF32));
         
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
@@ -73,6 +77,24 @@ impl Framebuffer {
             gl::FramebufferTexture2D(
                 gl::FRAMEBUFFER,
                 attachment as u32,
+                gl::TEXTURE_2D,
+                texture.get_handle(),
+                0);
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+        }
+    }
+
+    pub fn attach_depth(&mut self, texture: &Texture) {
+        
+        utils::assert(texture.get_format() == Some(Format::DepthF32));
+
+        unsafe {
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
+
+            gl::FramebufferTexture2D(
+                gl::FRAMEBUFFER,
+                gl::DEPTH_ATTACHMENT,
                 gl::TEXTURE_2D,
                 texture.get_handle(),
                 0);

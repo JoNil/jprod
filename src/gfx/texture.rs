@@ -4,6 +4,7 @@ use super::Context;
 use super::gl;
 use utils;
 
+#[derive(Copy, Clone, PartialEq)]
 pub enum Format {
     RgbF32,
     DepthF32,
@@ -61,6 +62,7 @@ impl Drop for RawTexture {
 
 pub struct Texture {
     texture: RawTexture,
+    format: Option<Format>,
 }
 
 impl Texture {
@@ -69,10 +71,13 @@ impl Texture {
 
         Texture {
             texture: texture,
+            format: None
         }
     }
 
     pub fn allocate(&mut self, width: i32, height: i32, format: Format) {
+
+        self.format = Some(format);
 
         let enums = format.get_gl_enums();
 
@@ -100,7 +105,14 @@ impl Texture {
         }
     }
 
+    pub fn get_format(&self) -> Option<Format> {
+        self.format
+    }
+
     pub(super) fn get_handle(&self) -> u32 {
+
+        utils::assert(self.format.is_some());
+
         self.texture.handle
     }
 }
