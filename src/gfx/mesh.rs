@@ -142,6 +142,8 @@ impl Mesh {
         uniform_data: &Ssbo,
         textures: &[&Texture])
     {
+        tm_zone!("Mesh::draw");
+
         utils::assert(self.length != 0);
 
         unsafe {
@@ -178,6 +180,8 @@ impl Mesh {
         instance_data: &Ssbo,
         count: i32) 
     {
+        tm_zone!("Mesh::draw_instanced");
+
         utils::assert(self.length != 0 && count > 0);
 
         unsafe {

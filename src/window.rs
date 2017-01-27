@@ -181,10 +181,14 @@ impl Window {
 
         gfx::init(&res);
 
+        win32::wgl_swap_interval(0);
+
         res
     }
 
     pub fn update(&mut self) {
+
+        tm_zone!("Window::update");
 
         self.actions.reset();
 
@@ -246,6 +250,9 @@ impl Window {
     }
 
     pub fn swap(&self) {
+
+        tm_zone!("Window::swap");
+
         utils::assert(win32::swap_buffers(self.context.dc.handle));
     }
 }

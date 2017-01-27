@@ -35,6 +35,8 @@ pub fn viewport(_: &Context, width: i32, height: i32) {
 
 pub fn is_error(_: &Context) -> bool {
 
+    tm_zone!("gfx::is_error");
+
     unsafe { gl::GetError() != 0 }
 }
 

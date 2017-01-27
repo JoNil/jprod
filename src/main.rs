@@ -71,9 +71,11 @@ use random::Rng;
 use shader_sources::ShaderId;
 use window::Window;
 
-const INSTANCE_COUNT: i32 = 100_000;
+const INSTANCE_COUNT: i32 = 40_000;
 
 fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
+
+    tm_zone!("update_instance_data");
 
     let allocator = pool.get_sub_allocator();
 
@@ -133,12 +135,11 @@ fn main() {
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
 
-    #[cfg(feature = "use_telemetry")]
-    {
-        use core::mem;
-        let tm_memory = allocator.allocate_slice(32 * 1024 * 1024);
-        unsafe { utils::assert(telemetry::init(b"JProd\0", mem::transmute(win32::load_library as usize), mem::transmute(win32::get_proc_address as usize), tm_memory)); }
-    }
+    tm_init!(
+        b"JProd\0",
+        win32::load_library,
+        win32::get_proc_address,
+        allocator.allocate_slice(32 * 1024 * 1024));
 
     let mut window = Window::new();
 
@@ -174,6 +175,7 @@ fn main() {
     let mut camera = Camera::new(&window);
 
     loop {
+
         window.update();
 
         shader.reload_if_changed(&allocator);
@@ -212,6 +214,8 @@ fn main() {
         window.swap();
 
         utils::assert(!gfx::is_error(&window));
+
+        tm_tick!();
     }
 }
 

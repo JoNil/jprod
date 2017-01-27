@@ -38,6 +38,8 @@ impl Camera {
 
     pub fn update(&mut self, window: &Window, dt: f32) {
 
+        tm_zone!("Camera::update");
+
         {
             let size = window.get_size();
 
