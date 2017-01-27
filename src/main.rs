@@ -17,7 +17,6 @@
 //  - Light list
 // More intressting dna snake :)
 // Camera path
-// Profiling? Gpu and cpu time. Telemetry?
 // Audio output
 // Square wave
 
