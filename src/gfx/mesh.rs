@@ -110,6 +110,8 @@ impl Mesh {
 
     pub fn upload(&mut self, verts: &[[f32; 3]], normals: &[[f32; 3]]) {
 
+        tm_zone!("Mesh::upload");
+
         utils::assert(verts.len() == normals.len());
 
         self.length = verts.len() as i32;
