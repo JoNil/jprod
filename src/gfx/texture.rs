@@ -77,6 +77,8 @@ impl Texture {
 
     pub fn allocate(&mut self, width: i32, height: i32, format: Format) {
 
+        tm_zone!("Texture::allocate");
+
         self.format = Some(format);
 
         let enums = format.get_gl_enums();

@@ -22,6 +22,9 @@ impl Ssbo {
     }
 
     fn upload_inner(&mut self, data: *const c_void, size: isize) {
+
+        tm_zone!("Ssbo::upload");
+
         unsafe {
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.handle);

@@ -99,6 +99,8 @@ impl Camera {
 
     pub fn get_view_projection(&self) -> Mat4 {
 
+        tm_zone!("Camera::get_view_projection");
+
         let pos = Mat4::translate(self.pos);
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 

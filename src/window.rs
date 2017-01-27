@@ -241,11 +241,17 @@ impl Window {
     }
 
     pub fn update_viewport(&self) {
+
+        tm_zone!("Window::update_viewport");
+
         let size = self.get_size();
         gfx::viewport(self, size.0, size.1);
     }
 
     pub fn clear(&self, color: &[f32; 4]) {
+
+        tm_zone!("Window::clear");
+
         gfx::clear(self, color);
     }
 
