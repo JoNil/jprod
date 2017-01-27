@@ -137,7 +137,7 @@ fn main() {
     {
         use core::mem;
         let tm_memory = allocator.allocate_slice(32 * 1024 * 1024);
-        unsafe { utils::assert(telemetry::init(mem::transmute(win32::load_library as usize), mem::transmute(win32::get_proc_address as usize), tm_memory)); }
+        unsafe { utils::assert(telemetry::init(b"JProd\0", mem::transmute(win32::load_library as usize), mem::transmute(win32::get_proc_address as usize), tm_memory)); }
     }
 
     let mut window = Window::new();
