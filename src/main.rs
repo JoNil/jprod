@@ -29,6 +29,12 @@ extern "C" {}
 
 extern crate rt;
 
+#[cfg(feature = "use_telemetry")]
+extern crate telemetry;
+
+#[macro_use]
+extern crate telemetry_macro;
+
 #[cfg(feature = "use_std")]
 mod core {
     pub use std::*;
@@ -126,6 +132,14 @@ fn main() {
 
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
+
+    #[cfg(feature = "use_telemetry")]
+    {
+        use core::mem;
+        let tm_memory = allocator.allocate_slice(32 * 1024 * 1024);
+        unsafe { utils::assert(telemetry::init(mem::transmute(win32::load_library as usize), mem::transmute(win32::get_proc_address as usize), tm_memory)); }
+    }
+
     let mut window = Window::new();
 
     let mut shader = Shader::new(&window, ShaderId::First);

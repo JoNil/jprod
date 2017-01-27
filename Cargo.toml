@@ -7,6 +7,8 @@ build = "build.rs"
 
 [dependencies]
 rt = { path = "rt" }
+telemetry = { path = "../telemetry-rs", optional = true }
+telemetry_macro = { path = "../telemetry-rs/telemetry_macro" }
 
 [build-dependencies]
 kernel32-sys = "0.2"
@@ -15,6 +17,7 @@ winapi = "0.2"
 
 [features]
 use_std = []
+use_telemetry = ["telemetry"]
 
 [profile.release]
 opt-level = "z"
