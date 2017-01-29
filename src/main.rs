@@ -13,7 +13,7 @@
 
 // TODO:
 // Defered rendering
-//  - Light shader
+//  - Light shader: http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
 //  - Light list
 // More intressting dna snake :)
 // Camera path
