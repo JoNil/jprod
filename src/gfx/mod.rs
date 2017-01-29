@@ -1,6 +1,7 @@
 mod gl;
 pub mod framebuffer;
 pub mod mesh;
+pub mod querys;
 pub mod shader;
 pub mod ssbo;
 pub mod texture;
