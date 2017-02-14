@@ -17,6 +17,7 @@ winapi = "0.2"
 
 [features]
 use_std = []
+develop = []
 use_telemetry = ["telemetry"]
 
 [profile.release]

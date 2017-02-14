@@ -154,7 +154,7 @@ impl Shader {
     }
 
     pub fn reload_if_changed<'a>(&mut self, allocator: &PoolAllocator<'a>) {
-        if cfg!(debug_assertions) {
+        if cfg!(feature = "develop") {
             let mut needs_update = false;
 
             let mut vertex_file_attributes: FileAttributeData = Default::default();
