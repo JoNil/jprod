@@ -7,6 +7,7 @@ use core::ptr;
 use super::Context;
 use super::framebuffer::Framebuffer;
 use super::gl;
+use super::querys::QueryManager;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
 use super::texture::Texture;
@@ -141,12 +142,15 @@ impl Mesh {
     pub fn draw(
         &self,
         shader: &Shader,
+        query_manager: &QueryManager,
         uniform_data: &Ssbo,
         textures: &[&Texture])
     {
         tm_zone!("Mesh::draw");
 
         utils::assert(self.length != 0);
+
+        let _query = query_manager.query();
 
         unsafe {
 
@@ -177,6 +181,7 @@ impl Mesh {
     pub fn draw_instanced(
         &self,
         shader: &Shader,
+        query_manager: &QueryManager,
         target: Option<&Framebuffer>,
         uniform_data: &Ssbo,
         instance_data: &Ssbo,
@@ -185,6 +190,8 @@ impl Mesh {
         tm_zone!("Mesh::draw_instanced");
 
         utils::assert(self.length != 0 && count > 0);
+
+        let _query = query_manager.query();
 
         unsafe {
 

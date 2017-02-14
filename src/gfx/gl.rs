@@ -4600,9 +4600,16 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (GetErrorIdx, b"glGetError\0"),
     (DebugMessageCallbackIdx, b"glDebugMessageCallback\0"),
 
+    // Get
+    (GetInteger64vIdx, b"glGetInteger64v\0"),
+
     // Querys
     (GenQueriesIdx, b"glGenQueries\0"),
-    (DeleteQueriesIdx, b"glDeleteQueries\0")
+    (DeleteQueriesIdx, b"glDeleteQueries\0"),
+    (QueryCounterIdx, b"glQueryCounter\0"),
+    (BeginQueryIdx, b"glBeginQuery\0"),
+    (EndQueryIdx, b"glEndQuery\0"),
+    (GetQueryObjectui64vIdx, b"glGetQueryObjectui64v\0"),
 ];
 
 #[allow(mutable_transmutes)]

@@ -12,3 +12,15 @@ pub fn now_s() -> f64 {
 
     time as f64 / unsafe { FREQUENCY } as f64
 }
+
+#[allow(unused_mut)]
+pub fn rdtsc() -> u64 {
+    let mut low: u32;
+    let mut high: u32;
+
+    unsafe {
+        asm!("rdtsc" : "={eax}" (low), "={edx}" (high));
+    }
+    
+    ((high as u64) << 32) | (low as u64)
+}

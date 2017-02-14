@@ -60,6 +60,7 @@ use camera::Camera;
 use g_buffer::GBuffer;
 use gfx::mesh::Mesh;
 use gfx::mesh::Primitive;
+use gfx::querys::QueryManager;
 use gfx::shader::Shader;
 use gfx::ssbo::Ssbo;
 use math::Mat4;
@@ -142,6 +143,8 @@ fn main() {
 
     let mut window = Window::new();
 
+    let mut query_manager = QueryManager::new(&window);
+
     let mut shader = Shader::new(&window, ShaderId::First);
     let mut mesh = Mesh::new(&window, Primitive::Triangles);
 
@@ -199,6 +202,7 @@ fn main() {
         g_buffer.clear();
         mesh.draw_instanced(
             &shader,
+            &query_manager,
             Some(g_buffer.get_framebuffer()),
             &uniform_data,
             &instance_data,
@@ -208,9 +212,12 @@ fn main() {
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(
             &quad_shader,
+            &query_manager,
             &uniform_data,
             &[g_buffer.get_color_texture(), g_buffer.get_pos_texture(),  g_buffer.get_normal_texture()]);
         window.swap();
+
+        query_manager.submit_zones();
 
         utils::assert(!gfx::is_error(&window));
 
