@@ -157,58 +157,31 @@ pub fn query_performance_frequency() -> i64 {
     frequency
 }
 
-type MessageBoxATy = unsafe extern "system" fn(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
-type RegisterClassATy = unsafe extern "system" fn(window_class: *const WindowClass) -> Atom;
-type CreateWindowExATy = unsafe extern "system" fn(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle;
-type DestroyWindowTy = unsafe extern "system" fn(window_handle: WindowHandle) -> i32;
-type GetDCTy = unsafe extern "system" fn(window: WindowHandle) -> DcHandle;
-type ReleaseDCTy = unsafe extern "system" fn(window: WindowHandle, dc: DcHandle) -> i32;
-type PeekMessageATy = unsafe extern "system" fn(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: u32, msg_filter_max: u32, remove_message: u32) -> i32;
-type TranslateMessageTy = unsafe extern "system" fn(msg: *const Msg) -> i32;
-type DispatchMessageATy =  unsafe extern "system" fn(msg: *const Msg) -> i32;
-type DefWindowProcATy = unsafe extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
-type LoadCursorATy = unsafe extern "system" fn(instance: InstanceHandle, name: usize) -> CursorHandle;
-type SetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32, data: usize) -> usize;
-type GetWindowLongPtrATy = unsafe extern "system" fn(window: WindowHandle, index: i32) -> usize;
-type GetClientRectTy = unsafe extern "system" fn(window: WindowHandle, rect: *mut Rect) -> i32;
-type GetCursorPosTy = unsafe extern "system" fn(point: *mut Point) -> i32;
-type ScreenToClientTy = unsafe extern "system" fn(window: WindowHandle, point: *mut Point) -> i32;
-type GetKeyStateTy = unsafe extern "system" fn(key_code: i32) -> i16;
-
-const USER_FUNCTION_COUNT: usize = 17;
-
-static mut USER_API: [usize; USER_FUNCTION_COUNT] = [ 0; USER_FUNCTION_COUNT];
-
-static USER_FUNCTION_ORDINALS: [u16; USER_FUNCTION_COUNT] = [
-    1501 + 617, // MessageBoxA
-
-    1501 + 700, // RegisterClassA
-    1501 + 121, // CreateWindowExA
-    1501 + 183, // DestroyWindow
-
-    1501 + 322, // GetDC
-    1501 + 733, // ReleaseDC
-
-    1501 + 654, // PeekMessageA
-    1501 + 897, // TranslateMessage
-    1501 + 190, // DispatchMessageA
-    1501 + 170, // DefWindowProcA
-
-    1501 + 577, // LoadCursorA
-
-    1501 + 844, // SetWindowLongPtrA
-    1501 + 473, // GetWindowLongPtrA
-
-    1501 + 307, // GetClientRect
-    1501 + 321, // GetCursorPos
-    1501 + 743, // ScreenToClient
-
-    1501 + 355, // GetKeyState
-];
+#[link(name = "user32")]
+#[allow(dead_code)]
+extern "system" {
+   fn MessageBoxA(window_handle: WindowHandle, text: *const u8, caption: *const u8, message_type: u32) -> i32;
+   fn RegisterClassA(window_class: *const WindowClass) -> Atom;
+   fn CreateWindowExA(ex_style: u32, class_name: *const u8, window_name: *const u8, style: u32, x: i32, y: i32, width: i32, height: i32, parent_winodw: WindowHandle, menu: MenuHandle, instance: InstanceHandle, param: *mut c_void) -> WindowHandle;
+   fn DestroyWindow(window_handle: WindowHandle) -> i32;
+   fn GetDC(window: WindowHandle) -> DcHandle;
+   fn ReleaseDC(window: WindowHandle, dc: DcHandle) -> i32;
+   fn PeekMessageA(msg: *mut Msg, window_handle: WindowHandle, msg_filter_min: u32, msg_filter_max: u32, remove_message: u32) -> i32;
+   fn TranslateMessage(msg: *const Msg) -> i32;
+   fn DispatchMessageA(msg: *const Msg) -> i32;
+   fn DefWindowProcA(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
+   fn LoadCursorA(instance: InstanceHandle, name: usize) -> CursorHandle;
+   fn SetWindowLongPtrA(window: WindowHandle, index: i32, data: usize) -> usize;
+   fn GetWindowLongPtrA(window: WindowHandle, index: i32) -> usize;
+   fn GetClientRect(window: WindowHandle, rect: *mut Rect) -> i32;
+   fn GetCursorPos(point: *mut Point) -> i32;
+   fn ScreenToClient(window: WindowHandle, point: *mut Point) -> i32;
+   fn GetKeyState(key_code: i32) -> i16;
+}
 
 pub fn message_box(text: &[u8], caption: &[u8]) {
     unsafe {
-        mem::transmute::<_, MessageBoxATy>(*USER_API.get_unchecked(0))(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), 0x00000030);
+        MessageBoxA(ptr::null_mut(), &*text.get_unchecked(0), &*caption.get_unchecked(0), 0x00000030);
     }
 }
 
@@ -226,12 +199,12 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         class_name: unsafe { &*name.get_unchecked(0) },
     };
 
-    unsafe { mem::transmute::<_, RegisterClassATy>(*USER_API.get_unchecked(1))(&window_class) != 0 }
+    unsafe { RegisterClassA(&window_class) != 0 }
 }
 
 pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHandle {
     unsafe {
-        mem::transmute::<_, CreateWindowExATy>(*USER_API.get_unchecked(2))(
+        CreateWindowExA(
             0,
             &*class_name.get_unchecked(0),
             &*name.get_unchecked(0),
@@ -248,15 +221,15 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
 }
 
 pub fn destroy_window(window: WindowHandle) -> i32 {
-    unsafe { mem::transmute::<_, DestroyWindowTy>(*USER_API.get_unchecked(3))(window) }
+    unsafe { DestroyWindow(window) }
 }
 
 pub fn get_dc(window: WindowHandle) -> DcHandle {
-    unsafe { mem::transmute::<_, GetDCTy>(*USER_API.get_unchecked(4))(window) }
+    unsafe { GetDC(window) }
 }
 
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
-    unsafe { mem::transmute::<_, ReleaseDCTy>(*USER_API.get_unchecked(5))(window, dc) }
+    unsafe { ReleaseDC(window, dc) }
 }
 
 pub fn get_message() -> Option<Msg> {
@@ -269,43 +242,43 @@ pub fn get_message() -> Option<Msg> {
         point: Point { x: 0, y: 0 },
     };
 
-    let msg_result = unsafe { mem::transmute::<_, PeekMessageATy>(*USER_API.get_unchecked(6))(&mut msg, ptr::null_mut(), 0, 0, 1) };
+    let msg_result = unsafe { PeekMessageA(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
     if msg_result != 0 { Some(msg) } else { None }
 }
 
 pub fn translate_and_dispatch_message(msg: &Msg) {
     unsafe {
-        mem::transmute::<_, TranslateMessageTy>(*USER_API.get_unchecked(7))(msg as *const Msg);
-        mem::transmute::<_, DispatchMessageATy>(*USER_API.get_unchecked(8))(msg as *const Msg);
+        TranslateMessage(msg as *const Msg);
+        DispatchMessageA(msg as *const Msg);
     }
 }
 
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
 
-    unsafe { mem::transmute::<_, DefWindowProcATy>(*USER_API.get_unchecked(9))(window, message, wparam, lparam) }
+    unsafe { DefWindowProcA(window, message, wparam, lparam) }
 }
 
 pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
 
-    unsafe { mem::transmute::<_, LoadCursorATy>(*USER_API.get_unchecked(10))(instance, name) }
+    unsafe { LoadCursorA(instance, name) }
 }
 
 pub fn set_window_user_data(window: WindowHandle, data: usize) {
 
-    unsafe { mem::transmute::<_, SetWindowLongPtrATy>(*USER_API.get_unchecked(11))(window, GWLP_USERDATA, data); }
+    unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, data); }
 }
 
 pub fn get_window_user_data(window: WindowHandle) -> usize {
 
-    unsafe { mem::transmute::<_, GetWindowLongPtrATy>(*USER_API.get_unchecked(12))(window, GWLP_USERDATA) }
+    unsafe { GetWindowLongPtrA(window, GWLP_USERDATA) }
 }
 
 pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {
 
     let mut rect: Rect = Default::default();
 
-    unsafe { mem::transmute::<_, GetClientRectTy>(*USER_API.get_unchecked(13))(window, &mut rect as *mut _); }
+    unsafe { GetClientRect(window, &mut rect as *mut _); }
 
     (rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top)
 }
@@ -314,15 +287,15 @@ pub fn get_mouse_pos(window: WindowHandle) -> (i32, i32) {
 
     let mut point: Point = Default::default();
 
-    unsafe { mem::transmute::<_, GetCursorPosTy>(*USER_API.get_unchecked(14))(&mut point as *mut _); }
-    unsafe { mem::transmute::<_, ScreenToClientTy>(*USER_API.get_unchecked(15))(window, &mut point as *mut _); }    
+    unsafe { GetCursorPos(&mut point as *mut _); }
+    unsafe { ScreenToClient(window, &mut point as *mut _); }    
 
     (point.x, point.y)
 }
 
 pub fn get_key_down(key_code: i32) -> bool {
 
-    unsafe { mem::transmute::<_, GetKeyStateTy>(*USER_API.get_unchecked(16))(key_code) < 0}
+    unsafe { GetKeyState(key_code) < 0}
 }
 
 type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
@@ -480,22 +453,14 @@ pub fn wgl_swap_interval(interval: i32) -> i32 {
     unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(*GL_EXT_API.get_unchecked(3))(interval) }
 }
 
-static mut USER32: ModuleHandle = 0 as *mut _;
 static mut GDI32: ModuleHandle = 0 as *mut _;
 static mut OPENGL32: ModuleHandle = 0 as *mut _;
 
 pub fn init() {
 
     unsafe {
-        USER32 = load_library(b"user32.dll\0");
         GDI32 = load_library(b"Gdi32.dll\0");
         OPENGL32 = load_library(b"Opengl32.dll\0");
-    }
-
-    for (i, ordinal) in USER_FUNCTION_ORDINALS.iter().enumerate() {
-        unsafe {
-            (*USER_API.get_unchecked_mut(i)) = get_proc_address(USER32, *ordinal as isize) as usize;
-        }
     }
 
     for (i, ordinal) in GDI_FUNCTION_ORDINALS.iter().enumerate() {
