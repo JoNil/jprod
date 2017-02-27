@@ -7,6 +7,8 @@ use super::gl;
 use time;
 use utils;
 
+// TODO(jonil): Only compile this if using telemetry
+
 const QUERY_COUNT: usize = 256;
 
 pub struct QueryManager {
