@@ -55,9 +55,6 @@ pub unsafe extern fn memcmp(s1: *const u8, s2: *const u8, n: usize) -> i32 {
     return 0;
 }
 
-#[no_mangle]
-pub unsafe extern fn __chkstk() {}
-
 #[cfg(test)]
 mod test {
     use super::{memcmp, memset, memcpy, memmove};
