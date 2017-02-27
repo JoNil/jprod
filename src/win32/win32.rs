@@ -340,43 +340,33 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { SwapBuffers(dc) != 0 }
 }
 
-type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
-type WglDeleteContextTy = unsafe extern "system" fn(glrc: GlrcHandle) -> i32;
-type WglMakeCurrentTy = unsafe extern "system" fn(dc: DcHandle, context: GlrcHandle) -> i32;
-type WglGetProcAddressTy = unsafe extern "system" fn(name: *const u8) -> Proc;
-
-const GL_FUNCTION_COUNT: usize = 4;
-
-static mut GL_API: [usize; GL_FUNCTION_COUNT] = [ 0; GL_FUNCTION_COUNT];
-
-static GL_FUNCTION_ORDINALS: [u16; GL_FUNCTION_COUNT] = [
-    346, // wglCreateContext
-    
-    348, // wglDeleteContext
-
-    357, // wglMakeCurrent
-
-    356, // wglGetProcAddress
-];
+#[link(name = "opengl32")]
+#[allow(dead_code)]
+extern "system" {
+    fn wglCreateContext(dc: DcHandle) -> GlrcHandle;
+    fn wglDeleteContext(glrc: GlrcHandle) -> i32;
+    fn wglMakeCurrent(dc: DcHandle, context: GlrcHandle) -> i32;
+    fn wglGetProcAddress(name: *const u8) -> Proc;
+}
 
 pub fn wgl_create_context(dc: DcHandle) -> GlrcHandle {
 
-    unsafe { mem::transmute::<_, WglCreateContextTy>(*GL_API.get_unchecked(0))(dc) }
+    unsafe { wglCreateContext(dc) }
 }
 
 pub fn wgl_delete_context(glrc: GlrcHandle) -> i32 {
 
-    unsafe { mem::transmute::<_, WglDeleteContextTy>(*GL_API.get_unchecked(1))(glrc) }
+    unsafe { wglDeleteContext(glrc) }
 }
 
 pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
 
-    unsafe { mem::transmute::<_, WglMakeCurrentTy>(*GL_API.get_unchecked(2))(dc, context) }
+    unsafe { wglMakeCurrent(dc, context) }
 }
 
 pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
 
-    let mut ptr = unsafe { mem::transmute::<_, WglGetProcAddressTy>(*GL_API.get_unchecked(3))(&*name.get_unchecked(0)) };
+    let mut ptr = unsafe { wglGetProcAddress(&*name.get_unchecked(0)) };
 
     if ptr.is_null() {
         ptr = unsafe { get_proc_address_name(OPENGL32, name) };
@@ -437,7 +427,6 @@ pub fn wgl_create_context_attribs(dc: DcHandle,
     unsafe { mem::transmute::<_, WglCreateContextAttribsARBTy>(*GL_EXT_API.get_unchecked(2))(dc, shared_context, &*attrib_list.get_unchecked(0)) }
 }
 
-#[allow(dead_code)]
 pub fn wgl_swap_interval(interval: i32) -> i32 {
 
     unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(*GL_EXT_API.get_unchecked(3))(interval) }
@@ -449,12 +438,6 @@ pub fn init() {
 
     unsafe {
         OPENGL32 = load_library(b"Opengl32.dll\0");
-    }
-
-    for (i, ordinal) in GL_FUNCTION_ORDINALS.iter().enumerate() {
-        unsafe {
-            (*GL_API.get_unchecked_mut(i)) = get_proc_address(OPENGL32, *ordinal as isize) as usize;
-        }
     }
 }
 
