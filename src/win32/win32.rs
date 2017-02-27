@@ -298,28 +298,18 @@ pub fn get_key_down(key_code: i32) -> bool {
     unsafe { GetKeyState(key_code) < 0}
 }
 
-type ChoosePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
-type DescribePixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, bytes: u32, descriptor: *mut PixelFormatDescriptor) -> i32;
-type SetPixelFormatTy = unsafe extern "system" fn(dc: DcHandle, pixel_format: i32, descriptor: *const PixelFormatDescriptor) -> i32;
-type SwapBuffersTy = unsafe extern "system" fn(dc: DcHandle) -> i32;
-
-const GDI_FUNCTION_COUNT: usize = 4;
-
-static mut GDI_API: [usize; GDI_FUNCTION_COUNT] = [ 0; GDI_FUNCTION_COUNT];
-
-static GDI_FUNCTION_ORDINALS: [u16; GDI_FUNCTION_COUNT] = [
-    999 + 45, // ChoosePixelFormat
-
-    999 + 360, // DescribePixelFormat
-
-    999 + 1491, // SetPixelFormat
-
-    999 + 1528, // SwapBuffers
-];
+#[link(name = "gdi32")]
+#[allow(dead_code)]
+extern "system" {
+    fn ChoosePixelFormat(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
+    fn DescribePixelFormat(dc: DcHandle, pixel_format: i32, bytes: u32, descriptor: *mut PixelFormatDescriptor) -> i32;
+    fn SetPixelFormat(dc: DcHandle, pixel_format: i32, descriptor: *const PixelFormatDescriptor) -> i32;
+    fn SwapBuffers(dc: DcHandle) -> i32;
+}
 
 pub fn choose_pixel_format(dc: DcHandle, descriptor: &PixelFormatDescriptor) -> i32 {
 
-    unsafe { mem::transmute::<_, ChoosePixelFormatTy>(*GDI_API.get_unchecked(0))(dc, descriptor as *const PixelFormatDescriptor) }
+    unsafe { ChoosePixelFormat(dc, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn describe_pixel_format(dc: DcHandle,
@@ -329,7 +319,7 @@ pub fn describe_pixel_format(dc: DcHandle,
                              -> i32 {
 
     unsafe {
-        mem::transmute::<_, DescribePixelFormatTy>(*GDI_API.get_unchecked(1))(
+        DescribePixelFormat(
             dc,
             pixel_format,
             bytes,
@@ -342,12 +332,12 @@ pub fn set_pixel_format(dc: DcHandle,
                         descriptor: *const PixelFormatDescriptor)
                         -> i32 {
 
-    unsafe { mem::transmute::<_, SetPixelFormatTy>(*GDI_API.get_unchecked(2))(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+    unsafe { SetPixelFormat(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
 }
 
 pub fn swap_buffers(dc: DcHandle) -> bool {
 
-    unsafe { mem::transmute::<_, SwapBuffersTy>(*GDI_API.get_unchecked(3))(dc) != 0 }
+    unsafe { SwapBuffers(dc) != 0 }
 }
 
 type WglCreateContextTy = unsafe extern "system" fn(dc: DcHandle) -> GlrcHandle;
@@ -453,20 +443,12 @@ pub fn wgl_swap_interval(interval: i32) -> i32 {
     unsafe { mem::transmute::<_, WglSwapIntervalEXTTy>(*GL_EXT_API.get_unchecked(3))(interval) }
 }
 
-static mut GDI32: ModuleHandle = 0 as *mut _;
 static mut OPENGL32: ModuleHandle = 0 as *mut _;
 
 pub fn init() {
 
     unsafe {
-        GDI32 = load_library(b"Gdi32.dll\0");
         OPENGL32 = load_library(b"Opengl32.dll\0");
-    }
-
-    for (i, ordinal) in GDI_FUNCTION_ORDINALS.iter().enumerate() {
-        unsafe {
-            (*GDI_API.get_unchecked_mut(i)) = get_proc_address(GDI32, *ordinal as isize) as usize;
-        }
     }
 
     for (i, ordinal) in GL_FUNCTION_ORDINALS.iter().enumerate() {
