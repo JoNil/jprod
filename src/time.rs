@@ -13,6 +13,7 @@ pub fn now_s() -> f64 {
     time as f64 / unsafe { FREQUENCY } as f64
 }
 
+#[allow(dead_code)]
 #[allow(unused_mut)]
 pub fn rdtsc() -> u64 {
     let mut low: u32;

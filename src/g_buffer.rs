@@ -48,7 +48,7 @@ impl GBuffer {
 
     pub fn clear(&mut self) {
 
-        tm_zone!("GBuffer:clear");
+        tm_zone!("GBuffer::clear");
 
         self.framebuffer.clear(Attachment::Color0, &[ 0.0, 0.5, 0.0, 0.0 ]);
         self.framebuffer.clear(Attachment::Color1, &[ 0.0, 0.0, 0.0, 0.0 ]);

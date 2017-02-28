@@ -1,10 +1,18 @@
 mod gl;
 pub mod framebuffer;
 pub mod mesh;
-pub mod querys;
 pub mod shader;
 pub mod ssbo;
 pub mod texture;
+
+#[cfg(feature = "use_telemetry")]
+pub mod querys;
+
+#[cfg(not(feature = "use_telemetry"))]
+pub mod querys_nop;
+
+#[cfg(not(feature = "use_telemetry"))]
+pub use self::querys_nop as querys;
 
 use c_types;
 use core::ptr;
