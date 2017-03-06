@@ -15,11 +15,11 @@
 // TODO:
 // Defered rendering
 //  - Light shader: http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
-//  - Light list
-// More intressting dna snake :)
-// Camera path
+// Rocket interop
 // Audio output
 // Square wave
+// More intressting dna snake :)
+// Camera path
 
 // Optimizations
 // Load kernal32 stuff by ordinal
@@ -74,7 +74,7 @@ use window::Window;
 
 const INSTANCE_COUNT: i32 = 40_000;
 
-fn update_instance_data<'a>(instance_data: &mut Ssbo, pool: &mut PoolAllocator<'a>, time: f32) {
+fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time: f32) {
 
     tm_zone!("update_instance_data");
 
