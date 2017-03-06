@@ -6,9 +6,9 @@ authors = ["Jonathan"]
 build = "build.rs"
 
 [dependencies]
-rt = { path = "rt" }
 telemetry = { path = "../telemetry-rs", optional = true }
 telemetry_macro = { path = "../telemetry-rs/telemetry_macro" }
+compiler_builtins = { git = "https://github.com/rust-lang-nursery/compiler-builtins" }
 
 [build-dependencies]
 kernel32-sys = "0.2"

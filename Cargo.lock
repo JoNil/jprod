@@ -2,12 +2,20 @@
 name = "jprod"
 version = "0.1.0"
 dependencies = [
+ "compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)",
  "kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "rt 0.1.0",
  "telemetry 0.1.0",
  "telemetry_macro 0.1.0",
  "walkdir 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "compiler_builtins"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang-nursery/compiler-builtins#0507842b248b29d18855042544cf209371ea17c1"
+dependencies = [
+ "rustc-cfg 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -20,8 +28,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "rt"
-version = "0.1.0"
+name = "rustc-cfg"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "telemetry"
@@ -51,7 +60,9 @@ version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
+"checksum compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)" = "<none>"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
+"checksum rustc-cfg 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "56a596b5718bf5e059d59a30af12f7f462a152de147aa462b70892849ee18704"
 "checksum walkdir 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "412de40d080c201baaed542b43a9e4c24f5df30d1d6c3362689ed8d0c583e74a"
 "checksum winapi 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "167dc9d6949a9b857f3451275e911c3f44255842c1f7a76f33c55103a909087a"
 "checksum winapi-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "2d315eee3b34aca4797b2da6b13ed88266e6d612562a0c46390af8299fc699bc"

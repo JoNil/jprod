@@ -1,5 +1,6 @@
 #![feature(abi_vectorcall)]
 #![feature(asm)]
+#![feature(compiler_builtins_lib)]
 #![feature(lang_items)]
 #![feature(link_args)]
 #![feature(link_llvm_intrinsics)]
@@ -23,10 +24,10 @@
 // Optimizations
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib msvcrt.lib")]
+#[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
 extern "C" {}
 
-extern crate rt;
+extern crate compiler_builtins;
 
 #[cfg(feature = "use_telemetry")]
 extern crate telemetry;
