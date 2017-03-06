@@ -8,7 +8,7 @@
 #![feature(repr_simd)]
 #![feature(simd_ffi)]
 
-#![cfg_attr(not(test), no_main)]
+#![cfg_attr(all(not(test), not(feature = "use_std")), no_main)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
@@ -23,8 +23,7 @@
 // Optimizations
 // Load kernal32 stuff by ordinal
 
-#[cfg_attr(not(test), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED")]
-#[link(name = "msvcrt")]
+#[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib msvcrt.lib")]
 extern "C" {}
 
 extern crate rt;
@@ -226,7 +225,7 @@ fn main() {
     }
 }
 
-#[cfg(not(test))]
+#[cfg(all(not(test), not(feature = "use_std")))]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
