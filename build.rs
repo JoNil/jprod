@@ -23,6 +23,12 @@ fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     Ok(s)
 }
 
+#[cfg(feature = "develop")]
+fn trim_whitespace(s: &str) -> String {
+    s.to_owned()
+}
+
+#[cfg(not(feature = "develop"))]
 fn trim_whitespace(s: &str) -> String {
 
     let mut temp = s.to_owned();

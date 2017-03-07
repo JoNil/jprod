@@ -106,6 +106,10 @@ impl Camera {
 
         self.projection.mul(pos.mul(rot).inverted())
     }
+
+    pub fn get_camera_pos(&self) -> Vec4 {
+        self.pos
+    }
 }
 
 fn get_mouse_offset(window: &Window) -> (f32, f32) {

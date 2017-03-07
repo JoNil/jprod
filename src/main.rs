@@ -13,8 +13,12 @@
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 // TODO:
+// Fix normal not being rotated
 // Defered rendering
-//  - Light shader: http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
+//  - Light shader: Cook-Torrence and GGX
+//    * http://ruh.li/GraphicsCookTorrance.html
+//    * http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
+//    * https://renderman.pixar.com/view/cook-torrance-shader
 // Rocket interop
 // Audio output
 // Square wave
@@ -27,6 +31,7 @@
 #[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
 extern "C" {}
 
+#[cfg(all(not(test), not(feature = "use_std")))]
 extern crate compiler_builtins;
 
 #[cfg(feature = "use_telemetry")]
@@ -126,12 +131,21 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
 }
 
 #[derive(Copy, Clone)]
+#[allow(dead_code)]
 struct Uniforms {
     vp: Mat4,
     time: f32,
 }
 
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
+struct LightUniforms {
+    eye_pos: Vec4,
+}
+
 fn main() {
+
+    win32::init();
 
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
@@ -166,14 +180,10 @@ fn main() {
 
     let mut instance_data = Ssbo::new(&window);
     let mut uniform_data = Ssbo::new(&window);
+    let mut light_uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
     let mut last = start;
-
-    let mut uniforms = Uniforms {
-        vp: Mat4::identity(),
-        time: 0.0,
-    };
 
     let mut camera = Camera::new(&window);
 
@@ -196,9 +206,10 @@ fn main() {
 
         update_instance_data(&mut instance_data, &mut allocator, time);
 
-        uniforms.vp = camera.get_view_projection();
-        uniforms.time = time;
-        uniform_data.upload(&uniforms);
+        uniform_data.upload(&Uniforms {
+            vp: camera.get_view_projection(),
+            time: time,
+        });
 
         g_buffer.clear();
         mesh.draw_instanced(
@@ -209,12 +220,16 @@ fn main() {
             &instance_data,
             INSTANCE_COUNT);
 
+        light_uniform_data.upload(&LightUniforms {
+            eye_pos: camera.get_camera_pos(),
+        });
+
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(
             &quad_shader,
             &query_manager,
-            &uniform_data,
+            &light_uniform_data,
             &[g_buffer.get_color_texture(), g_buffer.get_pos_texture(),  g_buffer.get_normal_texture()]);
         window.swap();
 
@@ -230,12 +245,7 @@ fn main() {
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
-
-    win32::init();
-
     main();
-
-    win32::exit_process(0);
 }
 
 #[cfg(all(not(test), not(feature = "use_std")))]
