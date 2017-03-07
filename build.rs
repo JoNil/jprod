@@ -177,34 +177,37 @@ fn main() {
             let name = uppercase_first_letter(entry.path().file_stem().unwrap().to_str().unwrap());
             let extension = entry.path().extension().unwrap().to_str().unwrap();
 
-            let shader = shaders.entry(name).or_insert(ShaderData::new());
+            if extension == "vert" || extension == "frag" {
 
-            let wide_path: Vec<u16> = entry.path().as_os_str().encode_wide().chain(once(0)).collect();
+                let shader = shaders.entry(name).or_insert(ShaderData::new());
 
-            let filetime = unsafe {
+                let wide_path: Vec<u16> = entry.path().as_os_str().encode_wide().chain(once(0)).collect();
 
-                let mut data = WIN32_FILE_ATTRIBUTE_DATA {
-                    dwFileAttributes: 0,
-                    ftCreationTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
-                    ftLastAccessTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
-                    ftLastWriteTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
-                    nFileSizeHigh: 0,
-                    nFileSizeLow: 0,
-                };
+                let filetime = unsafe {
 
-                kernel32::GetFileAttributesExW(wide_path.as_ptr(), GetFileExInfoStandard, &mut data as *mut WIN32_FILE_ATTRIBUTE_DATA as *mut _);
+                    let mut data = WIN32_FILE_ATTRIBUTE_DATA {
+                        dwFileAttributes: 0,
+                        ftCreationTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                        ftLastAccessTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                        ftLastWriteTime: FILETIME { dwLowDateTime: 0, dwHighDateTime: 0 },
+                        nFileSizeHigh: 0,
+                        nFileSizeLow: 0,
+                    };
 
-                data.ftLastWriteTime
-            };         
+                    kernel32::GetFileAttributesExW(wide_path.as_ptr(), GetFileExInfoStandard, &mut data as *mut WIN32_FILE_ATTRIBUTE_DATA as *mut _);
 
-            if extension == "vs" {
-                shader.vertex_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
-                shader.vertex_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
-                shader.vertex_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
-            } else if extension == "ps" {
-                shader.fragment_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
-                shader.fragment_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
-                shader.fragment_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
+                    data.ftLastWriteTime
+                };         
+
+                if extension == "vert" {
+                    shader.vertex_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
+                    shader.vertex_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+                    shader.vertex_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
+                } else if extension == "frag" {
+                    shader.fragment_source = Some(trim_whitespace(&read_file(entry.path()).unwrap()));
+                    shader.fragment_path = Some(entry.path().canonicalize().unwrap().to_str().unwrap().to_string());
+                    shader.fragment_filetime = Some(Filetime { low: filetime.dwLowDateTime, high: filetime.dwHighDateTime });
+                }
             }
         }
     }

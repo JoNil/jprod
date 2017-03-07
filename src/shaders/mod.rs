@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use win32::types::Filetime;
 
 include!(concat!(env!("OUT_DIR"), "/shader_ids.rs"));

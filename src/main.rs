@@ -50,7 +50,7 @@ mod intrinsics;
 mod math;
 mod pool;
 mod random;
-mod shader_sources;
+mod shaders;
 mod simdty;
 mod time;
 mod utils;
@@ -69,7 +69,7 @@ use math::Vec4;
 use pool::Pool;
 use pool::PoolAllocator;
 use random::Rng;
-use shader_sources::ShaderId;
+use shaders::ShaderId;
 use window::Window;
 
 const INSTANCE_COUNT: i32 = 40_000;
@@ -146,10 +146,10 @@ fn main() {
 
     let mut query_manager = QueryManager::new(&window);
 
-    let mut shader = Shader::new(&window, ShaderId::First);
+    let mut shader = Shader::new(&window, ShaderId::Dna);
     let mut mesh = Mesh::new(&window, Primitive::Triangles);
 
-    let mut quad_shader = Shader::new(&window, ShaderId::Passthrough);
+    let mut quad_shader = Shader::new(&window, ShaderId::Light);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     let mut g_buffer = GBuffer::new(&window);
