@@ -3,6 +3,7 @@
 layout(location = 0) in vec3 vertex_pos;
 layout(location = 1) in vec3 vertex_normal;
 
+out vec3 model_pos;
 out vec3 frag_pos;
 out vec3 frag_normal;
 
@@ -31,7 +32,8 @@ void main()
     vec4 pos = transform * vec4(vertex_pos, 1.0);
     vec3 normal = normal_transform * vertex_normal;
 
-    frag_pos = vertex_pos.xyz;
+    model_pos = vertex_pos.xyz;
+    frag_pos = pos.xyz;
     frag_normal = normal;
     gl_Position = vp * pos;
 }
