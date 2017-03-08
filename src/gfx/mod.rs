@@ -27,7 +27,8 @@ pub fn init(_: &Context) {
         unsafe { gl::DebugMessageCallback(debug_callback, ptr::null_mut()) };
     }
 
-    unsafe { gl::Enable(gl::DEPTH_TEST) };
+    unsafe { gl::Enable(gl::CULL_FACE); }
+    unsafe { gl::Enable(gl::DEPTH_TEST); }
 }
 
 pub fn clear(_: &Context, color: &[f32; 4]) {

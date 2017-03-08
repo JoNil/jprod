@@ -15,7 +15,7 @@ layout(std430, binding = 0) buffer uniforms
 
 void main()
 {
-    vec3 light_pos = vec3(0.0, 0.0, 1.0);
+    vec3 light_pos = vec3(1.0, 1.0, 1.0);
 
     vec3 material_color = texture(color_tex, frag_uv).rgb;
     vec3 pos = texture(pos_tex, frag_uv).xyz;
@@ -59,6 +59,6 @@ void main()
         specular = (fresnel * geo_att * roughness) / (dot_n_v * dot_n_l * 3.1415976536);
     }
     
-    //color = vec4(light_color * dot_n_l * (k + specular * (1.0 - k)), 1.0);
-    color = normalize(texture(normal_tex, frag_uv));
+    color = vec4(light_color * dot_n_l * (k + specular * (1.0 - k)), 1.0);
+    //color = normalize(texture(normal_tex, frag_uv));
 }

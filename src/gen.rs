@@ -14,8 +14,8 @@ pub fn quad<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f32; 3]])
 
     let verts: [(i8, i8); 4] = [
         ( 1, 1),
-        ( 1,-1),
         (-1, 1),
+        ( 1,-1),
         (-1,-1),
     ];
 
@@ -48,7 +48,7 @@ pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f3
         0, 1, 2,
         0, 2, 3,
         0, 3, 1,
-        2, 3, 1,
+        2, 1, 3,
     ];
 
     for (i, vert) in tetrahedron.iter_mut().enumerate() {

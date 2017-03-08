@@ -119,7 +119,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
         let offset_z = rng.next_f32() * rs;
 
         *mvp =
-            Mat4::rotate_deg(offset + 4.0, Vec4::y()).mul(
+            Mat4::rotate_deg(offset + 4.0 * time, Vec4::y()).mul(
             Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
             Mat4::random_rotation(&mut rng)).mul(
             Mat4::scale(s));
