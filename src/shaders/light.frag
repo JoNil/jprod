@@ -15,7 +15,7 @@ layout(std430, binding = 0) buffer uniforms
 
 void main()
 {
-    vec3 light_pos = vec3(1.0, 1.0, 1.0);
+    vec3 light_pos = vec3(0.0, 1.0, 0.0);
 
     vec3 material_color = texture(color_tex, frag_uv).rgb;
     vec3 pos = texture(pos_tex, frag_uv).xyz;
@@ -23,9 +23,9 @@ void main()
 
     vec3 light_dir = normalize(light_pos - pos);
 
-    float material_roughness = 0.3; // 0 : smooth, 1: rough
-    float F0 = 0.3;                 // fresnel reflectance at normal incidence
-    float k = 0.4;                  // fraction of diffuse reflection (specular reflection = 1 - k)
+    float material_roughness = 0.2; // 0 : smooth, 1: rough
+    float F0 = 0.9;                 // fresnel reflectance at normal incidence
+    float k = 0.5;                  // fraction of diffuse reflection (specular reflection = 1 - k)
     vec3 light_color = vec3(0.9, 0.1, 0.1);
 
     float dot_n_l = max(dot(normal, light_dir), 0.0);
@@ -59,6 +59,6 @@ void main()
         specular = (fresnel * geo_att * roughness) / (dot_n_v * dot_n_l * 3.1415976536);
     }
     
-    color = vec4(light_color * dot_n_l * (k + specular * (1.0 - k)), 1.0);
+    color = vec4(light_color * dot_n_l * (k + specular * (1.0 - k)), 1.0) + vec4(0.1, 0.0, 0.0, 0.0);
     //color = normalize(texture(normal_tex, frag_uv));
 }
