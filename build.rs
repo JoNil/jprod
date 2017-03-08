@@ -31,7 +31,14 @@ fn trim_whitespace(s: &str) -> String {
 #[cfg(not(feature = "develop"))]
 fn trim_whitespace(s: &str) -> String {
 
-    let mut temp = s.to_owned();
+    let mut temp = String::new();
+
+    for line in s.lines() {
+        if let Some(beginning) = line.split("//").next() {
+            temp.push_str(beginning);
+            temp.push('\n');
+        }
+    }
 
     let matches = &[
         ("\r\n", "\n"),
