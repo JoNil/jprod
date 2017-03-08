@@ -60,5 +60,5 @@ void main()
     }
     
     //color = vec4(light_color * dot_n_l * (k + specular * (1.0 - k)), 1.0);
-    color = texture(normal_tex, frag_uv);
+    color = normalize(texture(normal_tex, frag_uv));
 }

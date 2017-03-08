@@ -3,7 +3,6 @@
 layout(location = 0) in vec3 vertex_pos;
 layout(location = 1) in vec3 vertex_normal;
 
-out vec2 frag_uv;
 out vec3 frag_pos;
 out vec3 frag_normal;
 
@@ -25,14 +24,14 @@ void main()
         cos(time), -sin(time), 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0);
+
+    mat4 transform = m[gl_InstanceID] * rot;
+    mat3 normal_transform = mat3(transpose(inverse(transform)));
     
-    vec4 rotated_vec = rot * vec4(vertex_pos, 1.0);
+    vec4 pos = transform * vec4(vertex_pos, 1.0);
+    vec3 normal = normal_transform * vertex_normal;
 
-    frag_uv = rotated_vec.xy/2.0 + 0.5;
-
-    vec4 pos = m[gl_InstanceID] * rotated_vec;
-
-    frag_pos = pos.xyz;
-    frag_normal = vertex_normal;
+    frag_pos = vertex_pos.xyz;
+    frag_normal = normal;
     gl_Position = vp * pos;
 }
