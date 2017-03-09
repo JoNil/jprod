@@ -13,7 +13,7 @@ void main()
     vec2 tex_offset = 1.0 / textureSize(color_tex, 0);
     vec3 result = texture(color_tex, frag_uv).rgb * weight[0];
 
-    for(int i = 1; i < 5; ++i) {
+    for (int i = 1; i < 5; ++i) {
         result += texture(color_tex, frag_uv + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
         result += texture(color_tex, frag_uv - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
     }

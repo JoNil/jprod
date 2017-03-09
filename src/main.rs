@@ -272,7 +272,7 @@ fn main() {
             None,
             &[bloom_blur1.get_texture(0)]);
 
-        for _ in 0..10 {
+        for _ in 0..3 {
             quad_mesh.draw(
                 &horizontal_blur,
                 &query_manager,
