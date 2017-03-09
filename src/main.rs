@@ -169,12 +169,17 @@ fn main() {
     let mut light_shader = Shader::new(&window, ShaderId::Light);
     let mut bloom_shader = Shader::new(&window, ShaderId::Bloom);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
+    let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
+    let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
+
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), Some(Format::RgbF32)], true);
     let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
     let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), None], false);
+    let mut bloom_blur1 = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
+    let mut bloom_blur2 = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
@@ -203,6 +208,8 @@ fn main() {
         light_shader.reload_if_changed(&allocator);
         bloom_shader.reload_if_changed(&allocator);
         bloom_resolv_shader.reload_if_changed(&allocator);
+        horizontal_blur.reload_if_changed(&allocator);
+        vertical_blur.reload_if_changed(&allocator);
 
         let (dt, time) = {
             let now = time::now_s();
@@ -250,6 +257,36 @@ fn main() {
             None,
             &[light_target.get_texture(0)]);
 
+        bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &horizontal_blur,
+            &query_manager,
+            Some(&bloom_blur1),
+            None,
+            &[bloom_target.get_texture(1)]);
+        quad_mesh.draw(
+            &vertical_blur,
+            &query_manager,
+            Some(&bloom_blur2),
+            None,
+            &[bloom_blur1.get_texture(0)]);
+
+        for _ in 0..10 {
+            quad_mesh.draw(
+                &horizontal_blur,
+                &query_manager,
+                Some(&bloom_blur1),
+                None,
+                &[bloom_blur2.get_texture(0)]);
+            quad_mesh.draw(
+                &vertical_blur,
+                &query_manager,
+                Some(&bloom_blur2),
+                None,
+                &[bloom_blur1.get_texture(0)]);
+        }
+
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(
@@ -257,7 +294,7 @@ fn main() {
             &query_manager,
             None,
             None,
-            &[bloom_target.get_texture(0), bloom_target.get_texture(1)]);
+            &[bloom_target.get_texture(0), bloom_blur2.get_texture(0)]);
         window.swap();
 
         query_manager.submit_zones();
