@@ -175,11 +175,11 @@ fn main() {
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     let window_size = window.get_size();
-    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), Some(Format::RgbF32)], true);
-    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
-    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), None], false);
-    let mut bloom_blur1 = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
-    let mut bloom_blur2 = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
+    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), Some(Format::RgbF16)], true);
+    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
+    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), None], false);
+    let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
+    let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
@@ -272,7 +272,7 @@ fn main() {
             None,
             &[bloom_blur1.get_texture(0)]);
 
-        for _ in 0..3 {
+        for _ in 0..5 {
             quad_mesh.draw(
                 &horizontal_blur,
                 &query_manager,

@@ -13,6 +13,7 @@ pub struct Target {
     texture2: Option<Texture>,
     texture3: Option<Texture>,
     depth: Option<Texture>,
+    size: (i32, i32),
 }
 
 impl Target {
@@ -59,7 +60,8 @@ impl Target {
             texture1: texture1,
             texture2: texture2,
             texture3: texture3,
-            depth: depth
+            depth: depth,
+            size: size,
         }
     }
 
@@ -113,6 +115,10 @@ impl Target {
 
     pub(super) fn get_framebuffer(&self) -> &Framebuffer {
         &self.framebuffer
+    }
+
+    pub(super) fn get_size(&self) -> (i32, i32) {
+        self.size
     }
 
     pub(super) fn get_draw_buffer_spec(&self) -> (i32, [u32; 3]) {

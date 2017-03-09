@@ -4,9 +4,11 @@ use super::Context;
 use super::gl;
 use utils;
 
+#[allow(dead_code)]
 #[derive(Copy, Clone, PartialEq)]
 pub enum Format {
     RgbF32,
+    RgbF16,
     DepthF32,
 }
 
@@ -22,6 +24,13 @@ impl Format {
             Format::RgbF32 => {
                 GlEnums {
                     internal_format: gl::RGB32F,
+                    format: gl::RGB,
+                    component_type: gl::FLOAT,
+                }
+            }
+            Format::RgbF16 => {
+                GlEnums {
+                    internal_format: gl::RGB16F,
                     format: gl::RGB,
                     component_type: gl::FLOAT,
                 }

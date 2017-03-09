@@ -4,6 +4,7 @@ use c_types::c_void;
 use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
+use gfx;
 use super::Context;
 use super::gl;
 use super::querys::QueryManager;
@@ -106,7 +107,13 @@ impl Mesh {
             gl::BindVertexArray(0);
         }
 
-        Mesh { vao: vao, pos_vbo: pos_vbo, normal_vbo: normal_vbo, length: 0, primitive: primitive }
+        Mesh {
+            vao: vao,
+            pos_vbo: pos_vbo,
+            normal_vbo: normal_vbo,
+            length: 0,
+            primitive: primitive,
+        }
     }
 
     pub fn upload(&mut self, verts: &[[f32; 3]], normals: &[[f32; 3]]) {
@@ -156,6 +163,9 @@ impl Mesh {
         unsafe {
 
             if let Some(render_target) = target {
+
+                gfx::viewport(self, render_target.get_size());
+
                 gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
 
                 let (count, buffer) = render_target.get_draw_buffer_spec();
@@ -247,3 +257,6 @@ impl Mesh {
         }
     }
 }
+
+unsafe impl Context for Mesh {}
+

@@ -39,9 +39,9 @@ pub fn clear(_: &Context, color: &[f32; 4]) {
     }
 }
 
-pub fn viewport(_: &Context, width: i32, height: i32) {
+pub fn viewport(_: &Context, size: (i32, i32)) {
 
-    unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, width as f32, height as f32) };
+    unsafe { gl::ViewportIndexedf(0, 0.0, 0.0, size.0 as f32, size.1 as f32) };
 }
 
 pub fn is_error(_: &Context) -> bool {
