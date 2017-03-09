@@ -13,7 +13,7 @@ pub enum Attachment {
 }
 
 impl Attachment {
-    fn get_index(self) -> i32 {
+    pub fn get_index(self) -> i32 {
         match self {
             Attachment::Color0 => 0,
             Attachment::Color1 => 1,
@@ -48,26 +48,19 @@ impl Drop for RawFramebuffer {
 
 pub struct Framebuffer {
     framebuffer: RawFramebuffer,
-    render_targets: i32,
 }
 
 impl Framebuffer {
-    pub fn new(_: &Context, render_targets: i32) -> Framebuffer {
-
-        utils::assert(render_targets >= 0);
-        utils::assert(render_targets < 4);
+    pub fn new(_: &Context) -> Framebuffer {
 
         let framebuffer = RawFramebuffer::new();
 
         Framebuffer {
             framebuffer: framebuffer,
-            render_targets: render_targets,
         }
     }
 
     pub fn attach(&mut self, texture: &Texture, attachment: Attachment) {
-
-        utils::assert(attachment.get_index() < self.render_targets);
 
         utils::assert(texture.get_format() != Some(Format::DepthF32));
         
@@ -144,12 +137,5 @@ impl Framebuffer {
 
     pub(super) fn get_handle(&self) -> u32 {
         self.framebuffer.handle
-    }
-
-    pub(super) fn get_draw_buffer_spec(&self) -> (i32, [u32; 3]) {
-
-        let storage = [ gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT1, gl::COLOR_ATTACHMENT2 ];
-
-        (self.render_targets, storage)
     }
 }

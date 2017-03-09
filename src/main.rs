@@ -20,6 +20,9 @@
 //    * http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
 //    * https://renderman.pixar.com/view/cook-torrance-shader
 // Rocket interop
+// AA
+//   - https://github.com/playdeadgames/temporal
+//   - https://timothylottes.github.io/20110403.html
 // Audio output
 // Square wave
 // More intressting dna snake :)
@@ -48,7 +51,6 @@ mod core {
 mod c_types;
 mod camera;
 mod file;
-mod g_buffer;
 mod gen;
 mod gfx;
 mod intrinsics;
@@ -63,12 +65,13 @@ mod win32;
 mod window;
 
 use camera::Camera;
-use g_buffer::GBuffer;
 use gfx::mesh::Mesh;
 use gfx::mesh::Primitive;
 use gfx::querys::QueryManager;
 use gfx::shader::Shader;
 use gfx::ssbo::Ssbo;
+use gfx::target::Target;
+use gfx::texture::Format;
 use math::Mat4;
 use math::Vec4;
 use pool::Pool;
@@ -163,10 +166,15 @@ fn main() {
     let mut shader = Shader::new(&window, ShaderId::Dna);
     let mut mesh = Mesh::new(&window, Primitive::Triangles);
 
-    let mut quad_shader = Shader::new(&window, ShaderId::Light);
+    let mut light_shader = Shader::new(&window, ShaderId::Light);
+    let mut bloom_shader = Shader::new(&window, ShaderId::Bloom);
+    let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
-    let mut g_buffer = GBuffer::new(&window);
+    let window_size = window.get_size();
+    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), Some(Format::RgbF32)], true);
+    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF32), None, None], false);
+    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF32), Some(Format::RgbF32), None], false);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
@@ -192,7 +200,9 @@ fn main() {
         window.update();
 
         shader.reload_if_changed(&allocator);
-        quad_shader.reload_if_changed(&allocator);
+        light_shader.reload_if_changed(&allocator);
+        bloom_shader.reload_if_changed(&allocator);
+        bloom_resolv_shader.reload_if_changed(&allocator);
 
         let (dt, time) = {
             let now = time::now_s();
@@ -211,11 +221,11 @@ fn main() {
             time: time,
         });
 
-        g_buffer.clear();
+        g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         mesh.draw_instanced(
             &shader,
             &query_manager,
-            Some(g_buffer.get_framebuffer()),
+            Some(&g_buffer),
             &uniform_data,
             &instance_data,
             INSTANCE_COUNT);
@@ -224,13 +234,30 @@ fn main() {
             eye_pos: camera.get_camera_pos(),
         });
 
+        light_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &light_shader,
+            &query_manager,
+            Some(&light_target),
+            Some(&light_uniform_data),
+            &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)]);
+
+        bloom_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &bloom_shader,
+            &query_manager,
+            Some(&bloom_target),
+            None,
+            &[light_target.get_texture(0)]);
+
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(
-            &quad_shader,
+            &bloom_resolv_shader,
             &query_manager,
-            &light_uniform_data,
-            &[g_buffer.get_color_texture(), g_buffer.get_pos_texture(),  g_buffer.get_normal_texture()]);
+            None,
+            None,
+            &[bloom_target.get_texture(0), bloom_target.get_texture(1)]);
         window.swap();
 
         query_manager.submit_zones();

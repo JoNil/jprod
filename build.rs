@@ -140,12 +140,25 @@ fn write_file<P: AsRef<Path>>(path: P, data: &str) -> Result<(), Error> {
     Ok(())
 }
 
-fn uppercase_first_letter(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+fn to_camel_case(s: &str) -> String {
+    
+    let mut should_uppercase = true;
+    let mut res = String::new();
+    
+    for c in s.chars() {
+        if c == '_' {
+            should_uppercase = true;
+        } else {
+            if should_uppercase {
+                res.push_str(&c.to_uppercase().collect::<String>());
+                should_uppercase = false;
+            } else {
+                res.push(c);
+            }
+        }
     }
+
+    res
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
@@ -187,7 +200,7 @@ fn main() {
 
         if entry.metadata().unwrap().is_file() {
 
-            let name = uppercase_first_letter(entry.path().file_stem().unwrap().to_str().unwrap());
+            let name = to_camel_case(entry.path().file_stem().unwrap().to_str().unwrap());
             let extension = entry.path().extension().unwrap().to_str().unwrap();
 
             if extension == "vert" || extension == "frag" {

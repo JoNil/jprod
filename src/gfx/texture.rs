@@ -75,7 +75,7 @@ impl Texture {
         }
     }
 
-    pub fn allocate(&mut self, width: i32, height: i32, format: Format) {
+    pub fn allocate(&mut self, size: (i32, i32), format: Format) {
 
         tm_zone!("Texture::allocate");
 
@@ -91,8 +91,8 @@ impl Texture {
                 gl::TEXTURE_2D,
                 0,
                 enums.internal_format as i32,
-                width,
-                height,
+                size.0,
+                size.1,
                 0,
                 enums.format,
                 enums.component_type,

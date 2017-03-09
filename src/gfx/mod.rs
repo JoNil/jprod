@@ -1,8 +1,9 @@
+mod framebuffer;
 mod gl;
-pub mod framebuffer;
 pub mod mesh;
 pub mod shader;
 pub mod ssbo;
+pub mod target;
 pub mod texture;
 
 #[cfg(feature = "use_telemetry")]

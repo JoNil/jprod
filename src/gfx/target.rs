@@ -1,0 +1,141 @@
+use math::Vec4;
+use super::Context;
+use super::framebuffer::Attachment;
+use super::framebuffer::Framebuffer;
+use super::gl;
+use super::texture::Format;
+use super::texture::Texture;
+use utils;
+
+pub struct Target {
+    framebuffer: Framebuffer,
+    texture1: Option<Texture>,
+    texture2: Option<Texture>,
+    texture3: Option<Texture>,
+    depth: Option<Texture>,
+}
+
+impl Target {
+    pub fn new(ctx: &Context, size: (i32, i32), formats: &[Option<Format>; 3], use_depth: bool) -> Target {
+
+        let mut framebuffer = Framebuffer::new(ctx);
+        let mut texture1 = None;
+        let mut texture2 = None;
+        let mut texture3 = None;
+        let mut depth = None;
+
+        if let &Some(format) = unsafe { formats.get_unchecked(0) } {
+            let mut texture = Texture::new(ctx);
+            texture.allocate(size, format);
+            framebuffer.attach(&texture, Attachment::Color0);
+            texture1 = Some(texture);
+        }
+
+        if let &Some(format) = unsafe { formats.get_unchecked(1) } {
+            let mut texture = Texture::new(ctx);
+            texture.allocate(size, format);
+            framebuffer.attach(&texture, Attachment::Color1);
+            texture2 = Some(texture);
+        }
+
+        if let &Some(format) = unsafe { formats.get_unchecked(2) } {
+            let mut texture = Texture::new(ctx);
+            texture.allocate(size, format);
+            framebuffer.attach(&texture, Attachment::Color2);
+            texture3 = Some(texture);
+        }
+
+        if use_depth {
+            let mut depth_texture = Texture::new(ctx);
+            depth_texture.allocate(size, Format::DepthF32);
+            framebuffer.attach_depth(&depth_texture);
+            depth = Some(depth_texture);
+        }
+
+        utils::assert(framebuffer.is_compleate());
+
+        Target {
+            framebuffer: framebuffer,
+            texture1: texture1,
+            texture2: texture2,
+            texture3: texture3,
+            depth: depth
+        }
+    }
+
+    pub fn clear(&mut self, color: Vec4) {
+
+        let color_slice = &[ color.x, color.y, color.z, color.w ];
+
+        if let Some(_) = self.texture1 {
+            self.framebuffer.clear(Attachment::Color0, color_slice);
+        }
+
+        if let Some(_) = self.texture2 {
+            self.framebuffer.clear(Attachment::Color1, color_slice);
+        }
+
+        if let Some(_) = self.texture3 {
+            self.framebuffer.clear(Attachment::Color2, color_slice);
+        }
+
+        if let Some(_) = self.depth {
+            self.framebuffer.clear_depth(&[ 1.0 ]);
+        }
+    }
+
+    pub fn get_texture(&self, index: i32) -> Option<&Texture> {
+        match index {
+            0 => {
+                if let &Some(ref tex) = &self.texture1 {
+                    Some(&tex)
+                } else {
+                    None
+                }
+            }
+            1 => {
+                if let &Some(ref tex) = &self.texture2 {
+                    Some(&tex)
+                } else {
+                    None
+                }
+            }
+            2 => {
+                if let &Some(ref tex) = &self.texture3 {
+                    Some(&tex)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
+
+    pub(super) fn get_framebuffer(&self) -> &Framebuffer {
+        &self.framebuffer
+    }
+
+    pub(super) fn get_draw_buffer_spec(&self) -> (i32, [u32; 3]) {
+
+        let mut storage = [ gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT0 ];
+
+        let mut next_out_index = 0;
+
+        if let Some(_) = self.texture1 {
+            unsafe { *storage.get_unchecked_mut(next_out_index) = Attachment::Color0 as gl::GLenum; }
+            next_out_index += 1;
+        }
+
+        if let Some(_) = self.texture2 {
+            unsafe { *storage.get_unchecked_mut(next_out_index) = Attachment::Color1 as gl::GLenum; }
+            next_out_index += 1;
+        }
+
+        if let Some(_) = self.texture3 {
+            unsafe { *storage.get_unchecked_mut(next_out_index) = Attachment::Color2 as gl::GLenum; }
+            next_out_index += 1;
+        }
+
+        (next_out_index as i32, storage)
+    }
+}

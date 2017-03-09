@@ -5,11 +5,11 @@ use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
 use super::Context;
-use super::framebuffer::Framebuffer;
 use super::gl;
 use super::querys::QueryManager;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
+use super::target::Target;
 use super::texture::Texture;
 use utils;
 
@@ -143,8 +143,9 @@ impl Mesh {
         &self,
         shader: &Shader,
         query_manager: &QueryManager,
-        uniform_data: &Ssbo,
-        textures: &[&Texture])
+        target: Option<&Target>,
+        uniform_data: Option<&Ssbo>,
+        textures: &[Option<&Texture>])
     {
         tm_zone!("Mesh::draw");
 
@@ -154,27 +155,48 @@ impl Mesh {
 
         unsafe {
 
+            if let Some(render_target) = target {
+                gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
+
+                let (count, buffer) = render_target.get_draw_buffer_spec();
+                gl::DrawBuffers(count, &buffer as *const _);
+            }
+
             gl::UseProgram(shader.get_program_handle());
             gl::BindVertexArray(self.vao.handle);
 
-            for (i, tex) in textures.iter().enumerate() {
-                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
-                gl::BindTexture(gl::TEXTURE_2D, tex.get_handle());
-                gl::Uniform1i(2 + i as i32, i as i32);
+            for (i, t) in textures.iter().enumerate() {
+                if let &Some(tex) = t {
+                    gl::ActiveTexture(gl::TEXTURE0 + i as u32);
+                    gl::BindTexture(gl::TEXTURE_2D, tex.get_handle());
+                    gl::Uniform1i(2 + i as i32, i as i32);
+                }
             }
 
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform_data.get_handle());
+            if let Some(uniform) = uniform_data {
+                gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform.get_handle());
+                gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform.get_handle());
+                gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
+            }
 
             gl::DrawArrays(self.primitive as u32, 0, self.length);
 
-            for (i, _) in textures.iter().enumerate() {
-                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
-                gl::BindTexture(gl::TEXTURE_2D, 0);   
+            for (i, t) in textures.iter().enumerate() {
+                if let &Some(_) = t {
+                    gl::ActiveTexture(gl::TEXTURE0 + i as u32);
+                    gl::BindTexture(gl::TEXTURE_2D, 0);
+                }
             }
 
             gl::BindVertexArray(0);
             gl::UseProgram(0);
+
+             if let Some(_) = target {
+                gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+                let bufs: [u32; 1] = [ gl::BACK_LEFT ];
+                gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
+            }
         }
     }
 
@@ -182,7 +204,7 @@ impl Mesh {
         &self,
         shader: &Shader,
         query_manager: &QueryManager,
-        target: Option<&Framebuffer>,
+        target: Option<&Target>,
         uniform_data: &Ssbo,
         instance_data: &Ssbo,
         count: i32) 
@@ -195,10 +217,10 @@ impl Mesh {
 
         unsafe {
 
-            if let Some(framebuffer) = target {
-                gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer.get_handle());
+            if let Some(render_target) = target {
+                gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
 
-                let (count, buffer) = framebuffer.get_draw_buffer_spec();
+                let (count, buffer) = render_target.get_draw_buffer_spec();
                 gl::DrawBuffers(count, &buffer as *const _);
             }
 
