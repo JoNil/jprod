@@ -20,6 +20,8 @@
 //    * http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
 //    * https://renderman.pixar.com/view/cook-torrance-shader
 // Rocket interop
+// Dof
+//   - Possibly ferris impl: http://http.developer.nvidia.com/GPUGems3/gpugems3_ch28.html
 // AA
 //   - https://github.com/playdeadgames/temporal
 //   - https://timothylottes.github.io/20110403.html
@@ -27,6 +29,9 @@
 // Square wave
 // More intressting dna snake :)
 // Camera path
+
+// Insperation
+// Doom: http://www.adriancourreges.com/blog/2016/09/09/doom-2016-graphics-study/
 
 // Optimizations
 // Load kernal32 stuff by ordinal
@@ -167,6 +172,9 @@ fn main() {
     let mut mesh = Mesh::new(&window, Primitive::Triangles);
 
     let mut light_shader = Shader::new(&window, ShaderId::Light);
+    
+    let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
+
     let mut bloom_shader = Shader::new(&window, ShaderId::Bloom);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
@@ -177,7 +185,9 @@ fn main() {
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), Some(Format::RgbF16)], true);
     let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
-    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
+    
+    let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);    
+
     let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
     let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
 
@@ -206,6 +216,7 @@ fn main() {
 
         shader.reload_if_changed(&allocator);
         light_shader.reload_if_changed(&allocator);
+        dof_extraction_shader.reload_if_changed(&allocator);
         bloom_shader.reload_if_changed(&allocator);
         bloom_resolv_shader.reload_if_changed(&allocator);
         horizontal_blur.reload_if_changed(&allocator);
@@ -249,28 +260,14 @@ fn main() {
             Some(&light_uniform_data),
             &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)]);
 
-        bloom_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
-        quad_mesh.draw(
-            &bloom_shader,
-            &query_manager,
-            Some(&bloom_target),
-            None,
-            &[light_target.get_texture(0)]);
-
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
-            &horizontal_blur,
-            &query_manager,
-            Some(&bloom_blur1),
-            None,
-            &[bloom_target.get_texture(0)]);
-        quad_mesh.draw(
-            &vertical_blur,
+            &bloom_shader,
             &query_manager,
             Some(&bloom_blur2),
             None,
-            &[bloom_blur1.get_texture(0)]);
+            &[light_target.get_texture(0)]);
 
         for _ in 0..5 {
             quad_mesh.draw(
