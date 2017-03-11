@@ -9,6 +9,8 @@ use utils;
 pub enum Format {
     RgbF32,
     RgbF16,
+    RgbaF16,
+    RgbR11G11B10,
     DepthF32,
 }
 
@@ -31,6 +33,20 @@ impl Format {
             Format::RgbF16 => {
                 GlEnums {
                     internal_format: gl::RGB16F,
+                    format: gl::RGB,
+                    component_type: gl::FLOAT,
+                }
+            },
+            Format::RgbaF16 => {
+                GlEnums {
+                    internal_format: gl::RGBA16F,
+                    format: gl::RGBA,
+                    component_type: gl::FLOAT,
+                }
+            },
+            Format::RgbR11G11B10 => {
+                GlEnums {
+                    internal_format: gl::R11F_G11F_B10F,
                     format: gl::RGB,
                     component_type: gl::FLOAT,
                 }

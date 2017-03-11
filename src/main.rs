@@ -37,6 +37,7 @@
 // Doom: http://www.adriancourreges.com/blog/2016/09/09/doom-2016-graphics-study/
 
 // Optimizations
+// Downsample every bloom blur pass
 
 #[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
 extern "C" {}
@@ -170,14 +171,15 @@ fn main() {
 
     win32::init();
 
+    let mut pool = Pool::new(256 * 1024 * 1024);
+    let mut allocator = pool.get_allocator();
+
     tm_init!(
         b"JProd\0",
         win32::load_library,
         win32::get_proc_address,
         allocator.allocate_slice(32 * 1024 * 1024));
 
-    let mut pool = Pool::new(256 * 1024 * 1024);
-    let mut allocator = pool.get_allocator();
     let mut window = Window::new();
     let mut camera = Camera::new(&window);
     let mut query_manager = QueryManager::new(&window);
@@ -185,18 +187,19 @@ fn main() {
     let mut dna_shader = Shader::new(&window, ShaderId::Dna);
     let mut light_shader = Shader::new(&window, ShaderId::Light);
     let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
-    let mut dof_far_blur = Shader::new(&window, ShaderId::DofFarBlur);
+    let mut dof_far_blur_shader = Shader::new(&window, ShaderId::DofFarBlur);
     let mut bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
     let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
 
     let window_size = window.get_size();
-    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), Some(Format::RgbF16)], true);
-    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
-    let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);    
-    let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
-    let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
+    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), Some(Format::RgbF16), Some(Format::RgbF16)], true);
+    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), None, None], false);
+    let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
+    let mut dof_far_blur_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
+    let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbR11G11B10), None, None], false);
+    let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbR11G11B10), None, None], false);
 
     let mut dna_mesh = Mesh::new(&window, Primitive::Triangles);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
@@ -226,6 +229,7 @@ fn main() {
         dna_shader.reload_if_changed(&allocator);
         light_shader.reload_if_changed(&allocator);
         dof_extraction_shader.reload_if_changed(&allocator);
+        dof_far_blur_shader.reload_if_changed(&allocator);
         bloom_extraction_shader.reload_if_changed(&allocator);
         bloom_resolv_shader.reload_if_changed(&allocator);
         horizontal_blur.reload_if_changed(&allocator);
@@ -286,6 +290,14 @@ fn main() {
         dof_far_blur_uniform_data.upload(&DofFarBlurUniforms {
             plane_in_focus: 0.5,
         });
+
+        dof_far_blur_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &dof_far_blur_shader,
+            &query_manager,
+            Some(&dof_far_blur_target),
+            Some(&dof_far_blur_uniform_data),
+            &[dof_extracted_target.get_texture(0)]);
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));

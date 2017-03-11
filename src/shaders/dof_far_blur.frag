@@ -46,7 +46,5 @@ void main()
 {
     vec4 frag_color = texture(color_tex, frag_uv);
 
-    vec3 pos = texture(pos_tex, frag_uv).xyz;
-
     color = frag_color;
 }

@@ -22,6 +22,8 @@ void main()
     float dist = length(eye_pos.xyz - pos);
 
     if (dist > plane_in_focus) {
-        color = frag_color;
+        color = vec4(frag_color.xyz, 1.0);
+    } else {
+        color = vec4(0.0, 0.0, 0.0, 0.0);
     }
 }
