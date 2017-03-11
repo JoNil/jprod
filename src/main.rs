@@ -175,7 +175,7 @@ fn main() {
     
     let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
 
-    let mut bloom_shader = Shader::new(&window, ShaderId::Bloom);
+    let mut bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
     let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
@@ -217,7 +217,7 @@ fn main() {
         shader.reload_if_changed(&allocator);
         light_shader.reload_if_changed(&allocator);
         dof_extraction_shader.reload_if_changed(&allocator);
-        bloom_shader.reload_if_changed(&allocator);
+        bloom_extraction_shader.reload_if_changed(&allocator);
         bloom_resolv_shader.reload_if_changed(&allocator);
         horizontal_blur.reload_if_changed(&allocator);
         vertical_blur.reload_if_changed(&allocator);
@@ -263,7 +263,7 @@ fn main() {
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
-            &bloom_shader,
+            &bloom_extraction_shader,
             &query_manager,
             Some(&bloom_blur2),
             None,
