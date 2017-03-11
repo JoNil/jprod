@@ -177,7 +177,7 @@ fn main() {
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), Some(Format::RgbF16)], true);
     let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
-    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), None], false);
+    let mut bloom_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
     let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
     let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
 
@@ -264,7 +264,7 @@ fn main() {
             &query_manager,
             Some(&bloom_blur1),
             None,
-            &[bloom_target.get_texture(1)]);
+            &[bloom_target.get_texture(0)]);
         quad_mesh.draw(
             &vertical_blur,
             &query_manager,
@@ -294,7 +294,7 @@ fn main() {
             &query_manager,
             None,
             None,
-            &[bloom_target.get_texture(0), bloom_blur2.get_texture(0)]);
+            &[light_target.get_texture(0), bloom_blur2.get_texture(0)]);
         window.swap();
 
         query_manager.submit_zones();
