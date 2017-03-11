@@ -141,6 +141,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
     instance_data.upload_slice(mvps);
 }
 
+#[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 struct Uniforms {
@@ -148,19 +149,23 @@ struct Uniforms {
     time: f32,
 }
 
+#[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 struct LightUniforms {
     eye_pos: Vec4,
 }
 
+#[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 struct DofUniforms {
-    eye_pos: Vec4,
+    z_near: f32,
+    z_far: f32,
     plane_in_focus: f32,
 }
 
+#[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 struct DofFarBlurUniforms {
@@ -275,7 +280,8 @@ fn main() {
 
 
         dof_uniform_data.upload(&DofUniforms {
-            eye_pos: camera.get_camera_pos(),
+            z_near: camera.get_near(),
+            z_far: camera.get_far(),
             plane_in_focus: 0.5,
         });
 
@@ -285,7 +291,7 @@ fn main() {
             &query_manager,
             Some(&dof_extracted_target),
             Some(&dof_uniform_data),
-            &[light_target.get_texture(0), g_buffer.get_texture(1)]);
+            &[light_target.get_texture(0), g_buffer.get_depth_texture()]);
 
         dof_far_blur_uniform_data.upload(&DofFarBlurUniforms {
             plane_in_focus: 0.5,

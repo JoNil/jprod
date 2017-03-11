@@ -3,6 +3,9 @@ use math::Vec4;
 use math;
 use window::Window;
 
+const NEAR: f32 = 0.01;
+const FAR: f32 = 1000.0;
+
 pub struct Camera {
     projection: Mat4,
 
@@ -43,7 +46,7 @@ impl Camera {
         {
             let size = window.get_size();
 
-            self.projection = Mat4::perspective(90.0, size.0 as f32 / size.1 as f32, 0.01, 1000.0);
+            self.projection = Mat4::perspective(90.0, size.0 as f32 / size.1 as f32, NEAR, FAR);
         }
 
         let actions = window.get_actions();
@@ -105,6 +108,14 @@ impl Camera {
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 
         self.projection.mul(pos.mul(rot).inverted())
+    }
+
+    pub fn get_near(&self) -> f32 {
+        NEAR
+    }
+
+    pub fn get_far(&self) -> f32 {
+        FAR
     }
 
     pub fn get_camera_pos(&self) -> Vec4 {

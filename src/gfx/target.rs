@@ -88,29 +88,15 @@ impl Target {
 
     pub fn get_texture(&self, index: i32) -> Option<&Texture> {
         match index {
-            0 => {
-                if let &Some(ref tex) = &self.texture1 {
-                    Some(&tex)
-                } else {
-                    None
-                }
-            }
-            1 => {
-                if let &Some(ref tex) = &self.texture2 {
-                    Some(&tex)
-                } else {
-                    None
-                }
-            }
-            2 => {
-                if let &Some(ref tex) = &self.texture3 {
-                    Some(&tex)
-                } else {
-                    None
-                }
-            }
+            0 => self.texture1.as_ref(),
+            1 => self.texture2.as_ref(),
+            2 => self.texture3.as_ref(),
             _ => None,
         }
+    }
+
+    pub fn get_depth_texture(&self) -> Option<&Texture> {
+        self.depth.as_ref()
     }
 
     pub(super) fn get_framebuffer(&self) -> &Framebuffer {
