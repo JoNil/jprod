@@ -30,11 +30,13 @@
 // More intressting dna snake :)
 // Camera path
 
-// Insperation
+// Cleanup
+// Remove query_manager from all draw calls
+
+// Inspiration
 // Doom: http://www.adriancourreges.com/blog/2016/09/09/doom-2016-graphics-study/
 
 // Optimizations
-// Load kernal32 stuff by ordinal
 
 #[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
 extern "C" {}
@@ -151,12 +153,16 @@ struct LightUniforms {
     eye_pos: Vec4,
 }
 
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
+struct DofUniforms {
+    eye_pos: Vec4,
+    plane_in_focus: f32,
+}
+
 fn main() {
 
     win32::init();
-
-    let mut pool = Pool::new(256 * 1024 * 1024);
-    let mut allocator = pool.get_allocator();
 
     tm_init!(
         b"JProd\0",
@@ -164,38 +170,35 @@ fn main() {
         win32::get_proc_address,
         allocator.allocate_slice(32 * 1024 * 1024));
 
+    let mut pool = Pool::new(256 * 1024 * 1024);
+    let mut allocator = pool.get_allocator();
     let mut window = Window::new();
-
+    let mut camera = Camera::new(&window);
     let mut query_manager = QueryManager::new(&window);
 
-    let mut shader = Shader::new(&window, ShaderId::Dna);
-    let mut mesh = Mesh::new(&window, Primitive::Triangles);
-
+    let mut dna_shader = Shader::new(&window, ShaderId::Dna);
     let mut light_shader = Shader::new(&window, ShaderId::Light);
-    
     let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
-
     let mut bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
     let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
 
-    let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
-
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbF16), Some(Format::RgbF16), Some(Format::RgbF16)], true);
     let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbF16), None, None], false);
-    
     let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);    
-
     let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
     let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbF16), None, None], false);
+
+    let mut dna_mesh = Mesh::new(&window, Primitive::Triangles);
+    let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
         
         let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&sub_allocator);
-        mesh.upload(tetrahedron_pos, tetrahedron_normals);
+        dna_mesh.upload(tetrahedron_pos, tetrahedron_normals);
 
         let (quad_pos, quad_normals) = gen::quad(&sub_allocator);
         quad_mesh.upload(quad_pos, quad_normals);
@@ -204,17 +207,15 @@ fn main() {
     let mut instance_data = Ssbo::new(&window);
     let mut uniform_data = Ssbo::new(&window);
     let mut light_uniform_data = Ssbo::new(&window);
+    let mut dof_uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
     let mut last = start;
 
-    let mut camera = Camera::new(&window);
-
     loop {
-
         window.update();
 
-        shader.reload_if_changed(&allocator);
+        dna_shader.reload_if_changed(&allocator);
         light_shader.reload_if_changed(&allocator);
         dof_extraction_shader.reload_if_changed(&allocator);
         bloom_extraction_shader.reload_if_changed(&allocator);
@@ -240,8 +241,8 @@ fn main() {
         });
 
         g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
-        mesh.draw_instanced(
-            &shader,
+        dna_mesh.draw_instanced(
+            &dna_shader,
             &query_manager,
             Some(&g_buffer),
             &uniform_data,
@@ -259,6 +260,20 @@ fn main() {
             Some(&light_target),
             Some(&light_uniform_data),
             &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)]);
+
+
+        dof_uniform_data.upload(&DofUniforms {
+            eye_pos: camera.get_camera_pos(),
+            plane_in_focus: 0.5,
+        });
+
+        dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &dof_extraction_shader,
+            &query_manager,
+            Some(&dof_extracted_target),
+            Some(&dof_uniform_data),
+            &[light_target.get_texture(0), g_buffer.get_texture(1)]);
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
