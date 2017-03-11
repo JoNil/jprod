@@ -160,6 +160,12 @@ struct DofUniforms {
     plane_in_focus: f32,
 }
 
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
+struct DofFarBlurUniforms {
+    plane_in_focus: f32,
+}
+
 fn main() {
 
     win32::init();
@@ -179,6 +185,7 @@ fn main() {
     let mut dna_shader = Shader::new(&window, ShaderId::Dna);
     let mut light_shader = Shader::new(&window, ShaderId::Light);
     let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
+    let mut dof_far_blur = Shader::new(&window, ShaderId::DofFarBlur);
     let mut bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
     let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
     let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
@@ -208,6 +215,7 @@ fn main() {
     let mut uniform_data = Ssbo::new(&window);
     let mut light_uniform_data = Ssbo::new(&window);
     let mut dof_uniform_data = Ssbo::new(&window);
+    let mut dof_far_blur_uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
     let mut last = start;
@@ -274,6 +282,10 @@ fn main() {
             Some(&dof_extracted_target),
             Some(&dof_uniform_data),
             &[light_target.get_texture(0), g_buffer.get_texture(1)]);
+
+        dof_far_blur_uniform_data.upload(&DofFarBlurUniforms {
+            plane_in_focus: 0.5,
+        });
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
