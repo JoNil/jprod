@@ -1,6 +1,6 @@
 #version 450 core
 
-#define NUM_OF_TAPS 8
+#define NUM_OF_TAPS 4
 
 in vec2 frag_uv;
 
@@ -32,23 +32,23 @@ void main()
 {
     vec2 step_size = vec2(1.0) / textureSize(color_tex, 0);
     vec4 frag_color = texture(color_tex, frag_uv);
-    float far_coc = clamp(frag_color.w, 0.0, 1.0);
-    vec4 color_sum = vec4(0.0);
+    float far_coc = frag_color.w;
+    vec4 color_acc = vec4(0.0);
 
     if (far_coc > 0.0) {
-        
+
         for (int y = 0; y < NUM_OF_TAPS; ++y) {
 
             for (int x = 0; x < NUM_OF_TAPS; ++x) {
 
                 vec2 uv_offset = to_unit_disk(vec2(float(x), float(y)) / vec2(tap_length));
-                vec2 uv_scale = step_size * tap_length;
+                vec2 uv_scale = 2.0 * step_size * far_coc;
 
-                vec4 color_sample = texture(color_tex, frag_uv + (uv_offset * uv_scale));
-                color_sum += color_sample;
+                vec4 frag_sample = texture(color_tex, frag_uv + (uv_offset * uv_scale));
+                color_acc = max(color_acc, frag_sample);
             }
         }
     }
 
-    color = vec4(color_sum.xyz / vec3(color_sum.w + 1e-006), color_sum.w / float(NUM_OF_TAPS * NUM_OF_TAPS));
+    color = color_acc;
 }

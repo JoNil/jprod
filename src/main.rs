@@ -165,13 +165,6 @@ struct DofUniforms {
     plane_in_focus: f32,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-#[allow(dead_code)]
-struct DofFarBlurUniforms {
-    plane_in_focus: f32,
-}
-
 fn main() {
 
     win32::init();
@@ -197,6 +190,7 @@ fn main() {
     let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
     let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
     let mut dof_far_blur_shader = Shader::new(&window, ShaderId::DofFarBlur);
+    let mut dof_far_blur_max_shader = Shader::new(&window, ShaderId::DofFarBlurMax);
     let mut dof_merge_shader = Shader::new(&window, ShaderId::DofMerge);
 
     let window_size = window.get_size();
@@ -212,7 +206,6 @@ fn main() {
     let mut uniform_data = Ssbo::new(&window);
     let mut light_uniform_data = Ssbo::new(&window);
     let mut dof_uniform_data = Ssbo::new(&window);
-    let mut dof_far_blur_uniform_data = Ssbo::new(&window);
 
     let mut dna_mesh = Mesh::new(&window, Primitive::Triangles);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
@@ -241,6 +234,7 @@ fn main() {
         vertical_blur.reload_if_changed(&allocator);
         dof_extraction_shader.reload_if_changed(&allocator);
         dof_far_blur_shader.reload_if_changed(&allocator);
+        dof_far_blur_max_shader.reload_if_changed(&allocator);
         dof_merge_shader.reload_if_changed(&allocator);
 
         let (dt, time) = {
@@ -327,17 +321,22 @@ fn main() {
             Some(&dof_uniform_data),
             &[bloom_merge_target.get_texture(0), g_buffer.get_depth_texture()]);
 
-        dof_far_blur_uniform_data.upload(&DofFarBlurUniforms {
-            plane_in_focus: 0.5,
-        });
 
         dof_far_blur_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
             &dof_far_blur_shader,
             &query_manager,
             Some(&dof_far_blur_target),
-            Some(&dof_far_blur_uniform_data),
+            None,
             &[dof_extracted_target.get_texture(0)]);
+
+        dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+        quad_mesh.draw(
+            &dof_far_blur_max_shader,
+            &query_manager,
+            Some(&dof_extracted_target),
+            None,
+            &[dof_far_blur_target.get_texture(0)]);
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
@@ -346,7 +345,7 @@ fn main() {
             &query_manager,
             None,
             Some(&dof_uniform_data),
-            &[bloom_merge_target.get_texture(0), dof_far_blur_target.get_texture(0), g_buffer.get_depth_texture()]);
+            &[bloom_merge_target.get_texture(0), dof_extracted_target.get_texture(0), g_buffer.get_depth_texture()]);
         window.swap();
 
         query_manager.submit_zones();
