@@ -12,5 +12,5 @@ void main()
     vec4 color1 = texture(color_tex, frag_uv);
     vec4 color2 = texture(bloom_color_tex, frag_uv);
 
-    color = vec4((color1.rgb + 0.0*color2.rgb), color1.a);
+    color = vec4((color1.rgb + color2.rgb), color1.a);
 }
