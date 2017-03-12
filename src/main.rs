@@ -21,7 +21,11 @@
 //    * https://renderman.pixar.com/view/cook-torrance-shader
 // Rocket interop
 // Dof
-//   - Possibly ferris impl: http://http.developer.nvidia.com/GPUGems3/gpugems3_ch28.html
+//   - http://http.developer.nvidia.com/GPUGems3/gpugems3_ch28.html
+//   - http://http.developer.nvidia.com/GPUGems/gpugems_ch23.html
+//   - http://www.crytek.com/download/Sousa_Graphics_Gems_CryENGINE3.pdf
+//   - http://ivizlab.sfu.ca/papers/cgf2012.pdf
+//   - 
 // AA
 //   - https://github.com/playdeadgames/temporal
 //   - https://timothylottes.github.io/20110403.html
