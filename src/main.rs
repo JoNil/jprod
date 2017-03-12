@@ -336,7 +336,7 @@ fn main() {
             &query_manager,
             None,
             None,
-            &[light_target.get_texture(0), bloom_blur2.get_texture(0)]);
+            &[dof_far_blur_target.get_texture(0), bloom_blur2.get_texture(0)]);
         window.swap();
 
         query_manager.submit_zones();
