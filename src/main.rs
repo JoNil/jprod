@@ -208,6 +208,12 @@ fn main() {
     let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
     let mut dof_far_blur_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
 
+    let mut instance_data = Ssbo::new(&window);
+    let mut uniform_data = Ssbo::new(&window);
+    let mut light_uniform_data = Ssbo::new(&window);
+    let mut dof_uniform_data = Ssbo::new(&window);
+    let mut dof_far_blur_uniform_data = Ssbo::new(&window);
+
     let mut dna_mesh = Mesh::new(&window, Primitive::Triangles);
     let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
 
@@ -220,12 +226,6 @@ fn main() {
         let (quad_pos, quad_normals) = gen::quad(&sub_allocator);
         quad_mesh.upload(quad_pos, quad_normals);
     }
-
-    let mut instance_data = Ssbo::new(&window);
-    let mut uniform_data = Ssbo::new(&window);
-    let mut light_uniform_data = Ssbo::new(&window);
-    let mut dof_uniform_data = Ssbo::new(&window);
-    let mut dof_far_blur_uniform_data = Ssbo::new(&window);
 
     let start = time::now_s();
     let mut last = start;
@@ -345,8 +345,8 @@ fn main() {
             &dof_merge_shader,
             &query_manager,
             None,
-            None,
-            &[bloom_merge_target.get_texture(0), dof_far_blur_target.get_texture(0)]);
+            Some(&dof_uniform_data),
+            &[bloom_merge_target.get_texture(0), dof_far_blur_target.get_texture(0), g_buffer.get_depth_texture()]);
         window.swap();
 
         query_manager.submit_zones();
