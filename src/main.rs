@@ -15,6 +15,8 @@
 // TODO:
 // Fix normal not being rotated
 // Defered rendering
+//  - Other light model
+//    * https://github.com/wdas/brdf
 //  - Light shader: Cook-Torrence and GGX
 //    * http://ruh.li/GraphicsCookTorrance.html
 //    * http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
