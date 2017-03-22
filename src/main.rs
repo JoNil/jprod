@@ -18,6 +18,7 @@
 //  - Other light model
 //    * https://github.com/wdas/brdf
 //  - Light shader: Cook-Torrence and GGX
+//    * https://learnopengl.com/#!PBR/Theory
 //    * http://ruh.li/GraphicsCookTorrance.html
 //    * http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx
 //    * https://renderman.pixar.com/view/cook-torrance-shader
