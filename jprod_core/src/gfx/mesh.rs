@@ -58,7 +58,6 @@ impl Drop for RawVao {
     }
 }
 
-#[derive(Debug)]
 struct RawVbo {
     handle: u32,
     marker: PhantomData<*const u32>,
@@ -141,7 +140,7 @@ impl Mesh {
                     let new_vbo = RawVbo::new();
 
                     gl::BindBuffer(gl::ARRAY_BUFFER, new_vbo.handle);
-                    gl::EnableVertexAttribArray(0);
+                    gl::EnableVertexAttribArray(i as u32);
                     gl::VertexAttribPointer(
                         i as u32,            // attribute
                         vf.get_components(), // size
