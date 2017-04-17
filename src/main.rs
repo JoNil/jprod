@@ -50,8 +50,8 @@
 // Downsample every bloom blur pass
 
 
-#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "64"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED C:/dev/jprod/lib/msvcrt-light-x64.lib libcmt.lib vcruntime.lib")]
-#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "32"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED C:/dev/jprod/lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
+#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "64"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED lib/msvcrt-light-x64.lib libcmt.lib vcruntime.lib")]
+#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "32"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
 extern "C" {}
 
 #[cfg(all(not(test), not(feature = "use_std")))]
