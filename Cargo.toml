@@ -16,7 +16,6 @@ develop = []
 use_telemetry = ["telemetry"]
 
 [profile.release]
-opt-level = "z"
 debug-assertions = false
 panic = "abort"
 debug = true
