@@ -7,13 +7,6 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
-fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
-    let mut f = try!(File::open(path));
-    let mut s = String::new();
-    try!(f.read_to_string(&mut s));
-    Ok(s)
-}
-
 #[cfg(feature = "develop")]
 fn trim_whitespace(s: &str) -> String {
     s.to_owned()
@@ -125,12 +118,6 @@ fn trim_whitespace(s: &str) -> String {
     temp
 }
 
-fn write_file<P: AsRef<Path>>(path: P, data: &str) -> Result<(), Error> {
-    let mut f = try!(File::create(path));
-    try!(f.write_all(data.as_bytes()));
-    Ok(())
-}
-
 fn to_camel_case(s: &str) -> String {
     
     let mut should_uppercase = true;
@@ -150,6 +137,20 @@ fn to_camel_case(s: &str) -> String {
     }
 
     res
+}
+
+fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
+    let mut f = try!(File::open(path));
+    let mut s = String::new();
+    try!(f.read_to_string(&mut s));
+    Ok(s)
+}
+
+
+fn write_file<P: AsRef<Path>>(path: P, data: &str) -> Result<(), Error> {
+    let mut f = try!(File::create(path));
+    try!(f.write_all(data.as_bytes()));
+    Ok(())
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
