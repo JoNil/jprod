@@ -1,0 +1,32 @@
+[root]
+name = "jprod"
+version = "0.1.0"
+dependencies = [
+ "compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)",
+ "jprod_core 0.1.0",
+ "telemetry 0.1.0",
+ "telemetry_macro 0.1.0",
+]
+
+[[package]]
+name = "compiler_builtins"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang-nursery/compiler-builtins#280d19f1127aa80739f4179152b11a5f7d36d79f"
+
+[[package]]
+name = "jprod_core"
+version = "0.1.0"
+dependencies = [
+ "telemetry_macro 0.1.0",
+]
+
+[[package]]
+name = "telemetry"
+version = "0.1.0"
+
+[[package]]
+name = "telemetry_macro"
+version = "0.1.0"
+
+[metadata]
+"checksum compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)" = "<none>"

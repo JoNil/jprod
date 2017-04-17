@@ -1,0 +1,27 @@
+[package]
+name = "jprod"
+version = "0.1.0"
+authors = ["Jonathan"]
+
+build = "build.rs"
+
+[dependencies]
+telemetry = { path = "../../telemetry-rs", optional = true }
+telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
+compiler_builtins = { git = "https://github.com/rust-lang-nursery/compiler-builtins" }
+jprod_core = { path = "../jprod_core" }
+
+[features]
+use_std = []
+develop = []
+use_telemetry = ["telemetry"]
+
+[profile.release]
+debug-assertions = false
+panic = "abort"
+debug = true
+
+[profile.dev]
+debug-assertions = true
+panic = "abort"
+debug = true
