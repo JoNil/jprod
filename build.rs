@@ -153,12 +153,6 @@ fn to_camel_case(s: &str) -> String {
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
-struct Filetime {
-    low: u32,
-    high: u32,
-}
-
-#[derive(Hash, Eq, PartialEq, Debug)]
 struct ShaderData {
     vertex_source: Option<String>,
     fragment_source: Option<String>,
