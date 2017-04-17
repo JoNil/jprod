@@ -135,7 +135,20 @@ pub struct Shader {
 
 impl Shader {
     #[inline]
-    pub fn new(_: &Context, id: ShaderId) -> Shader {
+    pub fn from_source(fragment_source: &[u8], vertex_source: &[u8]) -> Shader {
+
+        if let Some((program, fragment, vertex)) = load_shader(fragment_source, vertex_source) {
+            return Shader {
+                program: program,
+                fragment: fragment,
+                vertex: vertex,
+            }
+        } else {
+            utils::debug_trap();
+        }
+    }
+
+    pub fn from_id(_: &Context, id: ShaderId) -> Shader {
 
         let source = get_shader_source(id);
 

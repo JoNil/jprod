@@ -1,12 +1,13 @@
 [package]
-name = "jprod"
+name = "jprod_editor"
 version = "0.1.0"
 authors = ["Jonathan"]
 
 [dependencies]
+imgui = { git = "https://github.com/Gekkio/imgui-rs" }
+jprod_core = { path = "../jprod_core" }
 telemetry = { path = "../../telemetry-rs", optional = true }
 telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
-jprod_core = { path = "../jprod_core" }
 
 [features]
 use_telemetry = ["telemetry"]

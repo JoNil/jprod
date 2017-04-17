@@ -186,16 +186,16 @@ fn main() {
     let mut camera = Camera::new(&window);
     let mut query_manager = QueryManager::new(&window);
 
-    let dna_shader = Shader::new(&window, ShaderId::Dna);
-    let light_shader = Shader::new(&window, ShaderId::Light);
-    let bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
-    let bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
-    let horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
-    let vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
-    let dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
-    let dof_far_blur_shader = Shader::new(&window, ShaderId::DofFarBlur);
-    let dof_far_blur_max_shader = Shader::new(&window, ShaderId::DofFarBlurMax);
-    let dof_merge_shader = Shader::new(&window, ShaderId::DofMerge);
+    let dna_shader = Shader::from_id(&window, ShaderId::Dna);
+    let light_shader = Shader::from_id(&window, ShaderId::Light);
+    let bloom_extraction_shader = Shader::from_id(&window, ShaderId::BloomExtraction);
+    let bloom_resolv_shader = Shader::from_id(&window, ShaderId::BloomResolv);
+    let horizontal_blur = Shader::from_id(&window, ShaderId::HorizontalGaussianBlur);
+    let vertical_blur = Shader::from_id(&window, ShaderId::VerticalGaussianBlur);
+    let dof_extraction_shader = Shader::from_id(&window, ShaderId::DofExtraction);
+    let dof_far_blur_shader = Shader::from_id(&window, ShaderId::DofFarBlur);
+    let dof_far_blur_max_shader = Shader::from_id(&window, ShaderId::DofFarBlurMax);
+    let dof_merge_shader = Shader::from_id(&window, ShaderId::DofMerge);
 
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), Some(Format::RgbF16), Some(Format::RgbF16)], true);
