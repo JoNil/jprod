@@ -17,6 +17,7 @@ source = "git+https://github.com/rust-lang-nursery/compiler-builtins#280d19f1127
 name = "jprod_core"
 version = "0.1.0"
 dependencies = [
+ "telemetry 0.1.0",
  "telemetry_macro 0.1.0",
 ]
 

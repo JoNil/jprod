@@ -214,17 +214,17 @@ fn main() {
     let mut light_uniform_data = Ssbo::new(&window);
     let mut dof_uniform_data = Ssbo::new(&window);
 
-    let mut dna_mesh = Mesh::new(&window, Primitive::Triangles);
-    let mut quad_mesh = Mesh::new(&window, Primitive::TriangleStrip);
+    let mut dna_mesh = Mesh::new(&window);
+    let mut quad_mesh = Mesh::new(&window);
 
     {
         let sub_allocator = allocator.get_sub_allocator();
         
         let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&sub_allocator);
-        dna_mesh.upload(tetrahedron_pos, tetrahedron_normals);
+        dna_mesh.upload(tetrahedron_pos, tetrahedron_normals, Primitive::Triangles);
 
         let (quad_pos, quad_normals) = gen::quad(&sub_allocator);
-        quad_mesh.upload(quad_pos, quad_normals);
+        quad_mesh.upload(quad_pos, quad_normals, Primitive::TriangleStrip);
     }
 
     let start = time::now_s();

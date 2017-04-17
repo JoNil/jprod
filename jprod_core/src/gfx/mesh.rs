@@ -13,6 +13,27 @@ use super::target::Target;
 use super::texture::Texture;
 use utils;
 
+#[allow(dead_code)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+enum VertexFormat {
+    Float,
+    Vec2,
+    Vec3,
+    Vec4,
+}
+
+impl VertexFormat {
+    #[inline]
+    fn get_components(&self) -> i32 {
+        match *self {
+            VertexFormat::Float => 1,
+            VertexFormat::Vec2 => 2,
+            VertexFormat::Vec3 => 3,
+            VertexFormat::Vec4 => 4,
+        }
+    }
+}
+
 struct RawVao {
     handle: u32,
     marker: PhantomData<*const u32>,
@@ -37,6 +58,7 @@ impl Drop for RawVao {
     }
 }
 
+#[derive(Debug)]
 struct RawVbo {
     handle: u32,
     marker: PhantomData<*const u32>,
@@ -69,88 +91,119 @@ pub enum Primitive {
 
 pub struct Mesh {
     vao: RawVao,
-    pos_vbo: RawVbo,
-    normal_vbo: RawVbo,
+    vbos: [Option<RawVbo>; 3],
+    vertex_formats: [Option<VertexFormat>; 3],
+    index: Option<RawVbo>,
     length: i32,
     primitive: Primitive,
 }
 
 impl Mesh {
     #[inline]
-    pub fn new(_: &Context, primitive: Primitive) -> Mesh {
-        
-        let vao = RawVao::new();
-        let pos_vbo = RawVbo::new();
-        let normal_vbo = RawVbo::new();
+    pub fn new(_: &Context) -> Mesh {
+        Mesh {
+            vao: RawVao::new(),
+            vbos: [None, None, None],
+            vertex_formats: [None, None, None],
+            index: None,
+            length: 0,
+            primitive: Primitive::Triangles,
+        }
+    }
+
+    fn is_same_format(&self, vertex_formats: [Option<VertexFormat>; 3], use_index_buffer: bool) -> bool {
+        for (f1, f2) in vertex_formats.iter().zip(self.vertex_formats.iter()) {
+            if f1 != f2 {
+                return false;
+            }
+
+            if use_index_buffer && self.index.is_none() {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    #[inline]
+    fn setup(&mut self, vertex_formats: [Option<VertexFormat>; 3], use_index_buffer: bool) {
+        let mut vbos = [None, None, None];
+        let mut index = None;
 
         unsafe {
 
-            gl::BindVertexArray(vao.handle);
+            gl::BindVertexArray(self.vao.handle);
 
-            gl::BindBuffer(gl::ARRAY_BUFFER, pos_vbo.handle);
-            gl::EnableVertexAttribArray(0);
-            gl::VertexAttribPointer(
-                0,              // attribute
-                3,              // size
-                gl::FLOAT,      // type
-                0,              // normalized?
-                0,              // stride
-                ptr::null());   // array buffer offset
+            for (i, (format, vbo)) in vertex_formats.iter().zip(vbos.iter_mut()).enumerate() {
 
-            gl::BindBuffer(gl::ARRAY_BUFFER, normal_vbo.handle);
-            gl::EnableVertexAttribArray(1);
-            gl::VertexAttribPointer(
-                1,              // attribute
-                3,              // size
-                gl::FLOAT,      // type
-                0,              // normalized?
-                0,              // stride
-                ptr::null());   // array buffer offset
+                if let &Some(ref vf) = format {
+
+                    let new_vbo = RawVbo::new();
+
+                    gl::BindBuffer(gl::ARRAY_BUFFER, new_vbo.handle);
+                    gl::EnableVertexAttribArray(0);
+                    gl::VertexAttribPointer(
+                        i as u32,            // attribute
+                        vf.get_components(), // size
+                        gl::FLOAT,           // type
+                        0,                   // normalized?
+                        0,                   // stride
+                        ptr::null());        // array buffer offset
+
+                    *vbo = Some(new_vbo);
+                }
+            }
+
+            if use_index_buffer {
+                index = Some(RawVbo::new())
+            }
 
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             gl::BindVertexArray(0);
         }
 
-        Mesh {
-            vao: vao,
-            pos_vbo: pos_vbo,
-            normal_vbo: normal_vbo,
-            length: 0,
-            primitive: primitive,
-        }
+        self.vbos = vbos;
+        self.vertex_formats = vertex_formats;
+        self.index = index;
     }
 
     #[inline]
-    pub fn upload(&mut self, verts: &[[f32; 3]], normals: &[[f32; 3]]) {
+    pub fn upload(&mut self, va1: &[[f32; 3]], va2: &[[f32; 3]], primitive: Primitive) {
 
         tm_zone!("Mesh::upload");
 
-        utils::assert(verts.len() == normals.len());
+        utils::assert(va1.len() == va2.len());
 
-        self.length = verts.len() as i32;
+        let vertex_format = [Some(VertexFormat::Vec3), Some(VertexFormat::Vec3), None];
+
+        if !self.is_same_format(vertex_format, false) {
+            self.setup(vertex_format, true);
+        }
+
+        self.primitive = primitive;
+        self.length = va1.len() as i32;
 
         unsafe {
+            if let (&Some(ref pos_vbo), &Some(ref normal_vbo)) = (&*self.vbos.get_unchecked(0), &*self.vbos.get_unchecked(1)) {
 
-            gl::BindBuffer(gl::ARRAY_BUFFER, self.pos_vbo.handle);
+                gl::BindBuffer(gl::ARRAY_BUFFER, pos_vbo.handle);
+                gl::BufferData(
+                    gl::ARRAY_BUFFER,
+                    (3 * va1.len() * mem::size_of::<f32>()) as isize,
+                    &*(*va1.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                    gl::STATIC_DRAW);
 
-            gl::BufferData(
-                gl::ARRAY_BUFFER,
-                (3 * verts.len() * mem::size_of::<f32>()) as isize,
-                &*(*verts.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
-                gl::STATIC_DRAW);
+                gl::BindBuffer(gl::ARRAY_BUFFER, normal_vbo.handle);
+                gl::BufferData(
+                    gl::ARRAY_BUFFER,
+                    (3 * va2.len() * mem::size_of::<f32>()) as isize,
+                    &*(*va2.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                    gl::STATIC_DRAW);
 
-            gl::BindBuffer(gl::ARRAY_BUFFER, self.normal_vbo.handle);
-
-            gl::BufferData(
-                gl::ARRAY_BUFFER,
-                (3 * normals.len() * mem::size_of::<f32>()) as isize,
-                &*(*normals.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
-                gl::STATIC_DRAW);
-
-            gl::BindBuffer(gl::ARRAY_BUFFER, 0); 
+                gl::BindBuffer(gl::ARRAY_BUFFER, 0); 
+            }
         }
     }
-
 
     #[inline]
     pub fn draw(

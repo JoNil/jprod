@@ -1,7 +1,10 @@
 use imgui;
 use jprod_core::gfx::mesh::Mesh;
 use jprod_core::gfx::mesh::Primitive;
+use jprod_core::gfx::pso::Pso;
+use jprod_core::gfx::pso::Scissor;
 use jprod_core::gfx::shader::Shader;
+use jprod_core::gfx::ssbo::Ssbo;
 use jprod_core::gfx::texture::Format;
 use jprod_core::gfx::texture::Texture;
 use jprod_core::window::Window;
@@ -20,13 +23,13 @@ out vec4 frag_color;
 
 layout(std430, binding = 0) buffer uniforms
 {
-    mat4 mvp;
+    mat4 matrix;
 };
 
 void main() {
     frag_uv = vertex_uv;
     frag_color = vertex_color / 255.0;
-    gl_Position = mvp * vec4(vertex_pos.xy, 0.0, 1.0);
+    gl_Position = matrix * vec4(vertex_pos.xy, 0.0, 1.0);
 }
 "##;
 
@@ -48,6 +51,7 @@ void main() {
 pub struct ImGuiImpl {
     imgui: imgui::ImGui,
     shader: Shader,
+    ssbo: Ssbo,
     mesh: Mesh,
     texture: Texture,
 }
@@ -61,7 +65,9 @@ impl ImGuiImpl {
 
         let shader = Shader::from_source(window, VERTEX_SOURCE, FRAG_SOURCE);
 
-        let mesh = Mesh::new(window, Primitive::Triangles);
+        let ssbo = Ssbo::new(window);
+
+        let mesh = Mesh::new(window);
 
         let texture = imgui.prepare_texture(|handle| {
 
@@ -80,6 +86,7 @@ impl ImGuiImpl {
         ImGuiImpl {
             imgui: imgui,
             shader: shader,
+            ssbo: ssbo,
             mesh: mesh,
             texture: texture,
         }
@@ -97,20 +104,29 @@ impl ImGuiImpl {
 
         gui_func(&ui);
 
-        let mesh = &self.mesh;
+        let mesh = &mut self.mesh;
+        let ssbo = &mut self.ssbo;
+        let texture = &self.texture;
 
-        ui.render(|ui, draw_list| render_draw_list(mesh, ui, draw_list)).unwrap();
+        ui.render(|ui, draw_list| render_draw_list(mesh, ssbo, texture, ui, draw_list)).unwrap();
     }
 }
 
+#[repr(C)]
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
+struct Uniforms {
+    matrix: [[f32; 4]; 4],
+}
+
 #[inline]
-fn render_draw_list(mesh: &Mesh, ui: &imgui::Ui, draw_list: imgui::DrawList) -> Result<(), Box<Error>> {
+fn render_draw_list(
+    mesh: &mut Mesh,
+    ssbo: &mut Ssbo,
+    texture: &Texture
+    ui: &imgui::Ui,
+    draw_list: imgui::DrawList) -> Result<(), Box<Error>> {
     
-
-
-    /*self.device_objects.upload_vertex_buffer(&self.ctx, draw_list.vtx_buffer);
-    self.device_objects.upload_index_buffer(&self.ctx, draw_list.idx_buffer);
-
     let (width, height) = ui.imgui().display_size();
     let (scale_width, scale_height) = ui.imgui().display_framebuffer_scale();
 
@@ -118,20 +134,39 @@ fn render_draw_list(mesh: &Mesh, ui: &imgui::Ui, draw_list: imgui::DrawList) -> 
         return Ok(());
     }
 
-    let matrix = [[2.0 / width as f32, 0.0, 0.0, 0.0],
-                  [0.0, 2.0 / -(height as f32), 0.0, 0.0],
-                  [0.0, 0.0, -1.0, 0.0],
-                  [-1.0, 1.0, 0.0, 1.0]];
-    let font_texture_id = self.device_objects.texture.get_id() as usize;
+
+    //self.device_objects.upload_vertex_buffer(&self.ctx, draw_list.vtx_buffer);
+    //self.device_objects.upload_index_buffer(&self.ctx, draw_list.idx_buffer);
+
+    let uniforms = Uniforms {
+        matrix: [
+            [2.0 / width as f32, 0.0, 0.0, 0.0],
+            [0.0, 2.0 / -(height as f32), 0.0, 0.0],
+            [0.0, 0.0, -1.0, 0.0],
+            [-1.0, 1.0, 0.0, 1.0]];
+    };
+
+    ssbo.upload(&uniforms);
+
+    let font_texture_id = texture.get_handle();
 
     let mut idx_start = 0;
     for cmd in draw_list.cmd_buffer {
-        // We don't support custom textures...yet!
-        assert!(cmd.texture_id as usize == font_texture_id);
+        
+        utils::assert(cmd.texture_id as usize == font_texture_id);
+
+        let pso = Pso::new();
+        pso.scissor = Scissor {
+            x: (cmd.clip_rect.x * scale_width) as u32,
+            y: ((height - cmd.clip_rect.w) * scale_height) as u32,
+            width: ((cmd.clip_rect.z - cmd.clip_rect.x) * scale_width) as u32,
+            height: ((cmd.clip_rect.w - cmd.clip_rect.y) * scale_height) as u32,
+        };
+
 
         let idx_end = idx_start + cmd.elem_count as usize;
 
-        try!(surface.draw(&self.device_objects.vertex_buffer,
+        /*surface.draw(&self.device_objects.vertex_buffer,
                           &self.device_objects
                               .index_buffer
                               .slice(idx_start..idx_end)
@@ -154,10 +189,10 @@ fn render_draw_list(mesh: &Mesh, ui: &imgui::Ui, draw_list: imgui::DrawList) -> 
                                           u32,
                               }),
                               ..DrawParameters::default()
-                          }));
+                          }));*/
 
         idx_start = idx_end;
-    }*/
+    }
 
     Ok(())
 }

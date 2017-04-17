@@ -12,9 +12,9 @@ compiler_builtins = { git = "https://github.com/rust-lang-nursery/compiler-built
 jprod_core = { path = "../jprod_core" }
 
 [features]
-use_std = []
-develop = []
-use_telemetry = ["telemetry"]
+use_std = ["jprod_core/use_std"]
+develop = ["jprod_core/develop"]
+use_telemetry = ["telemetry", "jprod_core/telemetry"]
 
 [profile.release]
 debug-assertions = false
