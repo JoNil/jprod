@@ -171,8 +171,6 @@ extern "system" {
    fn DispatchMessageA(msg: *const Msg) -> i32;
    fn DefWindowProcA(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
    fn LoadCursorA(instance: InstanceHandle, name: usize) -> CursorHandle;
-   fn SetWindowLongPtrA(window: WindowHandle, index: i32, data: usize) -> usize;
-   fn GetWindowLongPtrA(window: WindowHandle, index: i32) -> usize;
    fn GetClientRect(window: WindowHandle, rect: *mut Rect) -> i32;
    fn GetCursorPos(point: *mut Point) -> i32;
    fn ScreenToClient(window: WindowHandle, point: *mut Point) -> i32;
@@ -262,16 +260,6 @@ pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam
 pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
 
     unsafe { LoadCursorA(instance, name) }
-}
-
-pub fn set_window_user_data(window: WindowHandle, data: usize) {
-
-    unsafe { SetWindowLongPtrA(window, GWLP_USERDATA, data); }
-}
-
-pub fn get_window_user_data(window: WindowHandle) -> usize {
-
-    unsafe { GetWindowLongPtrA(window, GWLP_USERDATA) }
 }
 
 pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {

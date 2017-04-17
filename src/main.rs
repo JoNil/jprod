@@ -5,7 +5,6 @@
 #![feature(link_args)]
 #![feature(link_llvm_intrinsics)]
 #![feature(platform_intrinsics)]
-#![feature(pub_restricted)]
 #![feature(repr_simd)]
 #![feature(simd_ffi)]
 
@@ -16,7 +15,11 @@
 // Fix normal not being rotated
 // Defered rendering
 //  - Other light model
+//    * http://blog.selfshadow.com/sandbox/specaa.html
 //    * https://github.com/wdas/brdf
+//  - Area lights
+//    * http://advances.realtimerendering.com/s2016/s2016_ltc_rnd.pdf
+//    * https://eheitzresearch.wordpress.com/415-2/
 //  - Light shader: Cook-Torrence and GGX
 //    * https://learnopengl.com/#!PBR/Theory
 //    * http://ruh.li/GraphicsCookTorrance.html
@@ -46,7 +49,9 @@
 // Optimizations
 // Downsample every bloom blur pass
 
-#[cfg_attr(all(not(test), not(feature = "use_std")), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
+
+#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "64"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib")]
+#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "32"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED vcruntime.lib libcmt.lib C:/dev/jprod/lib/msvcrt-light.lib")]
 extern "C" {}
 
 #[cfg(all(not(test), not(feature = "use_std")))]
@@ -65,7 +70,6 @@ mod core {
 
 mod c_types;
 mod camera;
-mod file;
 mod gen;
 mod gfx;
 mod intrinsics;
@@ -189,16 +193,16 @@ fn main() {
     let mut camera = Camera::new(&window);
     let mut query_manager = QueryManager::new(&window);
 
-    let mut dna_shader = Shader::new(&window, ShaderId::Dna);
-    let mut light_shader = Shader::new(&window, ShaderId::Light);
-    let mut bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
-    let mut bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
-    let mut horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
-    let mut vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
-    let mut dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
-    let mut dof_far_blur_shader = Shader::new(&window, ShaderId::DofFarBlur);
-    let mut dof_far_blur_max_shader = Shader::new(&window, ShaderId::DofFarBlurMax);
-    let mut dof_merge_shader = Shader::new(&window, ShaderId::DofMerge);
+    let dna_shader = Shader::new(&window, ShaderId::Dna);
+    let light_shader = Shader::new(&window, ShaderId::Light);
+    let bloom_extraction_shader = Shader::new(&window, ShaderId::BloomExtraction);
+    let bloom_resolv_shader = Shader::new(&window, ShaderId::BloomResolv);
+    let horizontal_blur = Shader::new(&window, ShaderId::HorizontalGaussianBlur);
+    let vertical_blur = Shader::new(&window, ShaderId::VerticalGaussianBlur);
+    let dof_extraction_shader = Shader::new(&window, ShaderId::DofExtraction);
+    let dof_far_blur_shader = Shader::new(&window, ShaderId::DofFarBlur);
+    let dof_far_blur_max_shader = Shader::new(&window, ShaderId::DofFarBlurMax);
+    let dof_merge_shader = Shader::new(&window, ShaderId::DofMerge);
 
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), Some(Format::RgbF16), Some(Format::RgbF16)], true);
@@ -232,17 +236,6 @@ fn main() {
 
     loop {
         window.update();
-
-        dna_shader.reload_if_changed(&allocator);
-        light_shader.reload_if_changed(&allocator);
-        bloom_extraction_shader.reload_if_changed(&allocator);
-        bloom_resolv_shader.reload_if_changed(&allocator);
-        horizontal_blur.reload_if_changed(&allocator);
-        vertical_blur.reload_if_changed(&allocator);
-        dof_extraction_shader.reload_if_changed(&allocator);
-        dof_far_blur_shader.reload_if_changed(&allocator);
-        dof_far_blur_max_shader.reload_if_changed(&allocator);
-        dof_merge_shader.reload_if_changed(&allocator);
 
         let (dt, time) = {
             let now = time::now_s();
@@ -363,10 +356,17 @@ fn main() {
     }
 }
 
-#[cfg(all(not(test), not(feature = "use_std")))]
+#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "64"))]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
+    main();
+}
+
+#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "32"))]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "cdecl" fn WinMainCRTStartup() {
     main();
 }
 
