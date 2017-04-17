@@ -59,26 +59,11 @@ impl Drop for RawShader {
     }
 }
 
-fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgram, RawShader, RawShader)> {
+fn load_shader(vertex_source: &[u8], fragment_source: &[u8]) -> Option<(RawProgram, RawShader, RawShader)> {
 
     let program = RawProgram::new();
-    let fragment = RawShader::new(gl::FRAGMENT_SHADER);
     let vertex = RawShader::new(gl::VERTEX_SHADER);
-
-    unsafe {
-        let frag_pointer: *const u8 = &*fragment_source.get_unchecked(0);
-        let frag_size: i32 = fragment_source.len() as i32;
-        gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size);
-        gl::CompileShader(fragment.handle);
-
-        let mut frag_status = 0;
-        gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status);
-
-        if frag_status == 0 {
-            print_shader_error(fragment.handle);
-            return None;
-        }
-    }
+    let fragment = RawShader::new(gl::FRAGMENT_SHADER);
 
     unsafe {
         let vert_pointer: *const u8 = &*vertex_source.get_unchecked(0);
@@ -91,6 +76,21 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
 
         if vert_status == 0 {
             print_shader_error(vertex.handle);
+            return None;
+        }
+    }
+
+    unsafe {
+        let frag_pointer: *const u8 = &*fragment_source.get_unchecked(0);
+        let frag_size: i32 = fragment_source.len() as i32;
+        gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size);
+        gl::CompileShader(fragment.handle);
+
+        let mut frag_status = 0;
+        gl::GetShaderiv(fragment.handle, gl::COMPILE_STATUS, &mut frag_status);
+
+        if frag_status == 0 {
+            print_shader_error(fragment.handle);
             return None;
         }
     }
@@ -121,27 +121,25 @@ fn load_shader(fragment_source: &[u8], vertex_source: &[u8]) -> Option<(RawProgr
         }
     }
 
-    Some((program, fragment, vertex))
+    Some((program, vertex, fragment))
 }
 
 pub struct Shader {
     program: RawProgram,
 
-    #[allow(dead_code)]
-    fragment: RawShader,
-    #[allow(dead_code)]
-    vertex: RawShader,
+    _vertex: RawShader,
+    _fragment: RawShader,
 }
 
 impl Shader {
     #[inline]
-    pub fn from_source(fragment_source: &[u8], vertex_source: &[u8]) -> Shader {
+    pub fn from_source(_: &Context, vertex_source: &str, fragment_source: &str) -> Shader {
 
-        if let Some((program, fragment, vertex)) = load_shader(fragment_source, vertex_source) {
+        if let Some((program, vertex, fragment)) = load_shader(vertex_source.as_bytes(), fragment_source.as_bytes()) {
             return Shader {
                 program: program,
-                fragment: fragment,
-                vertex: vertex,
+                _vertex: vertex,
+                _fragment: fragment,
             }
         } else {
             utils::debug_trap();
@@ -152,11 +150,11 @@ impl Shader {
 
         let source = get_shader_source(id);
 
-        if let Some((program, fragment, vertex)) = load_shader(source.fragment_source, source.vertex_source) {
+        if let Some((program, vertex, fragment)) = load_shader(source.vertex_source, source.fragment_source) {
             return Shader {
                 program: program,
-                fragment: fragment,
-                vertex: vertex,
+                _vertex: vertex,
+                _fragment: fragment,
             }
         } else {
             utils::debug_trap();

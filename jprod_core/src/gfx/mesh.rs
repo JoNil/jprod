@@ -5,6 +5,7 @@ use core::ptr;
 use gfx;
 use super::Context;
 use super::gl;
+use super::pso::Pso;
 use super::querys::QueryManager;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
@@ -150,116 +151,144 @@ impl Mesh {
         }
     }
 
+
     #[inline]
     pub fn draw(
         &self,
+        pso: &Pso,
         shader: &Shader,
         query_manager: &QueryManager,
         target: Option<&Target>,
-        uniform_data: Option<&Ssbo>,
-        textures: &[Option<&Texture>])
-    {
+        textures: &[Option<&Texture>],
+        uniform_data: Option<&Ssbo>) {
+
         tm_zone!("Mesh::draw");
 
         utils::assert(self.length != 0);
 
-        let _query = query_manager.query();
-
-        unsafe {
-
-            if let Some(render_target) = target {
-
-                gfx::viewport(self, render_target.get_size());
-
-                gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
-
-                let (count, buffer) = render_target.get_draw_buffer_spec();
-                gl::DrawBuffers(count, &buffer as *const _);
-            }
-
-            gl::UseProgram(shader.get_program_handle());
-            gl::BindVertexArray(self.vao.handle);
-
-            for (i, t) in textures.iter().enumerate() {
-                if let &Some(tex) = t {
-                    gl::ActiveTexture(gl::TEXTURE0 + i as u32);
-                    gl::BindTexture(gl::TEXTURE_2D, tex.get_handle());
-                    gl::Uniform1i(2 + i as i32, i as i32);
-                }
-            }
-
-            if let Some(uniform) = uniform_data {
-                gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform.get_handle());
-                gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform.get_handle());
-                gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
-            }
-
-            gl::DrawArrays(self.primitive as u32, 0, self.length);
-
-            for (i, t) in textures.iter().enumerate() {
-                if let &Some(_) = t {
-                    gl::ActiveTexture(gl::TEXTURE0 + i as u32);
-                    gl::BindTexture(gl::TEXTURE_2D, 0);
-                }
-            }
-
-            gl::BindVertexArray(0);
-            gl::UseProgram(0);
-
-             if let Some(_) = target {
-                gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
-
-                let bufs: [u32; 1] = [ gl::BACK_LEFT ];
-                gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
-            }
-        }
+        draw_internal(
+            self,
+            pso,
+            shader,
+            query_manager,
+            target,
+            textures,
+            uniform_data,
+            &self.vao,
+            || {
+                unsafe { gl::DrawArrays(self.primitive as u32, 0, self.length); };
+            });
     }
 
     #[inline]
     pub fn draw_instanced(
         &self,
+        pso: &Pso,
         shader: &Shader,
         query_manager: &QueryManager,
         target: Option<&Target>,
-        uniform_data: &Ssbo,
-        instance_data: &Ssbo,
+        textures: &[Option<&Texture>],
+        uniform_data: Option<&Ssbo>,
+        instance_data: Option<&Ssbo>,
         count: i32) 
     {
         tm_zone!("Mesh::draw_instanced");
 
         utils::assert(self.length != 0 && count > 0);
 
-        let _query = query_manager.query();
+        draw_internal(
+            self,
+            pso,
+            shader,
+            query_manager,
+            target,
+            textures,
+            uniform_data,
+            &self.vao,
+            || {
+                unsafe {
+                    if let Some(instance) = instance_data {
+                        gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance.get_handle());
+                        gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, instance.get_handle());
+                        gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
+                    }
+                    
+                    gl::DrawArraysInstanced(self.primitive as u32, 0, self.length, count);
+                };
+            });
+    
+    }
+}
 
-        unsafe {
+#[inline]
+fn draw_internal<F: FnMut()>(
+    context: &Context,
+    pso: &Pso,
+    shader: &Shader,
+    query_manager: &QueryManager,
+    target: Option<&Target>,
+    textures: &[Option<&Texture>],
+    uniform_data: Option<&Ssbo>,
+    vao: &RawVao,
+    mut f: F)
+{
+    let _query = query_manager.query();
 
-            if let Some(render_target) = target {
-                gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
+    unsafe {
 
-                let (count, buffer) = render_target.get_draw_buffer_spec();
-                gl::DrawBuffers(count, &buffer as *const _);
+        if let Some(render_target) = target {
+
+            gfx::viewport(context, render_target.get_size());
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
+
+            let (count, buffer) = render_target.get_draw_buffer_spec();
+            gl::DrawBuffers(count, &buffer as *const _);
+        }
+
+        if let Some(ref scissor) = pso.scissor {
+            gl::Enable(gl::SCISSOR_TEST);
+            gl::Scissor(scissor.x, scissor.y, scissor.width, scissor.height);
+        }
+
+        gl::UseProgram(shader.get_program_handle());
+        gl::BindVertexArray(vao.handle);
+
+        for (i, t) in textures.iter().enumerate() {
+            if let &Some(tex) = t {
+                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
+                gl::BindTexture(gl::TEXTURE_2D, tex.get_handle());
+                gl::Uniform1i(2 + i as i32, i as i32);
             }
+        }
 
-            gl::UseProgram(shader.get_program_handle());
-            gl::BindVertexArray(self.vao.handle);
-
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform_data.get_handle());
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform_data.get_handle());
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, instance_data.get_handle());
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, instance_data.get_handle());
+        if let Some(uniform) = uniform_data {
+            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, uniform.get_handle());
+            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 0, uniform.get_handle());
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
+        }
 
-            gl::DrawArraysInstanced(self.primitive as u32, 0, self.length, count);
-            
-            gl::BindVertexArray(0);
-            gl::UseProgram(0);
+        f();
 
-            if let Some(_) = target {
-                gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
-
-                let bufs: [u32; 1] = [ gl::BACK_LEFT ];
-                gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
+        for (i, t) in textures.iter().enumerate() {
+            if let &Some(_) = t {
+                gl::ActiveTexture(gl::TEXTURE0 + i as u32);
+                gl::BindTexture(gl::TEXTURE_2D, 0);
             }
+        }
+
+        gl::BindVertexArray(0);
+        gl::UseProgram(0);
+
+        if let Some(_) = pso.scissor {
+            gl::Disable(gl::SCISSOR_TEST);
+        }
+
+         if let Some(_) = target {
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+            let bufs: [u32; 1] = [ gl::BACK_LEFT ];
+            gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
         }
     }
 }

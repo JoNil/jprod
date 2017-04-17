@@ -74,6 +74,7 @@ use jprod_core::camera::Camera;
 use jprod_core::gen;
 use jprod_core::gfx::mesh::Mesh;
 use jprod_core::gfx::mesh::Primitive;
+use jprod_core::gfx::pso::Pso;
 use jprod_core::gfx::querys::QueryManager;
 use jprod_core::gfx::shader::Shader;
 use jprod_core::gfx::ssbo::Ssbo;
@@ -186,6 +187,8 @@ fn main() {
     let mut camera = Camera::new(&window);
     let mut query_manager = QueryManager::new(&window);
 
+    let pso = Pso::new();
+
     let dna_shader = Shader::from_id(&window, ShaderId::Dna);
     let light_shader = Shader::from_id(&window, ShaderId::Light);
     let bloom_extraction_shader = Shader::from_id(&window, ShaderId::BloomExtraction);
@@ -249,11 +252,13 @@ fn main() {
 
         g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         dna_mesh.draw_instanced(
+            &pso,
             &dna_shader,
             &query_manager,
             Some(&g_buffer),
-            &uniform_data,
-            &instance_data,
+            &[],
+            Some(&uniform_data),
+            Some(&instance_data),
             INSTANCE_COUNT);
 
         light_uniform_data.upload(&LightUniforms {
@@ -262,43 +267,48 @@ fn main() {
 
         light_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &light_shader,
             &query_manager,
             Some(&light_target),
-            Some(&light_uniform_data),
-            &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)]);
+            &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)],
+            Some(&light_uniform_data));
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &bloom_extraction_shader,
             &query_manager,
             Some(&bloom_blur2),
-            None,
-            &[light_target.get_texture(0)]);
+            &[light_target.get_texture(0)],
+            None);
 
         for _ in 0..5 {
             quad_mesh.draw(
+                &pso,
                 &horizontal_blur,
                 &query_manager,
                 Some(&bloom_blur1),
-                None,
-                &[bloom_blur2.get_texture(0)]);
+                &[bloom_blur2.get_texture(0)],
+                None);
             quad_mesh.draw(
+                &pso,
                 &vertical_blur,
                 &query_manager,
                 Some(&bloom_blur2),
-                None,
-                &[bloom_blur1.get_texture(0)]);
+                &[bloom_blur1.get_texture(0)],
+                None);
         }
 
         bloom_merge_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &bloom_resolv_shader,
             &query_manager,
             Some(&bloom_merge_target),
-            None,
-            &[light_target.get_texture(0), bloom_blur2.get_texture(0)]);
+            &[light_target.get_texture(0), bloom_blur2.get_texture(0)],
+            None);
 
         dof_uniform_data.upload(&DofUniforms {
             z_near: camera.get_near(),
@@ -308,37 +318,41 @@ fn main() {
 
         dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &dof_extraction_shader,
             &query_manager,
             Some(&dof_extracted_target),
-            Some(&dof_uniform_data),
-            &[bloom_merge_target.get_texture(0), g_buffer.get_depth_texture()]);
+            &[bloom_merge_target.get_texture(0), g_buffer.get_depth_texture()],
+            Some(&dof_uniform_data));
 
 
         dof_far_blur_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &dof_far_blur_shader,
             &query_manager,
             Some(&dof_far_blur_target),
-            None,
-            &[dof_extracted_target.get_texture(0)]);
+            &[dof_extracted_target.get_texture(0)],
+            None);
 
         dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
+            &pso,
             &dof_far_blur_max_shader,
             &query_manager,
             Some(&dof_extracted_target),
-            None,
-            &[dof_far_blur_target.get_texture(0)]);
+            &[dof_far_blur_target.get_texture(0)],
+            None);
 
         window.update_viewport();
         window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
         quad_mesh.draw(
+            &pso,
             &dof_merge_shader,
             &query_manager,
             None,
-            Some(&dof_uniform_data),
-            &[bloom_merge_target.get_texture(0), dof_extracted_target.get_texture(0), g_buffer.get_depth_texture()]);
+            &[bloom_merge_target.get_texture(0), dof_extracted_target.get_texture(0), g_buffer.get_depth_texture()],
+            Some(&dof_uniform_data));
         window.swap();
 
         query_manager.submit_zones();

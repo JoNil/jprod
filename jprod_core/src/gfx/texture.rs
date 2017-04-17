@@ -1,3 +1,4 @@
+use c_types::c_void;
 use core::marker::PhantomData;
 use core::ptr;
 use super::Context;
@@ -6,6 +7,7 @@ use utils;
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum Format {
+    RgbaU8,
     RgbF32,
     RgbF16,
     RgbaF16,
@@ -23,6 +25,13 @@ impl Format {
     #[inline]
     fn get_gl_enums(self) -> GlEnums {
         match self {
+            Format::RgbaU8 => {
+                GlEnums {
+                    internal_format: gl::RGBA8,
+                    format: gl::RGBA,
+                    component_type: gl::UNSIGNED_BYTE,
+                }
+            }
             Format::RgbF32 => {
                 GlEnums {
                     internal_format: gl::RGB32F,
@@ -58,6 +67,18 @@ impl Format {
                     component_type: gl::FLOAT,
                 }
             }
+        }
+    }
+
+    #[inline]
+    fn get_element_size(self) -> i32 {
+        match self {
+            Format::RgbaU8 => 4,
+            Format::RgbF32 => 12,
+            Format::RgbF16 => 6,
+            Format::RgbaF16 => 8,
+            Format::RgbR11G11B10 => 4,
+            Format::DepthF32 => 4,
         }
     }
 }
@@ -137,12 +158,47 @@ impl Texture {
     }
 
     #[inline]
+    pub fn upload(&mut self, size: (i32, i32), format: Format, data: &[u8]) {
+
+        tm_zone!("Texture::allocate");
+
+        utils::assert(data.len() == ((format.get_element_size() * size.0 * size.1) as usize)); 
+
+        self.format = Some(format);
+
+        let enums = format.get_gl_enums();
+
+        unsafe {
+
+            gl::BindTexture(gl::TEXTURE_2D, self.texture.handle);
+
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
+                0,
+                enums.internal_format as i32,
+                size.0,
+                size.1,
+                0,
+                enums.format,
+                enums.component_type,
+                &*data.get_unchecked(0) as *const u8 as *const c_void);
+
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER , gl::LINEAR as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+
+            gl::BindTexture(gl::TEXTURE_2D, 0);
+        }
+    }
+
+    #[inline]
     pub fn get_format(&self) -> Option<Format> {
         self.format
     }
 
     #[inline]
-    pub(super) fn get_handle(&self) -> u32 {
+    pub fn get_handle(&self) -> u32 {
 
         utils::assert(self.format.is_some());
 
