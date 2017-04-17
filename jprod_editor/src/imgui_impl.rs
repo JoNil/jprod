@@ -119,6 +119,10 @@ struct Uniforms {
     matrix: [[f32; 4]; 4],
 }
 
+// https://github.com/Gekkio/imgui-rs/blob/master/examples/support/mod.rs
+// https://github.com/Gekkio/imgui-rs/blob/master/imgui-glium-renderer/src/lib.rs
+// https://github.com/Gekkio/imgui-rs/blob/master/src/lib.rs
+
 #[inline]
 fn render_draw_list(
     mesh: &mut Mesh,
