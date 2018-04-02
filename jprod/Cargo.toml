@@ -3,8 +3,6 @@ name = "jprod"
 version = "0.1.0"
 authors = ["Jonathan"]
 
-build = "build.rs"
-
 [dependencies]
 telemetry = { path = "../../telemetry-rs", optional = true }
 telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }

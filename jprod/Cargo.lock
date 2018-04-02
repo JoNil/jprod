@@ -1,4 +1,9 @@
-[root]
+[[package]]
+name = "compiler_builtins"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang-nursery/compiler-builtins#2a2f6d96c8dc578d2474742f14c9bab0b36b0408"
+
+[[package]]
 name = "jprod"
 version = "0.1.0"
 dependencies = [
@@ -7,11 +12,6 @@ dependencies = [
  "telemetry 0.1.0",
  "telemetry_macro 0.1.0",
 ]
-
-[[package]]
-name = "compiler_builtins"
-version = "0.1.0"
-source = "git+https://github.com/rust-lang-nursery/compiler-builtins#280d19f1127aa80739f4179152b11a5f7d36d79f"
 
 [[package]]
 name = "jprod_core"
