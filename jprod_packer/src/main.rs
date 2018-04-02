@@ -66,8 +66,8 @@ fn run() -> Result<(), Box<Error>> {
             .arg("/SUBSYSTEM:WINDOWS")
             .args(&obj_files)
             .arg("../lib/msvcrt-light.lib")
-            .arg("/LIBPATH:C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/lib")
-            .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.10586.0/um/x86")
+            .arg("/LIBPATH:C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.13.26128/lib/x86")
+            .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.16299.0/um/x86")
             .args(&["kernel32.lib", "user32.lib", "opengl32.lib", "gdi32.lib"])
             .status()?;
 
