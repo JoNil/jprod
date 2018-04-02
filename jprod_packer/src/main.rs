@@ -78,7 +78,6 @@ fn run() -> Result<(), Box<Error>> {
     Ok(())
 }
 
-
 pub fn main() {
     match run() {
         Ok(()) => println!("Success!"),
