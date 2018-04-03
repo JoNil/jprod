@@ -70,7 +70,7 @@ pub fn tan(a: f32) -> f32 {
 
 #[inline]
 pub fn sqrt(a: f32) -> f32 {
-    Vec4::splat(a).pairwise_sqrt().x
+    Vec4::splat(a).pairwise_sqrt().x()
 }
 
 #[inline]

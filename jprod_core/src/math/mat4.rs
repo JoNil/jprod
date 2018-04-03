@@ -32,9 +32,9 @@ impl Mat4 {
     pub extern "vectorcall" fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
         Mat4 {
             m: (
-                Vec4::xyzw(x.x, x.y, x.z, 0.0),
-                Vec4::xyzw(y.x, y.y, y.z, 0.0),
-                Vec4::xyzw(z.x, z.y, z.z, 0.0),
+                x.with_w(0.0),
+                y.with_w(0.0),
+                z.with_w(0.0),
                 Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
             ),
         }
@@ -47,7 +47,7 @@ impl Mat4 {
                 Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
                 Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
                 Vec4::xyzw(0.0, 0.0, 1.0, 0.0),
-                Vec4::xyzw(pos.x, pos.y, pos.z, 1.0),
+                Vec4::xyzw(pos.x(), pos.y(), pos.z(), 1.0),
             ),
         }   
     }
@@ -90,29 +90,29 @@ impl Mat4 {
         let t = 1.0 - c;
         let a = axis.normalized();
 
-        temp.m.0.x = c + a.x*a.x*t;
-        temp.m.1.y = c + a.y*a.y*t;
-        temp.m.2.z = c + a.z*a.z*t;
+        temp.m.0 = temp.m.0.with_x(c + a.x()*a.x()*t);
+        temp.m.1 = temp.m.1.with_y(c + a.y()*a.y()*t);
+        temp.m.2 = temp.m.2.with_z(c + a.z()*a.z()*t);
 
         {
-            let tmp1 = a.x*a.y*t;
-            let tmp2 = a.z*s;
-            temp.m.0.y = tmp1 + tmp2;
-            temp.m.1.x = tmp1 - tmp2;
+            let tmp1 = a.x()*a.y()*t;
+            let tmp2 = a.z()*s;
+            temp.m.0 = temp.m.0.with_y(tmp1 + tmp2);
+            temp.m.1 = temp.m.1.with_x(tmp1 - tmp2);
         }
 
         {
-            let tmp1 = a.x*a.z*t;
-            let tmp2 = a.y*s;
-            temp.m.0.z = tmp1 - tmp2;
-            temp.m.2.x = tmp1 + tmp2;
+            let tmp1 = a.x()*a.z()*t;
+            let tmp2 = a.y()*s;
+            temp.m.0 = temp.m.0.with_z(tmp1 - tmp2);
+            temp.m.2 = temp.m.2.with_x(tmp1 + tmp2);
         }
 
         {
-            let tmp1 = a.y*a.z*t;
-            let tmp2 = a.x*s;
-            temp.m.1.z = tmp1 + tmp2;
-            temp.m.2.y = tmp1 - tmp2;
+            let tmp1 = a.y()*a.z()*t;
+            let tmp2 = a.x()*s;
+            temp.m.1 = temp.m.1.with_z(tmp1 + tmp2);
+            temp.m.2 = temp.m.2.with_y(tmp1 - tmp2);
         }
 
         temp
@@ -154,10 +154,10 @@ impl Mat4 {
     pub extern "vectorcall" fn transposed(&self) -> Mat4 {
         Mat4 {
             m: (
-                Vec4::xyzw(self.m.0.x, self.m.1.x, self.m.2.x, self.m.3.x),
-                Vec4::xyzw(self.m.0.y, self.m.1.y, self.m.2.y, self.m.3.y),
-                Vec4::xyzw(self.m.0.z, self.m.1.z, self.m.2.z, self.m.3.z),
-                Vec4::xyzw(self.m.0.w, self.m.1.w, self.m.2.w, self.m.3.w),
+                Vec4::xyzw(self.m.0.x(), self.m.1.x(), self.m.2.x(), self.m.3.x()),
+                Vec4::xyzw(self.m.0.y(), self.m.1.y(), self.m.2.y(), self.m.3.y()),
+                Vec4::xyzw(self.m.0.z(), self.m.1.z(), self.m.2.z(), self.m.3.z()),
+                Vec4::xyzw(self.m.0.w(), self.m.1.w(), self.m.2.w(), self.m.3.w()),
             )
         }
     }
@@ -347,13 +347,13 @@ impl Mat4 {
         let col3 = self.m.2;
         let col4 = self.m.3;
 
-        let xxxx = Vec4::splat(rhs.x);
-        let yyyy = Vec4::splat(rhs.y);
-        let zzzz = Vec4::splat(rhs.z);
-        let wwww = Vec4::splat(rhs.w);
+        let xxxx = vec4_swizzle!(rhs, 0, 0, 0, 0);
+        let yyyy = vec4_swizzle!(rhs, 1, 1, 1, 1);
+        let zzzz = vec4_swizzle!(rhs, 2, 2, 2, 2);
+        let wwww = vec4_swizzle!(rhs, 3, 3, 3, 3);
 
         (col1.pairwise_mul(xxxx).add(col2.pairwise_mul(yyyy))).add(
-        (col3.pairwise_mul(zzzz).add(col4.pairwise_mul(wwww))))
+            col3.pairwise_mul(zzzz).add(col4.pairwise_mul(wwww)))
     }
 
     #[inline]
@@ -363,7 +363,7 @@ impl Mat4 {
 
         {
             let b = rhs.as_array();
-            let mut c = res.as_vec4_array_mut();
+            let c = res.as_vec4_array_mut();
 
             for i in 0..4 {
 

@@ -69,7 +69,7 @@ impl Target {
     #[inline]
     pub fn clear(&mut self, color: Vec4) {
 
-        let color_slice = &[ color.x, color.y, color.z, color.w ];
+        let color_slice = &[ color.x(), color.y(), color.z(), color.w() ];
 
         if let Some(_) = self.texture1 {
             self.framebuffer.clear(Attachment::Color0, color_slice);

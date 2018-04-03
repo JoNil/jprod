@@ -1,4 +1,4 @@
-use intrinsics;
+use core::intrinsics;
 
 #[inline(always)]
 pub fn assert(cond: bool) -> () {
@@ -8,11 +8,14 @@ pub fn assert(cond: bool) -> () {
     }
 
     if !cond {
-        unsafe { intrinsics::debugtrap() };
+        unsafe { intrinsics::breakpoint() };
     }
 }
 
 #[inline(always)]
 pub fn debug_trap() -> ! {
-    unsafe { intrinsics::debugtrap() };
+    unsafe {
+    	intrinsics::breakpoint();
+   		intrinsics::unreachable()
+   	}
 }

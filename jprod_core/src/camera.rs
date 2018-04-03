@@ -92,10 +92,10 @@ impl Camera {
             let y_axis = Vec4::xyz(0.0, 1.0, 0.0);
             let neg_z_axis = Vec4::xyz(0.0, 0.0, -1.0);
 
-            let rotated_dir_x = Mat4::rotate(self.x_angle, y_axis).transform(neg_z_axis.with_w_1());
+            let rotated_dir_x = Mat4::rotate(self.x_angle, y_axis).transform(neg_z_axis.with_w(1.0));
 
             self.right = rotated_dir_x.cross(y_axis).normalized();
-            self.forward = Mat4::rotate(self.y_angle, self.right).transform(rotated_dir_x.with_w_1()).normalized();
+            self.forward = Mat4::rotate(self.y_angle, self.right).transform(rotated_dir_x.with_w(1.0)).normalized();
             self.up = self.right.cross(self.forward).normalized();
 
             self.previus_mouse_offset = mouse_offset;

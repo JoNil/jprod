@@ -8,8 +8,8 @@ pub fn quad<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f32; 3]])
 
     let vertices = 4;
 
-    let mut quad = pool.allocate_slice(vertices);
-    let mut normals = pool.allocate_slice(vertices);
+    let quad = pool.allocate_slice(vertices);
+    let normals = pool.allocate_slice(vertices);
 
     let verts: [(i8, i8); 4] = [
         ( 1, 1),
@@ -34,8 +34,8 @@ pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f3
 
     let vertices = 3 * 4;
 
-    let mut tetrahedron = pool.allocate_slice(vertices);
-    let mut normals = pool.allocate_slice(vertices);
+    let tetrahedron = pool.allocate_slice(vertices);
+    let normals = pool.allocate_slice(vertices);
 
     let verts: [(i8, i8, i8); 4] = [
         ( 1, 1, 1),
@@ -87,7 +87,7 @@ pub fn sphere<'a>(pool: &'a PoolAllocator<'a>, vertical_slices: i32, radial_slic
 
     let vertices = (vertical_slices*(2 + 2*(radial_slices + 1))) as usize;
 
-    let mut sphere = pool.allocate_slice(vertices);
+    let sphere = pool.allocate_slice(vertices);
 
     let vertical_slices_f32 = vertical_slices as f32;
     let radial_slices_f32 = radial_slices as f32;
