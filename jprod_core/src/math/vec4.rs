@@ -1,3 +1,5 @@
+use core::mem;
+
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -52,12 +54,12 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn xyz(x: f32, y: f32, z: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(x, y, z, 0.0)) }
+        unsafe { Vec4(_mm_set_ps(0.0, z, y, x)) }
     }
 
     #[inline]
     pub extern "vectorcall" fn xyzw(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(x, y, z, w)) }
+        unsafe { Vec4(_mm_set_ps(w, z, y, x)) }
     }
 
     #[inline]
@@ -67,7 +69,7 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn from_slice(slice: &[f32; 3]) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(*slice.get_unchecked(0), *slice.get_unchecked(1), *slice.get_unchecked(2), 0.0)) }
+        unsafe { Vec4::xyzw(*slice.get_unchecked(0), *slice.get_unchecked(1), *slice.get_unchecked(2), 0.0) }
     }
 
     #[inline]
@@ -77,50 +79,54 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn x(self) -> f32 {
-        let mut result = 0.0;
-        unsafe { _mm_store_ss(&mut result, self.0) };
-        result
+        unsafe {
+            let temp: [f32; 4] = mem::transmute(self);
+            *temp.get_unchecked(0)
+        }
     }
 
     #[inline]
     pub extern "vectorcall" fn y(self) -> f32 {
-        let mut result = 0.0;
-        unsafe { _mm_store_ss(&mut result, vec4_swizzle!(self, 1, 1, 1, 1).0) };
-        result
+        unsafe {
+            let temp: [f32; 4] = mem::transmute(self);
+            *temp.get_unchecked(1)
+        }
     }
 
     #[inline]
     pub extern "vectorcall" fn z(self) -> f32 {
-        let mut result = 0.0;
-        unsafe { _mm_store_ss(&mut result, vec4_swizzle!(self, 2, 2, 2, 2).0) };
-        result
+        unsafe {
+            let temp: [f32; 4] = mem::transmute(self);
+            *temp.get_unchecked(2)
+        }
     }
 
     #[inline]
     pub extern "vectorcall" fn w(self) -> f32 {
-        let mut result = 0.0;
-        unsafe { _mm_store_ss(&mut result, vec4_swizzle!(self, 3, 3, 3, 3).0) };
-        result
+        unsafe {
+            let temp: [f32; 4] = mem::transmute(self);
+            *temp.get_unchecked(3)
+        }
     }
 
     #[inline]
     pub extern "vectorcall" fn with_x(self, x: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(x, self.y(), self.z(), self.w())) }
+        Vec4::xyzw(x, self.y(), self.z(), self.w())
     }
 
     #[inline]
     pub extern "vectorcall" fn with_y(self, y: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(self.x(), y, self.z(), self.w())) }
+        Vec4::xyzw(self.x(), y, self.z(), self.w())
     }
 
     #[inline]
     pub extern "vectorcall" fn with_z(self, z: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(self.x(), self.y(), z, self.w())) }
+        Vec4::xyzw(self.x(), self.y(), z, self.w())
     }
 
     #[inline]
     pub extern "vectorcall" fn with_w(self, w: f32) -> Vec4 {
-        unsafe { Vec4(_mm_set_ps(self.x(), self.y(), self.z(), w)) }
+        Vec4::xyzw(self.x(), self.y(), self.z(), w)
     }
 
     #[inline]
@@ -144,7 +150,7 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn neg(self) -> Vec4 {
-        unsafe { Vec4(_mm_sub_ps(_mm_set1_ps(0.0), self.0)) }
+        unsafe { Vec4(_mm_sub_ps(Vec4::splat(0.0).0, self.0)) }
     }
 
     #[inline]
@@ -176,7 +182,7 @@ impl Vec4 {
         let temp1 = a.pairwise_mul(b);
         let temp2 = c.pairwise_mul(d);
 
-        temp1.sub(temp2).with_w(0.0)
+        temp1.sub(temp2)
     }
 
     #[inline]
@@ -196,11 +202,23 @@ impl Vec4 {
 }
 
 #[test]
-fn pool_test() {
+fn vec4_test_access() {
 
-    let a = vec4::xyzw(1.0, 2.0, 3.0, 4.0);
+    let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
     assert_eq!(a.x(), 1.0);
     assert_eq!(a.y(), 2.0);
     assert_eq!(a.z(), 3.0);
     assert_eq!(a.w(), 4.0);
+}
+
+#[test]
+fn vec4_test_cross() {
+
+    let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
+    let b = Vec4::xyzw(5.0, 6.0, 7.0, 8.0);
+    let c = a.cross(b);
+
+    assert_eq!(c.x(), -4.0);
+    assert_eq!(c.y(), 8.0);
+    assert_eq!(c.z(), -4.0);
 }

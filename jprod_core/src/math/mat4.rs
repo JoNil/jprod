@@ -1,3 +1,8 @@
+#[cfg(target_arch = "x86")]
+use core::arch::x86::*;
+#[cfg(target_arch = "x86_64")]
+use core::arch::x86_64::*;
+
 use core::mem;
 use math::Vec4;
 use math;
@@ -164,139 +169,81 @@ impl Mat4 {
 
     #[inline]
     pub extern "vectorcall" fn inverted(&self) -> Mat4 {
-        let mut res = Mat4::identity();
 
-        {
-            let row0;
-            let mut row1;
-            let mut row2;
-            let mut row3;
+        // Based on: https://lxjk.github.io/2017/09/03/Fast-4x4-Matrix-Inverse-with-SSE-SIMD-Explained.html
 
-            let mut det;
-            let mut tmp1;
-
-            /* Load matrix: */
-
-            let mut col0 = self.m.0;
-            let mut col1 = self.m.1;
-            let mut col2 = self.m.2;
-            let mut col3 = self.m.3;
-
-            /* Transpose: */
-
-            tmp1 = vec4_shuffle!(col0, col2, 0, 4, 1, 5);
-            row1 = vec4_shuffle!(col1, col3, 0, 4, 1, 5);
-
-            row0 = vec4_shuffle!(tmp1, row1, 0, 4, 1, 5);
-            row1 = vec4_shuffle!(tmp1, row1, 2, 6, 3, 7);
-
-            tmp1 = vec4_shuffle!(col0, col2, 2, 6, 3, 7);
-            row3 = vec4_shuffle!(col1, col3, 2, 6, 3, 7);
-
-            row2 = vec4_shuffle!(tmp1, row3, 0, 4, 1, 5);
-            row3 = vec4_shuffle!(tmp1, row3, 2, 6, 3, 7);
-
-            /* Compute adjoint: */
-
-            row1 = vec4_shuffle!(row1, row1, 2, 3, 0, 1);
-            row3 = vec4_shuffle!(row3, row3, 2, 3, 0, 1);
-
-            tmp1 = row2.pairwise_mul(row3);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-
-            col0 = row1.pairwise_mul(tmp1);
-            col1 = row0.pairwise_mul(tmp1);
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col0 = row1.pairwise_mul(tmp1).sub(col0);
-            col1 = row0.pairwise_mul(tmp1).sub(col1);
-            col1 = vec4_shuffle!(col1, col1, 2, 3, 4, 5);
-
-            tmp1 = row1.pairwise_mul(row2);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-
-            col0 = row3.pairwise_mul(tmp1).add(col0);
-            col3 = row0.pairwise_mul(tmp1);
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col0 = col0.sub(row3.pairwise_mul(tmp1));
-            col3 = row0.pairwise_mul(tmp1).sub(col3);
-            col3 = vec4_shuffle!(col3, col3, 2, 3, 4, 5);
-
-            tmp1 = vec4_shuffle!(row1, row1, 2, 3, 4, 5).pairwise_mul(row3);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-            row2 = vec4_shuffle!(row2, row2, 2, 3, 4, 5);
-
-            col0 = row2.pairwise_mul(tmp1).add(col0);
-            col2 = row0.pairwise_mul(tmp1);
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col0 = col0.sub(row2.pairwise_mul(tmp1));
-            col2 = row0.pairwise_mul(tmp1).sub(col2);
-            col2 = vec4_shuffle!(col2, col2, 2, 3, 4, 5);
-
-            tmp1 = row0.pairwise_mul(row1);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-
-            col2 = row3.pairwise_mul(tmp1).add(col2);
-            col3 = row2.pairwise_mul(tmp1).sub(col3);
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col2 = row3.pairwise_mul(tmp1).sub(col2);
-            col3 = col3.sub(row2.pairwise_mul(tmp1));
-
-            tmp1 = row0.pairwise_mul(row3);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-
-            col1 = col1.sub(row2.pairwise_mul(tmp1));
-            col2 = row1.pairwise_mul(tmp1).add(col2);
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col1 = row2.pairwise_mul(tmp1).add(col1);
-            col2 = col2.sub(row1.pairwise_mul(tmp1));
-
-            tmp1 = row0.pairwise_mul(row2);
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 1, 0, 7, 6);
-
-            col1 = row3.pairwise_mul(tmp1).add(col1);
-            col3 = col3.sub(row1.pairwise_mul(tmp1));
-
-            tmp1 = vec4_shuffle!(tmp1, tmp1, 2, 3, 4, 5);
-
-            col1 = col1.sub(row3.pairwise_mul(tmp1));
-            col3 = row1.pairwise_mul(tmp1).add(col3);
-
-            /* Compute determinant: */
-
-            det = row0.pairwise_mul(col0);
-            det = vec4_shuffle!(det, det, 2, 3, 4, 5).add(det);
-            det = vec4_shuffle!(det, det, 1, 0, 7, 6).add(det);
-
-            /* Compute reciprocal of determinant: */
-
-            det = Vec4::splat(1.0).pairwise_div(det);
-
-            /* Multiply matrix of cofactors with reciprocal of determinant: */
-
-            col0 = col0.pairwise_mul(det);
-            col1 = col1.pairwise_mul(det);
-            col2 = col2.pairwise_mul(det);
-            col3 = col3.pairwise_mul(det);
-
-            /* Store inverted matrix: */
-
-            res.m.0 = col0;
-            res.m.1 = col1;
-            res.m.2 = col2;
-            res.m.3 = col3;
+        #[inline(always)]
+        unsafe fn mat_2_mul(vec1: __m128, vec2: __m128) -> __m128 {
+            _mm_add_ps(
+                _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 0, 3, 0, 3).0),
+                _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0, vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0))
+        }
+        
+        #[inline(always)]
+        unsafe fn mat_2_adj_mul(vec1: __m128, vec2: __m128) -> __m128 {
+            _mm_sub_ps(
+                _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 3, 3, 0, 0).0, vec2),
+                _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 1, 1, 2, 2).0, vec4_swizzle!(Vec4(vec2), 2, 3, 0, 1).0))
         }
 
-        res
+        #[inline(always)]
+        unsafe fn mat_2_mul_adj(vec1: __m128, vec2: __m128) -> __m128 {
+            _mm_sub_ps(
+                _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 3, 0, 3, 0).0),
+                _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0, vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0))
+        }
+
+        unsafe {
+
+            let a: __m128 = vec4_shuffle!(self.m.0, self.m.1, 0, 1, 0, 1).0;
+            let b: __m128 = vec4_shuffle!(self.m.0, self.m.1, 2, 3, 2, 3).0;
+            let c: __m128 = vec4_shuffle!(self.m.2, self.m.3, 0, 1, 0, 1).0;
+            let d: __m128 = vec4_shuffle!(self.m.2, self.m.3, 2, 3, 2, 3).0;
+
+            let mat = self.as_tuples();
+
+            let det_a = _mm_set1_ps((mat.0).0 * (mat.1).1 - (mat.0).1 * (mat.1).0);
+            let det_b = _mm_set1_ps((mat.0).2 * (mat.1).3 - (mat.0).3 * (mat.1).2);
+            let det_c = _mm_set1_ps((mat.2).0 * (mat.3).1 - (mat.2).1 * (mat.3).0);
+            let det_d = _mm_set1_ps((mat.2).2 * (mat.3).3 - (mat.2).3 * (mat.3).2);
+
+            let d_c = mat_2_adj_mul(d, c);
+            let a_b = mat_2_adj_mul(a, b);
+
+            let x = _mm_sub_ps(_mm_mul_ps(det_d, a), mat_2_mul(b, d_c));
+            let w = _mm_sub_ps(_mm_mul_ps(det_a, d), mat_2_mul(c, a_b));
+
+            let det_m = _mm_mul_ps(det_a, det_d);
+
+            let y = _mm_sub_ps(_mm_mul_ps(det_b, c), mat_2_mul_adj(d, a_b));
+            let z = _mm_sub_ps(_mm_mul_ps(det_c, b), mat_2_mul_adj(a, d_c));
+
+            let det_m = _mm_add_ps(det_m, _mm_mul_ps(det_b, det_c));
+
+            let tr = _mm_mul_ps(a_b, vec4_swizzle!(Vec4(d_c), 0, 2, 1, 3).0);
+            let tr = _mm_hadd_ps(tr, tr);
+            let tr = _mm_hadd_ps(tr, tr);
+
+            let det_m = _mm_sub_ps(det_m, tr);
+
+            let adj_sign_mask = _mm_setr_ps(1.0, -1.0, -1.0, 1.0);
+            let r_det_m = _mm_div_ps(adj_sign_mask, det_m);
+
+            let x = _mm_mul_ps(x, r_det_m);
+            let y = _mm_mul_ps(y, r_det_m);
+            let z = _mm_mul_ps(z, r_det_m);
+            let w = _mm_mul_ps(w, r_det_m);
+
+            let mut res: Mat4 = mem::uninitialized();
+
+            // apply adjugate and store, here we combine adjugate shuffle and store shuffle
+            res.m.0 = vec4_shuffle!(Vec4(x), Vec4(y), 3, 1, 3, 1);
+            res.m.1 = vec4_shuffle!(Vec4(x), Vec4(y), 2, 0, 2, 0);
+            res.m.2 = vec4_shuffle!(Vec4(z), Vec4(w), 3, 1, 3, 1);
+            res.m.3 = vec4_shuffle!(Vec4(z), Vec4(w), 2, 0, 2, 0);
+
+            res
+        }
     }
 
     #[inline]
@@ -335,6 +282,26 @@ impl Mat4 {
         f32, f32, f32, f32,
         f32, f32, f32, f32,
         f32, f32, f32, f32)
+    {
+        unsafe { mem::transmute(&mut self.m) }
+    }
+
+    #[inline]
+    pub extern "vectorcall" fn as_tuples(&self) -> &(
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32))
+    {
+        unsafe { mem::transmute(&self.m) }
+    }
+
+    #[inline]
+    pub extern "vectorcall" fn as_tuples_mut(&mut self) -> &mut (
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32),
+        (f32, f32, f32, f32))
     {
         unsafe { mem::transmute(&mut self.m) }
     }
