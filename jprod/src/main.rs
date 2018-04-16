@@ -1,12 +1,6 @@
-#![feature(abi_vectorcall)]
-#![feature(asm)]
 #![feature(compiler_builtins_lib)]
 #![feature(lang_items)]
 #![feature(link_args)]
-#![feature(link_llvm_intrinsics)]
-#![feature(platform_intrinsics)]
-#![feature(repr_simd)]
-#![feature(simd_ffi)]
 
 #![cfg_attr(all(not(test), not(feature = "use_std")), no_main)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
