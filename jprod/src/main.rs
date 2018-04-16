@@ -75,7 +75,7 @@ use jprod_core::math;
 use jprod_core::pool::Pool;
 use jprod_core::pool::PoolAllocator;
 use jprod_core::random::Rng;
-use jprod_core::shaders::ShaderId;
+use jprod_core::shaders;
 use jprod_core::time;
 use jprod_core::utils;
 use jprod_core::win32;
@@ -177,16 +177,16 @@ fn main() {
 
     let pso = Pso::new();
 
-    let dna_shader = Shader::from_id(&window, ShaderId::Dna);
-    let light_shader = Shader::from_id(&window, ShaderId::Light);
-    let bloom_extraction_shader = Shader::from_id(&window, ShaderId::BloomExtraction);
-    let bloom_resolv_shader = Shader::from_id(&window, ShaderId::BloomResolv);
-    let horizontal_blur = Shader::from_id(&window, ShaderId::HorizontalGaussianBlur);
-    let vertical_blur = Shader::from_id(&window, ShaderId::VerticalGaussianBlur);
-    let dof_extraction_shader = Shader::from_id(&window, ShaderId::DofExtraction);
-    let dof_far_blur_shader = Shader::from_id(&window, ShaderId::DofFarBlur);
-    let dof_far_blur_max_shader = Shader::from_id(&window, ShaderId::DofFarBlurMax);
-    let dof_merge_shader = Shader::from_id(&window, ShaderId::DofMerge);
+    let dna_shader = Shader::from_source(&window, shaders::DNA_VERT, shaders::DNA_FRAG);
+    let light_shader = Shader::from_source(&window, shaders::LIGHT_VERT, shaders::LIGHT_FRAG);
+    let bloom_extraction_shader = Shader::from_source(&window, shaders::BLOOM_EXTRACTION_VERT, shaders::BLOOM_EXTRACTION_FRAG);
+    let bloom_resolv_shader = Shader::from_source(&window, shaders::BLOOM_RESOLV_VERT, shaders::BLOOM_RESOLV_FRAG);
+    let horizontal_blur = Shader::from_source(&window, shaders::HORIZONTAL_GAUSSIAN_BLUR_VERT, shaders::HORIZONTAL_GAUSSIAN_BLUR_FRAG);
+    let vertical_blur = Shader::from_source(&window, shaders::VERTICAL_GAUSSIAN_BLUR_VERT, shaders::VERTICAL_GAUSSIAN_BLUR_FRAG);
+    let dof_extraction_shader = Shader::from_source(&window, shaders::DOF_EXTRACTION_VERT, shaders::DOF_EXTRACTION_FRAG);
+    let dof_far_blur_shader = Shader::from_source(&window, shaders::DOF_FAR_BLUR_VERT, shaders::DOF_FAR_BLUR_FRAG);
+    let dof_far_blur_max_shader = Shader::from_source(&window, shaders::DOF_FAR_BLUR_MAX_VERT, shaders::DOF_FAR_BLUR_MAX_FRAG);
+    let dof_merge_shader = Shader::from_source(&window, shaders::DOF_MERGE_VERT, shaders::DOF_MERGE_FRAG);
 
     let window_size = window.get_size();
     let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), Some(Format::RgbF16), Some(Format::RgbF16)], true);
