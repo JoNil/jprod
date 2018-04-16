@@ -2,8 +2,8 @@
 #![feature(lang_items)]
 #![feature(link_args)]
 
-#![cfg_attr(all(not(test), not(feature = "use_std")), no_main)]
-#![cfg_attr(not(feature = "use_std"), no_std)]
+#![no_main]
+#![no_std]
 
 // TODO:
 // Fix normal not being rotated
@@ -44,11 +44,10 @@
 // Downsample every bloom blur pass
 
 
-#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "64"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light-x64.lib libcmt.lib vcruntime.lib")]
-#[cfg_attr(all(not(test), not(feature = "use_std"), target_pointer_width = "32"), link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
+#[cfg_attr(target_pointer_width = "64", link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light-x64.lib libcmt.lib vcruntime.lib")]
+#[cfg_attr(target_pointer_width = "32", link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
 extern "C" {}
 
-#[cfg(all(not(test), not(feature = "use_std")))]
 extern crate compiler_builtins;
 
 #[cfg(feature = "use_telemetry")]
@@ -58,11 +57,6 @@ extern crate telemetry;
 extern crate telemetry_macro;
 
 extern crate jprod_core;
-
-#[cfg(feature = "use_std")]
-mod core {
-    pub use std::*;
-}
 
 use jprod_core::camera::Camera;
 use jprod_core::gen;

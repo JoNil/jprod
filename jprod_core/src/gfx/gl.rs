@@ -5303,7 +5303,6 @@ static LOAD_DESC: &'static [(u16, &'static [u8])] = &[
     (GetQueryObjectui64vIdx, b"glGetQueryObjectui64v\0"),
 ];
 
-#[allow(mutable_transmutes)]
 #[inline]
 pub fn init() {
     for &(index, ref name) in LOAD_DESC {
