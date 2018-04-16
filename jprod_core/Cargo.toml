@@ -9,6 +9,9 @@ build = "build.rs"
 telemetry = { path = "../../telemetry-rs", optional = true }
 telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
 
+[build-dependencies]
+crossbeam = "0.3"
+
 [features]
 use_std = []
 use_telemetry = ["telemetry"]

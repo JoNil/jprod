@@ -4,6 +4,11 @@ version = "0.1.0"
 source = "git+https://github.com/rust-lang-nursery/compiler-builtins#2a2f6d96c8dc578d2474742f14c9bab0b36b0408"
 
 [[package]]
+name = "crossbeam"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "jprod"
 version = "0.1.0"
 dependencies = [
@@ -17,6 +22,7 @@ dependencies = [
 name = "jprod_core"
 version = "0.1.0"
 dependencies = [
+ "crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "telemetry 0.1.0",
  "telemetry_macro 0.1.0",
 ]
@@ -31,3 +37,4 @@ version = "0.1.0"
 
 [metadata]
 "checksum compiler_builtins 0.1.0 (git+https://github.com/rust-lang-nursery/compiler-builtins)" = "<none>"
+"checksum crossbeam 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "24ce9782d4d5c53674646a6a4c1863a21a8fc0cb649b3c94dfc16e45071dea19"
