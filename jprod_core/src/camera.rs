@@ -107,10 +107,10 @@ impl Camera {
 
         tm_zone!("Camera::get_view_projection");
 
-        let pos = Mat4::translate(self.pos);
+        let pos = Mat4::translate(self.pos.neg());
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 
-        self.projection.mul(pos.mul(rot).inverted())
+        self.projection.mul(rot.transposed().mul(pos))
     }
 
     #[inline]
