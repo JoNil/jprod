@@ -6,7 +6,6 @@ authors = ["Jonathan"]
 [dependencies]
 telemetry = { path = "../../telemetry-rs", optional = true }
 telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
-compiler_builtins = { git = "https://github.com/rust-lang-nursery/compiler-builtins" }
 jprod_core = { path = "../jprod_core" }
 
 [features]

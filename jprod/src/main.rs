@@ -1,6 +1,6 @@
-#![feature(compiler_builtins_lib)]
 #![feature(lang_items)]
 #![feature(link_args)]
+#![feature(panic_implementation)]
 
 #![no_main]
 #![no_std]
@@ -48,8 +48,6 @@
 #[cfg_attr(target_pointer_width = "32", link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
 extern "C" {}
 
-extern crate compiler_builtins;
-
 #[cfg(feature = "use_telemetry")]
 extern crate telemetry;
 
@@ -58,6 +56,7 @@ extern crate telemetry_macro;
 
 extern crate jprod_core;
 
+use core::panic::PanicInfo;
 use jprod_core::camera::Camera;
 use jprod_core::gen;
 use jprod_core::gfx::mesh::Mesh;
@@ -366,13 +365,9 @@ pub extern "cdecl" fn WinMainCRTStartup() {
 }
 
 #[cfg(all(not(test), not(feature = "use_std")))]
-#[lang = "panic_fmt"]
+#[panic_implementation]
 #[no_mangle]
-pub extern "C" fn rust_begin_panic(_msg: core::fmt::Arguments,
-                                   _file: &'static str,
-                                   _line: u32)
-                                   -> ! {
-
+pub extern fn panic_impl(_: &PanicInfo) -> ! {
     utils::debug_trap();
 }
 
