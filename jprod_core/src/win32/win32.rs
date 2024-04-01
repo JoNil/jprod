@@ -273,7 +273,7 @@ pub fn message_box(text: &[u8], caption: &[u8]) {
 pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
     let window_class = WindowClass {
         style: CS_VREDRAW | CS_HREDRAW | CS_OWNDC,
-        window_proc: window_proc,
+        window_proc,
         cls_extra: 0,
         wnd_extra: 0,
         instance: unsafe { GetModuleHandleA(ptr::null_mut()) },
