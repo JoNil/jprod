@@ -73,19 +73,19 @@ impl Target {
     pub fn clear(&mut self, color: Vec4) {
         let color_slice = &[color.x(), color.y(), color.z(), color.w()];
 
-        if let Some(_) = self.texture1 {
+        if self.texture1.is_some() {
             self.framebuffer.clear(Attachment::Color0, color_slice);
         }
 
-        if let Some(_) = self.texture2 {
+        if self.texture2.is_some() {
             self.framebuffer.clear(Attachment::Color1, color_slice);
         }
 
-        if let Some(_) = self.texture3 {
+        if self.texture3.is_some() {
             self.framebuffer.clear(Attachment::Color2, color_slice);
         }
 
-        if let Some(_) = self.depth {
+        if self.depth.is_some() {
             self.framebuffer.clear_depth(&[1.0]);
         }
     }
@@ -125,21 +125,21 @@ impl Target {
 
         let mut next_out_index = 0;
 
-        if let Some(_) = self.texture1 {
+        if self.texture1.is_some() {
             unsafe {
                 *storage.get_unchecked_mut(next_out_index) = Attachment::Color0 as gl::GLenum;
             }
             next_out_index += 1;
         }
 
-        if let Some(_) = self.texture2 {
+        if self.texture2.is_some() {
             unsafe {
                 *storage.get_unchecked_mut(next_out_index) = Attachment::Color1 as gl::GLenum;
             }
             next_out_index += 1;
         }
 
-        if let Some(_) = self.texture3 {
+        if self.texture3.is_some() {
             unsafe {
                 *storage.get_unchecked_mut(next_out_index) = Attachment::Color2 as gl::GLenum;
             }

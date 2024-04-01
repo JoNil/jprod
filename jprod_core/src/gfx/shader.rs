@@ -65,7 +65,7 @@ fn load_shader(
     let fragment = RawShader::new(gl::FRAGMENT_SHADER);
 
     unsafe {
-        let vert_pointer: *const u8 = &*vertex_source.get_unchecked(0);
+        let vert_pointer: *const u8 = vertex_source.get_unchecked(0);
         let vert_size: i32 = vertex_source.len() as i32;
         gl::ShaderSource(vertex.handle, 1, &vert_pointer, &vert_size);
         gl::CompileShader(vertex.handle);
@@ -80,7 +80,7 @@ fn load_shader(
     }
 
     unsafe {
-        let frag_pointer: *const u8 = &*fragment_source.get_unchecked(0);
+        let frag_pointer: *const u8 = fragment_source.get_unchecked(0);
         let frag_size: i32 = fragment_source.len() as i32;
         gl::ShaderSource(fragment.handle, 1, &frag_pointer, &frag_size);
         gl::CompileShader(fragment.handle);
@@ -136,11 +136,11 @@ impl Shader {
         if let Some((program, vertex, fragment)) =
             load_shader(vertex_source.as_bytes(), fragment_source.as_bytes())
         {
-            return Shader {
+            Shader {
                 program,
                 _vertex: vertex,
                 _fragment: fragment,
-            };
+            }
         } else {
             utils::debug_trap();
         }

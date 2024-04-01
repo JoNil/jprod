@@ -58,10 +58,8 @@ pub fn output_debug_string(string: &[u8]) {
 }
 
 #[inline]
-pub fn output_debug_string_raw(string: *const u8) {
-    unsafe {
-        OutputDebugStringA(string);
-    }
+pub unsafe fn output_debug_string_raw(string: *const u8) {
+    OutputDebugStringA(string);
 }
 
 #[inline]
@@ -73,12 +71,12 @@ pub fn exit_process(exit_code: u32) -> ! {
 
 #[inline]
 pub fn get_module_handle(module_name: &[u8]) -> ModuleHandle {
-    unsafe { GetModuleHandleA(&*module_name.get_unchecked(0)) }
+    unsafe { GetModuleHandleA(module_name.get_unchecked(0)) }
 }
 
 #[inline]
 pub fn load_library(file_name: &[u8]) -> ModuleHandle {
-    let handle = unsafe { LoadLibraryA(&*file_name.get_unchecked(0)) };
+    let handle = unsafe { LoadLibraryA(file_name.get_unchecked(0)) };
 
     utils::assert(!handle.is_null());
 
@@ -86,6 +84,7 @@ pub fn load_library(file_name: &[u8]) -> ModuleHandle {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn free_library(module: ModuleHandle) {
     unsafe {
         FreeLibrary(module);
@@ -93,6 +92,7 @@ pub fn free_library(module: ModuleHandle) {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
     let ptr = unsafe { GetProcAddress(module, proc_index as *const u8) };
 
@@ -102,8 +102,9 @@ pub fn get_proc_address(module: ModuleHandle, proc_index: isize) -> Proc {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_proc_address_name(module: ModuleHandle, name: &[u8]) -> Proc {
-    unsafe { GetProcAddress(module, &*name.get_unchecked(0)) }
+    unsafe { GetProcAddress(module, name.get_unchecked(0)) }
 }
 
 #[inline]
@@ -114,7 +115,7 @@ pub fn get_file_attributes(
 ) -> i32 {
     unsafe {
         GetFileAttributesExA(
-            &*file_name.get_unchecked(0),
+            file_name.get_unchecked(0),
             info_level_id,
             file_information as *mut _,
         )
@@ -125,7 +126,7 @@ pub fn get_file_attributes(
 pub fn open_file(file_name: &[u8]) -> Handle {
     unsafe {
         CreateFileA(
-            &*file_name.get_unchecked(0),
+            file_name.get_unchecked(0),
             GENERIC_READ | GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
             ptr::null_mut(),
@@ -137,6 +138,7 @@ pub fn open_file(file_name: &[u8]) -> Handle {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn close_file(handle: Handle) {
     unsafe {
         CloseHandle(handle);
@@ -144,6 +146,7 @@ pub fn close_file(handle: Handle) {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_file_size(handle: Handle) -> u64 {
     let mut size_high: u32 = 0;
 
@@ -153,6 +156,7 @@ pub fn get_file_size(handle: Handle) -> u64 {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn read_file(handle: Handle, buffer: &mut [u8]) -> i32 {
     unsafe {
         ReadFile(
@@ -183,8 +187,8 @@ pub fn virtual_alloc(size: usize) -> *mut c_void {
 }
 
 #[inline]
-pub fn virtual_free(address: *mut c_void) {
-    unsafe { VirtualFree(address, 0, MEM_RELEASE) };
+pub unsafe fn virtual_free(address: *mut c_void) {
+    VirtualFree(address, 0, MEM_RELEASE);
 }
 
 #[inline]
@@ -258,8 +262,8 @@ pub fn message_box(text: &[u8], caption: &[u8]) {
     unsafe {
         MessageBoxA(
             ptr::null_mut(),
-            &*text.get_unchecked(0),
-            &*caption.get_unchecked(0),
+            text.get_unchecked(0),
+            caption.get_unchecked(0),
             0x00000030,
         );
     }
@@ -277,7 +281,7 @@ pub fn register_class(name: &[u8], window_proc: WindowProc) -> bool {
         cursor: load_cursor(ptr::null_mut(), IDC_ARROW),
         background: ptr::null_mut(),
         menu_name: ptr::null(),
-        class_name: unsafe { &*name.get_unchecked(0) },
+        class_name: unsafe { name.get_unchecked(0) },
     };
 
     unsafe { RegisterClassA(&window_class) != 0 }
@@ -288,8 +292,8 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
     unsafe {
         CreateWindowExA(
             0,
-            &*class_name.get_unchecked(0),
-            &*name.get_unchecked(0),
+            class_name.get_unchecked(0),
+            name.get_unchecked(0),
             WS_OVERLAPPEDWINDOW | if visible { WS_VISIBLE } else { 0 },
             CW_USEDEFAULT,
             CW_USEDEFAULT,
@@ -304,16 +308,19 @@ pub fn create_window(class_name: &[u8], name: &[u8], visible: bool) -> WindowHan
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn destroy_window(window: WindowHandle) -> i32 {
     unsafe { DestroyWindow(window) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_dc(window: WindowHandle) -> DcHandle {
     unsafe { GetDC(window) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn release_dc(window: WindowHandle, dc: DcHandle) -> i32 {
     unsafe { ReleaseDC(window, dc) }
 }
@@ -347,16 +354,19 @@ pub fn translate_and_dispatch_message(msg: &Msg) {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn def_window_proc(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize {
     unsafe { DefWindowProcA(window, message, wparam, lparam) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn load_cursor(instance: InstanceHandle, name: usize) -> CursorHandle {
     unsafe { LoadCursorA(instance, name) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {
     let mut rect: Rect = Default::default();
 
@@ -373,6 +383,7 @@ pub fn get_window_client_rect(window: WindowHandle) -> (i32, i32, i32, i32) {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn get_mouse_pos(window: WindowHandle) -> (i32, i32) {
     let mut point: Point = Default::default();
 
@@ -410,11 +421,13 @@ extern "system" {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn choose_pixel_format(dc: DcHandle, descriptor: &PixelFormatDescriptor) -> i32 {
     unsafe { ChoosePixelFormat(dc, descriptor as *const PixelFormatDescriptor) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn describe_pixel_format(
     dc: DcHandle,
     pixel_format: i32,
@@ -425,15 +438,17 @@ pub fn describe_pixel_format(
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn set_pixel_format(
     dc: DcHandle,
     pixel_format: i32,
     descriptor: *const PixelFormatDescriptor,
 ) -> i32 {
-    unsafe { SetPixelFormat(dc, pixel_format, descriptor as *const PixelFormatDescriptor) }
+    unsafe { SetPixelFormat(dc, pixel_format, descriptor) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn swap_buffers(dc: DcHandle) -> bool {
     unsafe { SwapBuffers(dc) != 0 }
 }
@@ -448,23 +463,26 @@ extern "system" {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn wgl_create_context(dc: DcHandle) -> GlrcHandle {
     unsafe { wglCreateContext(dc) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn wgl_delete_context(glrc: GlrcHandle) -> i32 {
     unsafe { wglDeleteContext(glrc) }
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn wgl_make_current(dc: DcHandle, context: GlrcHandle) -> i32 {
     unsafe { wglMakeCurrent(dc, context) }
 }
 
 #[inline]
 pub fn wgl_get_proc_address(name: &[u8]) -> Proc {
-    let mut ptr = unsafe { wglGetProcAddress(&*name.get_unchecked(0)) };
+    let mut ptr = unsafe { wglGetProcAddress(name.get_unchecked(0)) };
 
     if ptr.is_null() {
         ptr = unsafe { get_proc_address_name(OPENGL32, name) };
@@ -508,6 +526,7 @@ pub fn wgl_get_extensions_string() -> *const u8 {
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn wgl_choose_pixel_format(
     dc: DcHandle,
     attrib_i_list: Option<&[i32]>,
@@ -519,12 +538,12 @@ pub fn wgl_choose_pixel_format(
         mem::transmute::<_, WglChoosePixelFormatARBTy>(*GL_EXT_API.get_unchecked(1))(
             dc,
             if let Some(i_attrib) = attrib_i_list {
-                &*i_attrib.get_unchecked(0)
+                i_attrib.get_unchecked(0)
             } else {
                 ptr::null()
             },
             if let Some(f_attrib) = attrib_f_list {
-                &*f_attrib.get_unchecked(0)
+                f_attrib.get_unchecked(0)
             } else {
                 ptr::null()
             },
@@ -536,6 +555,7 @@ pub fn wgl_choose_pixel_format(
 }
 
 #[inline]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub fn wgl_create_context_attribs(
     dc: DcHandle,
     shared_context: GlrcHandle,
@@ -545,7 +565,7 @@ pub fn wgl_create_context_attribs(
         mem::transmute::<_, WglCreateContextAttribsARBTy>(*GL_EXT_API.get_unchecked(2))(
             dc,
             shared_context,
-            &*attrib_list.get_unchecked(0),
+            attrib_list.get_unchecked(0),
         )
     }
 }
@@ -568,7 +588,7 @@ pub fn init() {
 pub fn wgl_load_extensions() {
     for (i, name) in GL_EXT_NAMES.iter().enumerate() {
         unsafe {
-            (*GL_EXT_API.get_unchecked_mut(i)) = wgl_get_proc_address(*name) as usize;
+            (*GL_EXT_API.get_unchecked_mut(i)) = wgl_get_proc_address(name) as usize;
         }
     }
 }

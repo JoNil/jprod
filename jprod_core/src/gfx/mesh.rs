@@ -126,7 +126,7 @@ impl Mesh {
             }
         }
 
-        return true;
+        true
     }
 
     #[inline]
@@ -138,7 +138,7 @@ impl Mesh {
             gl::BindVertexArray(self.vao.handle);
 
             for (i, (format, vbo)) in vertex_formats.iter().zip(vbos.iter_mut()).enumerate() {
-                if let &Some(ref vf) = format {
+                if let Some(vf) = format {
                     let new_vbo = RawVbo::new();
 
                     gl::BindBuffer(gl::ARRAY_BUFFER, new_vbo.handle);
@@ -183,14 +183,14 @@ impl Mesh {
         self.length = va1.len() as i32;
 
         unsafe {
-            if let (&Some(ref pos_vbo), &Some(ref normal_vbo)) =
-                (&*self.vbos.get_unchecked(0), &*self.vbos.get_unchecked(1))
+            if let (Some(pos_vbo), Some(normal_vbo)) =
+                (self.vbos.get_unchecked(0), self.vbos.get_unchecked(1))
             {
                 gl::BindBuffer(gl::ARRAY_BUFFER, pos_vbo.handle);
                 gl::BufferData(
                     gl::ARRAY_BUFFER,
                     (3 * va1.len() * mem::size_of::<f32>()) as isize,
-                    &*(*va1.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                    va1.get_unchecked(0).get_unchecked(0) as *const f32 as *const c_void,
                     gl::STATIC_DRAW,
                 );
 
@@ -198,7 +198,7 @@ impl Mesh {
                 gl::BufferData(
                     gl::ARRAY_BUFFER,
                     (3 * va2.len() * mem::size_of::<f32>()) as isize,
-                    &*(*va2.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
+                    va2.get_unchecked(0).get_unchecked(0) as *const f32 as *const c_void,
                     gl::STATIC_DRAW,
                 );
 
@@ -235,6 +235,7 @@ impl Mesh {
     }
 
     #[inline]
+    #[allow(clippy::too_many_arguments)]
     pub fn draw_instanced(
         &self,
         pso: &Pso,
@@ -271,6 +272,7 @@ impl Mesh {
 }
 
 #[inline]
+#[allow(clippy::too_many_arguments)]
 fn draw_internal<F: FnMut()>(
     context: &dyn Context,
     pso: &Pso,
@@ -319,7 +321,7 @@ fn draw_internal<F: FnMut()>(
         f();
 
         for (i, t) in textures.iter().enumerate() {
-            if let &Some(_) = t {
+            if t.is_some() {
                 gl::ActiveTexture(gl::TEXTURE0 + i as u32);
                 gl::BindTexture(gl::TEXTURE_2D, 0);
             }
@@ -328,11 +330,11 @@ fn draw_internal<F: FnMut()>(
         gl::BindVertexArray(0);
         gl::UseProgram(0);
 
-        if let Some(_) = pso.scissor {
+        if pso.scissor.is_some() {
             gl::Disable(gl::SCISSOR_TEST);
         }
 
-        if let Some(_) = target {
+        if target.is_some() {
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
             let bufs: [u32; 1] = [gl::BACK_LEFT];

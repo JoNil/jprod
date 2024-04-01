@@ -15,6 +15,7 @@ pub struct Pso {
 }
 
 impl Pso {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Pso {
         Pso {
             scissor: None,

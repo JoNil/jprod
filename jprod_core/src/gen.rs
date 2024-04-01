@@ -39,7 +39,7 @@ pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f3
 
     for i in 0..(vertices / 3) {
         let ii = 3 * i;
-        let i1 = ii + 0;
+        let i1 = ii;
         let i2 = ii + 1;
         let i3 = ii + 2;
 

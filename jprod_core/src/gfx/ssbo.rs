@@ -47,8 +47,8 @@ impl Ssbo {
     pub fn upload_slice<T: Copy>(&mut self, data: &[T]) {
         unsafe {
             self.upload_inner(
-                &*data.get_unchecked(0) as *const T as *const c_void,
-                (data.len() * mem::size_of::<T>()) as isize,
+                data.get_unchecked(0) as *const T as *const c_void,
+                mem::size_of_val(data) as isize,
             )
         };
     }

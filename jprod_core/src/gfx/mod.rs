@@ -57,6 +57,8 @@ extern "system" fn debug_callback(
     message: *const gl::GLchar,
     _param: *mut c_types::c_void,
 ) {
-    win32::output_debug_string_raw(message);
-    win32::output_debug_string(b"\n\0");
+    unsafe {
+        win32::output_debug_string_raw(message);
+        win32::output_debug_string(b"\n\0");
+    }
 }

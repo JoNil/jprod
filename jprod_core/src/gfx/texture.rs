@@ -161,7 +161,7 @@ impl Texture {
                 0,
                 enums.format,
                 enums.component_type,
-                &*data.get_unchecked(0) as *const u8 as *const c_void,
+                data.get_unchecked(0) as *const u8 as *const c_void,
             );
 
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);

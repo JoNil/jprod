@@ -175,6 +175,7 @@ pub struct Window {
 
 impl Window {
     #[inline]
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Window {
         utils::assert(win32::register_class(WINDOW_CLASS, window_proc));
 
@@ -286,10 +287,7 @@ extern "system" fn window_proc(
         WM_CLOSE => {
             win32::exit_process(0);
         }
-
-        _ => {
-            return win32::def_window_proc(handle, msg, wparam, lparam);
-        }
+        _ => win32::def_window_proc(handle, msg, wparam, lparam),
     }
 }
 

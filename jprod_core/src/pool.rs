@@ -1,6 +1,8 @@
 use crate::{c_types::c_void, utils, win32};
 use core::{cell::Cell, mem, slice};
 
+// TODO: Use new pool from is project
+
 pub struct Pool {
     memory: *mut u8,
     size: usize,
@@ -17,7 +19,7 @@ impl Pool {
     }
 
     #[inline]
-    pub fn get_allocator<'a>(&'a mut self) -> PoolAllocator<'a> {
+    pub fn get_allocator(&mut self) -> PoolAllocator {
         PoolAllocator {
             pool: self,
             offset: 0,
@@ -31,7 +33,9 @@ impl Pool {
 impl Drop for Pool {
     #[inline]
     fn drop(&mut self) {
-        win32::virtual_free(self.memory as *mut c_void);
+        unsafe {
+            win32::virtual_free(self.memory as *mut c_void);
+        }
     }
 }
 
@@ -45,6 +49,7 @@ pub struct PoolAllocator<'a> {
 
 impl<'a> PoolAllocator<'a> {
     #[inline]
+    #[allow(clippy::mut_from_ref)]
     pub fn allocate_byte_slice(&'a self, size: usize) -> &'a mut [u8] {
         utils::assert(!self.borrowed.get());
 
@@ -54,8 +59,7 @@ impl<'a> PoolAllocator<'a> {
 
         self.used.set(self.used.get() + size);
 
-        let buffer =
-            unsafe { slice::from_raw_parts_mut(self.pool.memory.offset(offset as isize), size) };
+        let buffer = unsafe { slice::from_raw_parts_mut(self.pool.memory.add(offset), size) };
 
         for byte in buffer.iter_mut() {
             *byte = 0;
@@ -65,6 +69,7 @@ impl<'a> PoolAllocator<'a> {
     }
 
     #[inline]
+    #[allow(clippy::mut_from_ref)]
     pub fn allocate<T: Copy>(&'a self) -> &'a mut T {
         let size = mem::size_of::<T>();
 
@@ -74,6 +79,7 @@ impl<'a> PoolAllocator<'a> {
     }
 
     #[inline]
+    #[allow(clippy::mut_from_ref)]
     pub fn allocate_slice<T: Copy>(&'a self, count: usize) -> &'a mut [T] {
         let size = mem::size_of::<T>();
 
@@ -134,7 +140,7 @@ fn pool_test() {
             {
                 let sub_alloc_1 = allocator1.get_sub_allocator();
 
-                assert_eq!(allocator1.borrowed.get(), true);
+                assert!(allocator1.borrowed.get());
                 assert_eq!(sub_alloc_1.used.get(), 0);
                 assert_eq!(sub_alloc_1.offset, 10);
 
