@@ -1,4 +1,4 @@
-use std::{error::Error, fmt, fs, path::PathBuf, process::Command};
+use std::{error::Error, fmt, process::Command};
 
 #[derive(Debug)]
 enum PackerError {
@@ -21,26 +21,6 @@ impl fmt::Display for PackerError {
     }
 }
 
-fn find_obj_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
-    let mut result = Vec::new();
-
-    if let Ok(rd) = fs::read_dir("../jprod/target/release/deps") {
-        for entry in rd
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| p.is_file())
-        {
-            let extension = entry.extension().unwrap().to_str().unwrap();
-
-            if extension == "o" {
-                result.push(entry.to_owned())
-            }
-        }
-    }
-
-    Ok(result)
-}
-
 fn run() -> Result<(), Box<dyn Error>> {
     let build_status = Command::new("cargo")
         .current_dir("../jprod/")
@@ -51,19 +31,12 @@ fn run() -> Result<(), Box<dyn Error>> {
         return Err(From::from(PackerError::BuildFailed));
     }
 
-    let obj_files = find_obj_files()?;
+    let output = Command::new("../tools/squishy-x64.exe")
+        .args(["-o", "jprod.exe"])
+        .args(["-i", "../jprod/target/release/jprod.exe"])
+        .status()?;
 
-    let crinkler_output = Command::new("../tools/crinkler.exe")
-            .arg("/OUT:jprod.exe")
-            .arg("/SUBSYSTEM:WINDOWS")
-            .args(&obj_files)
-            .arg("../lib/msvcrt-light-x64.lib")
-            .arg("/LIBPATH:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/lib/x64")
-            .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64")
-            .args(["kernel32.lib", "user32.lib", "opengl32.lib", "gdi32.lib"])
-            .status()?;
-
-    if !crinkler_output.success() {
+    if !output.success() {
         return Err(From::from(PackerError::CrinklerFailed));
     }
 
