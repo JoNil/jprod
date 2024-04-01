@@ -1,15 +1,7 @@
+use super::{gl, pso::Pso, shader::Shader, ssbo::Ssbo, target::Target, texture::Texture, Context};
 use c_types::c_void;
-use core::marker::PhantomData;
-use core::mem;
-use core::ptr;
+use core::{marker::PhantomData, mem, ptr};
 use gfx;
-use super::Context;
-use super::gl;
-use super::pso::Pso;
-use super::shader::Shader;
-use super::ssbo::Ssbo;
-use super::target::Target;
-use super::texture::Texture;
 use utils;
 
 #[allow(dead_code)]
@@ -46,14 +38,19 @@ impl RawVao {
 
         utils::assert(handle != 0);
 
-        RawVao { handle: handle, marker: PhantomData }
+        RawVao {
+            handle,
+            marker: PhantomData,
+        }
     }
 }
 
 impl Drop for RawVao {
     #[inline]
     fn drop(&mut self) {
-        unsafe { gl::DeleteVertexArrays(1, &mut self.handle as *mut _); }
+        unsafe {
+            gl::DeleteVertexArrays(1, &mut self.handle as *mut _);
+        }
     }
 }
 
@@ -66,18 +63,25 @@ impl RawVbo {
     #[inline]
     fn new() -> RawVbo {
         let mut handle = 0;
-        unsafe { gl::GenBuffers(1, &mut handle as *mut _); }
-        
+        unsafe {
+            gl::GenBuffers(1, &mut handle as *mut _);
+        }
+
         utils::assert(handle != 0);
 
-        RawVbo { handle: handle, marker: PhantomData }
+        RawVbo {
+            handle,
+            marker: PhantomData,
+        }
     }
 }
 
 impl Drop for RawVbo {
     #[inline]
     fn drop(&mut self) {
-        unsafe { gl::DeleteBuffers(1, &mut self.handle as *mut _); }
+        unsafe {
+            gl::DeleteBuffers(1, &mut self.handle as *mut _);
+        }
     }
 }
 
@@ -109,7 +113,11 @@ impl Mesh {
         }
     }
 
-    fn is_same_format(&self, vertex_formats: [Option<VertexFormat>; 3], use_index_buffer: bool) -> bool {
+    fn is_same_format(
+        &self,
+        vertex_formats: [Option<VertexFormat>; 3],
+        use_index_buffer: bool,
+    ) -> bool {
         for (f1, f2) in vertex_formats.iter().zip(self.vertex_formats.iter()) {
             if f1 != f2 {
                 return false;
@@ -129,13 +137,10 @@ impl Mesh {
         let mut index = None;
 
         unsafe {
-
             gl::BindVertexArray(self.vao.handle);
 
             for (i, (format, vbo)) in vertex_formats.iter().zip(vbos.iter_mut()).enumerate() {
-
                 if let &Some(ref vf) = format {
-
                     let new_vbo = RawVbo::new();
 
                     gl::BindBuffer(gl::ARRAY_BUFFER, new_vbo.handle);
@@ -146,7 +151,8 @@ impl Mesh {
                         gl::FLOAT,           // type
                         0,                   // normalized?
                         0,                   // stride
-                        ptr::null());        // array buffer offset
+                        ptr::null(),
+                    ); // array buffer offset
 
                     *vbo = Some(new_vbo);
                 }
@@ -167,7 +173,6 @@ impl Mesh {
 
     #[inline]
     pub fn upload(&mut self, va1: &[[f32; 3]], va2: &[[f32; 3]], primitive: Primitive) {
-
         utils::assert(va1.len() == va2.len());
 
         let vertex_format = [Some(VertexFormat::Vec3), Some(VertexFormat::Vec3), None];
@@ -180,23 +185,26 @@ impl Mesh {
         self.length = va1.len() as i32;
 
         unsafe {
-            if let (&Some(ref pos_vbo), &Some(ref normal_vbo)) = (&*self.vbos.get_unchecked(0), &*self.vbos.get_unchecked(1)) {
-
+            if let (&Some(ref pos_vbo), &Some(ref normal_vbo)) =
+                (&*self.vbos.get_unchecked(0), &*self.vbos.get_unchecked(1))
+            {
                 gl::BindBuffer(gl::ARRAY_BUFFER, pos_vbo.handle);
                 gl::BufferData(
                     gl::ARRAY_BUFFER,
                     (3 * va1.len() * mem::size_of::<f32>()) as isize,
                     &*(*va1.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
-                    gl::STATIC_DRAW);
+                    gl::STATIC_DRAW,
+                );
 
                 gl::BindBuffer(gl::ARRAY_BUFFER, normal_vbo.handle);
                 gl::BufferData(
                     gl::ARRAY_BUFFER,
                     (3 * va2.len() * mem::size_of::<f32>()) as isize,
                     &*(*va2.get_unchecked(0)).get_unchecked(0) as *const f32 as *const c_void,
-                    gl::STATIC_DRAW);
+                    gl::STATIC_DRAW,
+                );
 
-                gl::BindBuffer(gl::ARRAY_BUFFER, 0); 
+                gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             }
         }
     }
@@ -208,8 +216,8 @@ impl Mesh {
         shader: &Shader,
         target: Option<&Target>,
         textures: &[Option<&Texture>],
-        uniform_data: Option<&Ssbo>) {
-
+        uniform_data: Option<&Ssbo>,
+    ) {
         utils::assert(self.length != 0);
 
         draw_internal(
@@ -221,8 +229,11 @@ impl Mesh {
             uniform_data,
             &self.vao,
             || {
-                unsafe { gl::DrawArrays(self.primitive as u32, 0, self.length); };
-            });
+                unsafe {
+                    gl::DrawArrays(self.primitive as u32, 0, self.length);
+                };
+            },
+        );
     }
 
     #[inline]
@@ -234,8 +245,8 @@ impl Mesh {
         textures: &[Option<&Texture>],
         uniform_data: Option<&Ssbo>,
         instance_data: Option<&Ssbo>,
-        count: i32) 
-    {
+        count: i32,
+    ) {
         utils::assert(self.length != 0 && count > 0);
 
         draw_internal(
@@ -253,11 +264,11 @@ impl Mesh {
                         gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, 1, instance.get_handle());
                         gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
                     }
-                    
+
                     gl::DrawArraysInstanced(self.primitive as u32, 0, self.length, count);
                 };
-            });
-    
+            },
+        );
     }
 }
 
@@ -270,15 +281,16 @@ fn draw_internal<F: FnMut()>(
     textures: &[Option<&Texture>],
     uniform_data: Option<&Ssbo>,
     vao: &RawVao,
-    mut f: F)
-{
+    mut f: F,
+) {
     unsafe {
-
         if let Some(render_target) = target {
-
             gfx::viewport(context, render_target.get_size());
 
-            gl::BindFramebuffer(gl::FRAMEBUFFER, render_target.get_framebuffer().get_handle());
+            gl::BindFramebuffer(
+                gl::FRAMEBUFFER,
+                render_target.get_framebuffer().get_handle(),
+            );
 
             let (count, buffer) = render_target.get_draw_buffer_spec();
             gl::DrawBuffers(count, &buffer as *const _);
@@ -322,10 +334,10 @@ fn draw_internal<F: FnMut()>(
             gl::Disable(gl::SCISSOR_TEST);
         }
 
-         if let Some(_) = target {
+        if let Some(_) = target {
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
-            let bufs: [u32; 1] = [ gl::BACK_LEFT ];
+            let bufs: [u32; 1] = [gl::BACK_LEFT];
             gl::DrawBuffers(bufs.len() as i32, &bufs as *const _);
         }
     }

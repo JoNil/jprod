@@ -1,8 +1,7 @@
 use core::intrinsics;
 
 #[inline(always)]
-pub fn assert(cond: bool) -> () {
-
+pub fn assert(cond: bool) {
     if cfg!(not(debug_assertions)) {
         unsafe { intrinsics::assume(cond) };
     }
@@ -15,7 +14,7 @@ pub fn assert(cond: bool) -> () {
 #[inline(always)]
 pub fn debug_trap() -> ! {
     unsafe {
-    	intrinsics::breakpoint();
-   		intrinsics::unreachable()
-   	}
+        intrinsics::breakpoint();
+        intrinsics::unreachable()
+    }
 }

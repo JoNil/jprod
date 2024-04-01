@@ -1,7 +1,7 @@
+use super::gl;
+use super::Context;
 use core::marker::PhantomData;
 use core::ptr;
-use super::Context;
-use super::gl;
 use utils;
 use win32;
 
@@ -14,11 +14,11 @@ impl RawProgram {
     #[inline]
     fn new() -> RawProgram {
         let handle = unsafe { gl::CreateProgram() };
-        
+
         utils::assert(handle != 0);
 
         RawProgram {
-            handle: handle,
+            handle,
             marker: PhantomData,
         }
     }
@@ -40,11 +40,11 @@ impl RawShader {
     #[inline]
     fn new(shader_type: u32) -> RawShader {
         let handle = unsafe { gl::CreateShader(shader_type) };
-        
+
         utils::assert(handle != 0);
 
         RawShader {
-            handle: handle,
+            handle,
             marker: PhantomData,
         }
     }
@@ -57,8 +57,10 @@ impl Drop for RawShader {
     }
 }
 
-fn load_shader(vertex_source: &[u8], fragment_source: &[u8]) -> Option<(RawProgram, RawShader, RawShader)> {
-
+fn load_shader(
+    vertex_source: &[u8],
+    fragment_source: &[u8],
+) -> Option<(RawProgram, RawShader, RawShader)> {
     let program = RawProgram::new();
     let vertex = RawShader::new(gl::VERTEX_SHADER);
     let fragment = RawShader::new(gl::FRAGMENT_SHADER);
@@ -132,13 +134,14 @@ pub struct Shader {
 impl Shader {
     #[inline]
     pub fn from_source(_: &dyn Context, vertex_source: &str, fragment_source: &str) -> Shader {
-
-        if let Some((program, vertex, fragment)) = load_shader(vertex_source.as_bytes(), fragment_source.as_bytes()) {
+        if let Some((program, vertex, fragment)) =
+            load_shader(vertex_source.as_bytes(), fragment_source.as_bytes())
+        {
             return Shader {
-                program: program,
+                program,
                 _vertex: vertex,
                 _fragment: fragment,
-            }
+            };
         } else {
             utils::debug_trap();
         }
@@ -152,24 +155,36 @@ impl Shader {
 
 #[inline]
 fn print_shader_error(shader: u32) {
-
     const SIZE: i32 = 2048;
 
     let mut info: [u8; SIZE as usize] = [0; SIZE as usize];
 
-    unsafe { gl::GetShaderInfoLog(shader, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
+    unsafe {
+        gl::GetShaderInfoLog(
+            shader,
+            SIZE,
+            ptr::null_mut(),
+            &mut *info.get_unchecked_mut(0),
+        )
+    };
 
     win32::message_box(&info, b"\0");
 }
 
 #[inline]
 fn print_program_error(program: u32) {
-
     const SIZE: i32 = 2048;
 
     let mut info: [u8; SIZE as usize] = [0; SIZE as usize];
 
-    unsafe { gl::GetProgramInfoLog(program, SIZE, ptr::null_mut(), &mut *info.get_unchecked_mut(0)) };
+    unsafe {
+        gl::GetProgramInfoLog(
+            program,
+            SIZE,
+            ptr::null_mut(),
+            &mut *info.get_unchecked_mut(0),
+        )
+    };
 
     win32::message_box(&info, b"\0");
 }

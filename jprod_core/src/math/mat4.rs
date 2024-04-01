@@ -1,9 +1,4 @@
-#[cfg(target_arch = "x86")]
-use core::arch::x86::*;
-#[cfg(target_arch = "x86_64")]
-use core::arch::x86_64::*;
-
-use core::mem;
+use core::{arch::x86_64::*, mem};
 use math;
 use math::Vec4;
 use random::Rng;

@@ -57,12 +57,12 @@ impl Target {
         utils::assert(framebuffer.is_compleate());
 
         Target {
-            framebuffer: framebuffer,
-            texture1: texture1,
-            texture2: texture2,
-            texture3: texture3,
-            depth: depth,
-            size: size,
+            framebuffer,
+            texture1,
+            texture2,
+            texture3,
+            depth,
+            size,
         }
     }
 

@@ -1,5 +1,4 @@
-use core::arch::asm;
-use core::mem;
+use core::{arch::asm, mem};
 use math::Vec4;
 
 pub use core::f32::consts::*;

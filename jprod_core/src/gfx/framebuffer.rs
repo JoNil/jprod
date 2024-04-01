@@ -1,8 +1,8 @@
-use core::marker::PhantomData;
-use super::Context;
 use super::gl;
 use super::texture::Format;
 use super::texture::Texture;
+use super::Context;
+use core::marker::PhantomData;
 use utils;
 
 #[derive(Copy, Clone)]
@@ -31,14 +31,16 @@ struct RawFramebuffer {
 impl RawFramebuffer {
     #[inline]
     fn new() -> RawFramebuffer {
-
         let mut handle = 0;
 
         unsafe { gl::GenFramebuffers(1, &mut handle as *mut _) };
 
         utils::assert(handle != 0);
 
-        RawFramebuffer { handle: handle, marker: PhantomData }
+        RawFramebuffer {
+            handle,
+            marker: PhantomData,
+        }
     }
 }
 
@@ -56,19 +58,15 @@ pub struct Framebuffer {
 impl Framebuffer {
     #[inline]
     pub fn new(_: &dyn Context) -> Framebuffer {
-
         let framebuffer = RawFramebuffer::new();
 
-        Framebuffer {
-            framebuffer: framebuffer,
-        }
+        Framebuffer { framebuffer }
     }
 
     #[inline]
     pub fn attach(&mut self, texture: &Texture, attachment: Attachment) {
-
         utils::assert(texture.get_format() != Some(Format::DepthF32));
-        
+
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
@@ -77,7 +75,8 @@ impl Framebuffer {
                 attachment as u32,
                 gl::TEXTURE_2D,
                 texture.get_handle(),
-                0);
+                0,
+            );
 
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
         }
@@ -85,7 +84,6 @@ impl Framebuffer {
 
     #[inline]
     pub fn attach_depth(&mut self, texture: &Texture) {
-        
         utils::assert(texture.get_format() == Some(Format::DepthF32));
 
         unsafe {
@@ -96,7 +94,8 @@ impl Framebuffer {
                 gl::DEPTH_ATTACHMENT,
                 gl::TEXTURE_2D,
                 texture.get_handle(),
-                0);
+                0,
+            );
 
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
         }
@@ -104,7 +103,6 @@ impl Framebuffer {
 
     #[inline]
     pub fn clear(&mut self, attachment: Attachment, value: &[f32; 4]) {
-
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
@@ -116,7 +114,6 @@ impl Framebuffer {
 
     #[inline]
     pub fn clear_depth(&mut self, value: &[f32; 1]) {
-
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
@@ -129,7 +126,6 @@ impl Framebuffer {
     #[inline]
     pub fn is_compleate(&self) -> bool {
         unsafe {
-
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
             let res = gl::CheckFramebufferStatus(gl::FRAMEBUFFER) == gl::FRAMEBUFFER_COMPLETE;

@@ -1,15 +1,12 @@
-use core::default::Default;
-use core::mem;
-use core::ptr;
+use core::{default::Default, mem, ptr};
 use gfx;
 use utils;
-use win32;
-use win32::types::*;
+use win32::{self, types::*};
 
-static WINDOW_NAME: &'static [u8] = b"JProd\n\0";
-static WINDOW_CLASS: &'static [u8] = b"C\0";
+static WINDOW_NAME: &[u8] = b"JProd\n\0";
+static WINDOW_CLASS: &[u8] = b"C\0";
 
-static WGL_ATTRIBS: &'static [i32] = &[
+static WGL_ATTRIBS: &[i32] = &[
     WGL_CONTEXT_MAJOR_VERSION_ARB,
     4,
     WGL_CONTEXT_MINOR_VERSION_ARB,
@@ -21,7 +18,7 @@ static WGL_ATTRIBS: &'static [i32] = &[
     0,
 ];
 
-static WINDOW_ATTRIBS: &'static [i32] = &[
+static WINDOW_ATTRIBS: &[i32] = &[
     WGL_DRAW_TO_WINDOW_ARB,
     1,
     WGL_ACCELERATION_ARB,
@@ -194,7 +191,7 @@ impl Window {
         context.make_current();
 
         let res = Window {
-            context: context,
+            context,
             actions: Default::default(),
         };
 

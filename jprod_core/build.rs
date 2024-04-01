@@ -1,15 +1,12 @@
-extern crate crossbeam;
-
-use std::collections::HashMap;
-use std::env;
-use std::fs;
-use std::fs::File;
-use std::io::Error;
-use std::io::Read;
-use std::io::Write;
-use std::path::Path;
-use std::process::Command;
-use std::sync::Mutex;
+use std::{
+    collections::HashMap,
+    env,
+    fs::{self, File},
+    io::{Error, Read, Write},
+    path::Path,
+    process::Command,
+    sync::Mutex,
+};
 
 fn read_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
     let mut f = File::open(path)?;
@@ -99,9 +96,10 @@ fn main() {
         let mut shader_source = String::new();
 
         for (name, shader) in shaders {
-            if let (&Some(ref vertex), &Some(ref fragment)) =
+            if let (Some(ref vertex), Some(ref fragment)) =
                 (&shader.vertex_source, &shader.fragment_source)
             {
+                #[allow(clippy::format_in_format_args)]
                 shader_source.push_str(
                         &format!("pub static {}_VERT: &'static str = {};\n\npub static {}_FRAG: &'static str = {};\n\n",
                                 name,
@@ -111,6 +109,6 @@ fn main() {
             }
         }
 
-        write_file(&format!("{}/shader_source.rs", &out_dir), &shader_source).unwrap();
+        write_file(format!("{}/shader_source.rs", &out_dir), &shader_source).unwrap();
     }
 }

@@ -19,7 +19,7 @@ impl Ssbo {
 
         utils::assert(handle != 0);
 
-        Ssbo { handle: handle, marker: PhantomData }
+        Ssbo { handle, marker: PhantomData }
     }
 
     #[inline]

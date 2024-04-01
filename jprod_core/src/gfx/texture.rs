@@ -85,7 +85,7 @@ impl RawTexture {
         utils::assert(handle != 0);
 
         RawTexture {
-            handle: handle,
+            handle,
             marker: PhantomData,
         }
     }
@@ -109,7 +109,7 @@ impl Texture {
         let texture = RawTexture::new();
 
         Texture {
-            texture: texture,
+            texture,
             format: None,
         }
     }

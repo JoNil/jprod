@@ -1,9 +1,4 @@
-use std::convert::From;
-use std::error::Error;
-use std::fmt;
-use std::fs;
-use std::path::PathBuf;
-use std::process::Command;
+use std::{convert::From, error::Error, fmt, fs, path::PathBuf, process::Command};
 
 #[derive(Debug)]
 enum PackerError {
@@ -26,20 +21,18 @@ impl fmt::Display for PackerError {
     }
 }
 
-fn find_obj_files() -> Result<Vec<PathBuf>, Box<Error>> {
-
+fn find_obj_files() -> Result<Vec<PathBuf>, Box<dyn Error>> {
     let mut result = Vec::new();
 
     if let Ok(rd) = fs::read_dir("../jprod/target/release/deps") {
         for entry in rd
             .filter_map(|e| e.ok())
             .map(|e| e.path())
-            .filter(|p| p.is_file()) {
-
+            .filter(|p| p.is_file())
+        {
             let extension = entry.extension().unwrap().to_str().unwrap();
 
             if extension == "o" {
-
                 result.push(entry.to_owned())
             }
         }
@@ -48,12 +41,11 @@ fn find_obj_files() -> Result<Vec<PathBuf>, Box<Error>> {
     Ok(result)
 }
 
-fn run() -> Result<(), Box<Error>> {
-
+fn run() -> Result<(), Box<dyn Error>> {
     let build_status = Command::new("cargo")
-            .current_dir("../jprod/")
-            .args(["build", "--release"])
-            .status()?;
+        .current_dir("../jprod/")
+        .args(["build", "--release"])
+        .status()?;
 
     if !build_status.success() {
         return Err(From::from(PackerError::BuildFailed));
@@ -65,9 +57,9 @@ fn run() -> Result<(), Box<Error>> {
             .arg("/OUT:jprod.exe")
             .arg("/SUBSYSTEM:WINDOWS")
             .args(&obj_files)
-            .arg("../lib/msvcrt-light.lib")
-            .arg("/LIBPATH:C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.13.26128/lib/x86")
-            .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.16299.0/um/x86")
+            .arg("../lib/msvcrt-light-x64.lib")
+            .arg("/LIBPATH:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/lib/x64")
+            .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64")
             .args(["kernel32.lib", "user32.lib", "opengl32.lib", "gdi32.lib"])
             .status()?;
 
@@ -81,6 +73,6 @@ fn run() -> Result<(), Box<Error>> {
 pub fn main() {
     match run() {
         Ok(()) => println!("Success!"),
-        Err(e) => println!("{}", e.description()),
+        Err(e) => println!("{}", e),
     }
 }
