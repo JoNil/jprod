@@ -1,6 +1,8 @@
-use core::{arch::x86_64::*, mem};
-use math;
-use math::Vec4;
+use core::{
+    arch::x86_64::*,
+    mem::{self, MaybeUninit},
+};
+use math::{self, Vec4};
 use random::Rng;
 
 #[derive(Copy, Clone)]
@@ -246,15 +248,13 @@ impl Mat4 {
             let z = _mm_mul_ps(z, r_det_m);
             let w = _mm_mul_ps(w, r_det_m);
 
-            let mut res: Mat4 = mem::uninitialized();
-
             // apply adjugate and store, here we combine adjugate shuffle and store shuffle
-            res.m_0 = vec4_shuffle!(Vec4(x), Vec4(y), 3, 1, 3, 1);
-            res.m_1 = vec4_shuffle!(Vec4(x), Vec4(y), 2, 0, 2, 0);
-            res.m_2 = vec4_shuffle!(Vec4(z), Vec4(w), 3, 1, 3, 1);
-            res.m_3 = vec4_shuffle!(Vec4(z), Vec4(w), 2, 0, 2, 0);
-
-            res
+            Mat4 {
+                m_0: vec4_shuffle!(Vec4(x), Vec4(y), 3, 1, 3, 1),
+                m_1: vec4_shuffle!(Vec4(x), Vec4(y), 2, 0, 2, 0),
+                m_2: vec4_shuffle!(Vec4(z), Vec4(w), 3, 1, 3, 1),
+                m_3: vec4_shuffle!(Vec4(z), Vec4(w), 2, 0, 2, 0),
+            }
         }
     }
 
@@ -275,54 +275,6 @@ impl Mat4 {
 
     #[inline]
     pub extern "vectorcall" fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    pub extern "vectorcall" fn as_flat_tuple(
-        &self,
-    ) -> &(
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-    ) {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    pub extern "vectorcall" fn as_flat_tuple_mut(
-        &mut self,
-    ) -> &mut (
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-        f32,
-    ) {
         unsafe { mem::transmute(self) }
     }
 
@@ -356,7 +308,12 @@ impl Mat4 {
 
     #[inline]
     pub extern "vectorcall" fn mul(self, rhs: Mat4) -> Mat4 {
-        let mut res: Mat4 = unsafe { mem::uninitialized() };
+        let mut res: Mat4 = Mat4 {
+            m_0: Vec4::zero(),
+            m_1: Vec4::zero(),
+            m_2: Vec4::zero(),
+            m_3: Vec4::zero(),
+        };
 
         {
             let b = rhs.as_array();

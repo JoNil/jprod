@@ -1,4 +1,8 @@
-use core::{default::Default, mem, ptr};
+use core::{
+    default::Default,
+    mem::{self, MaybeUninit},
+    ptr,
+};
 use gfx;
 use utils;
 use win32::{self, types::*};
@@ -341,17 +345,21 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
         utils::assert(suggested_pixel_format_index != 0);
     }
 
-    let mut suggested_pixel_format = unsafe { mem::uninitialized() };
+    let mut suggested_pixel_format = MaybeUninit::uninit();
     utils::assert(
         win32::describe_pixel_format(
             dc,
             suggested_pixel_format_index,
             mem::size_of::<PixelFormatDescriptor>() as u32,
-            &mut suggested_pixel_format,
+            suggested_pixel_format.as_mut_ptr(),
         ) != 0,
     );
 
     utils::assert(
-        win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) != 0,
+        win32::set_pixel_format(
+            dc,
+            suggested_pixel_format_index,
+            suggested_pixel_format.as_ptr(),
+        ) != 0,
     );
 }

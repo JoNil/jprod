@@ -1,35 +1,30 @@
-use core::mem;
-
-#[cfg(target_arch = "x86")]
-use core::arch::x86::*;
-#[cfg(target_arch = "x86_64")]
-use core::arch::x86_64::*;
+use core::{arch::x86_64::*, mem};
 
 #[macro_export]
 macro_rules! vec4_swizzle {
     ($v:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {{
-        #[cfg(target_arch = "x86")]
-        use core::arch::x86::*;
-        #[cfg(target_arch = "x86_64")]
         use core::arch::x86_64::*;
 
-        $crate::math::Vec4(unsafe {
-            _mm_shuffle_ps($v.0, $v.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
-        })
+        $crate::math::Vec4(
+            #[allow(unused_unsafe)]
+            unsafe {
+                _mm_shuffle_ps($v.0, $v.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
+            },
+        )
     }};
 }
 
 #[macro_export]
 macro_rules! vec4_shuffle {
     ($lhs:expr, $rhs:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {{
-        #[cfg(target_arch = "x86")]
-        use core::arch::x86::*;
-        #[cfg(target_arch = "x86_64")]
         use core::arch::x86_64::*;
 
-        $crate::math::Vec4(unsafe {
-            _mm_shuffle_ps($lhs.0, $rhs.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
-        })
+        $crate::math::Vec4(
+            #[allow(unused_unsafe)]
+            unsafe {
+                _mm_shuffle_ps($lhs.0, $rhs.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
+            },
+        )
     }};
 }
 

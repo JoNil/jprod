@@ -1,4 +1,7 @@
-use core::{arch::asm, mem};
+use core::{
+    arch::asm,
+    mem::{self, MaybeUninit},
+};
 use math::Vec4;
 
 pub use core::f32::consts::*;
@@ -6,44 +9,44 @@ pub use core::f32::*;
 
 #[inline(always)]
 pub fn sin(a: f32) -> f32 {
-    let mut res: f32 = unsafe { mem::uninitialized() };
+    let mut res: MaybeUninit<f32> = MaybeUninit::uninit();
 
     unsafe {
         asm!(
             "fld dword ptr [{1}]",
             "fsin",
             "fstp dword ptr [{0}]",
-            in(reg) &mut res as *mut f32,
+            in(reg) res.as_mut_ptr(),
             in(reg) &a,
             options(nostack),
         );
-    }
 
-    res
+        res.assume_init()
+    }
 }
 
 #[inline(always)]
 pub fn cos(a: f32) -> f32 {
-    let mut res: f32 = unsafe { mem::uninitialized() };
+    let mut res: MaybeUninit<f32> = MaybeUninit::uninit();
 
     unsafe {
         asm!(
             "fld dword ptr [{1}]",
             "fcos",
             "fstp dword ptr [{0}]",
-            in(reg) &mut res as *mut f32,
+            in(reg) res.as_mut_ptr(),
             in(reg) &a,
             options(nostack),
         );
-    }
 
-    res
+        res.assume_init()
+    }
 }
 
 #[inline(always)]
 pub fn sin_cos(a: f32) -> (f32, f32) {
-    let mut res_sin: f32 = unsafe { mem::uninitialized() };
-    let mut res_cos: f32 = unsafe { mem::uninitialized() };
+    let mut res_sin: MaybeUninit<f32> = MaybeUninit::uninit();
+    let mut res_cos: MaybeUninit<f32> = MaybeUninit::uninit();
 
     unsafe {
         asm!(
@@ -51,14 +54,14 @@ pub fn sin_cos(a: f32) -> (f32, f32) {
             "fsincos",
             "fstp dword ptr [{1}]",
             "fstp dword ptr [{0}]",
-            in(reg) &mut res_sin as *mut f32,
-            in(reg) &mut res_cos as *mut f32,
+            in(reg) res_sin.as_mut_ptr(),
+            in(reg) res_cos.as_mut_ptr(),
             in(reg) &a,
             options(nostack),
         );
-    }
 
-    (res_sin, res_cos)
+        (res_sin.assume_init(), res_cos.assume_init())
+    }
 }
 
 #[inline(always)]

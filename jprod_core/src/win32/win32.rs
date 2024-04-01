@@ -423,16 +423,9 @@ pub fn describe_pixel_format(
     dc: DcHandle,
     pixel_format: i32,
     bytes: u32,
-    descriptor: &mut PixelFormatDescriptor,
+    descriptor: *mut PixelFormatDescriptor,
 ) -> i32 {
-    unsafe {
-        DescribePixelFormat(
-            dc,
-            pixel_format,
-            bytes,
-            descriptor as *mut PixelFormatDescriptor,
-        )
-    }
+    unsafe { DescribePixelFormat(dc, pixel_format, bytes, descriptor) }
 }
 
 #[inline]
