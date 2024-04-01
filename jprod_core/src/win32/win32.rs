@@ -1,7 +1,5 @@
 use c_types::*;
-use core::default::Default;
-use core::mem;
-use core::ptr;
+use core::{mem, ptr};
 use utils;
 use win32::types::*;
 

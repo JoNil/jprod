@@ -1,11 +1,7 @@
-use core::{
-    arch::asm,
-    mem::{self, MaybeUninit},
-};
+use core::{arch::asm, mem::MaybeUninit};
 use math::Vec4;
 
-pub use core::f32::consts::*;
-pub use core::f32::*;
+pub use core::f32::{consts::*, *};
 
 #[inline(always)]
 pub fn sin(a: f32) -> f32 {

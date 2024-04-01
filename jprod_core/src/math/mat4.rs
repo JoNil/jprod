@@ -1,7 +1,4 @@
-use core::{
-    arch::x86_64::*,
-    mem::{self, MaybeUninit},
-};
+use core::{arch::x86_64::*, mem};
 use math::{self, Vec4};
 use random::Rng;
 
@@ -16,7 +13,7 @@ pub struct Mat4 {
 
 impl Mat4 {
     #[inline]
-    pub extern "vectorcall" fn identity() -> Mat4 {
+    pub fn identity() -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
             m_1: Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
@@ -26,7 +23,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
+    pub fn axis(x: Vec4, y: Vec4, z: Vec4) -> Mat4 {
         Mat4 {
             m_0: x.with_w(0.0),
             m_1: y.with_w(0.0),
@@ -36,7 +33,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn translate(pos: Vec4) -> Mat4 {
+    pub fn translate(pos: Vec4) -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(1.0, 0.0, 0.0, 0.0),
             m_1: Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
@@ -46,7 +43,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn scale_xyz(x: f32, y: f32, z: f32) -> Mat4 {
+    pub fn scale_xyz(x: f32, y: f32, z: f32) -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(x, 0.0, 0.0, 0.0),
             m_1: Vec4::xyzw(0.0, y, 0.0, 0.0),
@@ -56,7 +53,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn scale(s: f32) -> Mat4 {
+    pub fn scale(s: f32) -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(s, 0.0, 0.0, 0.0),
             m_1: Vec4::xyzw(0.0, s, 0.0, 0.0),
@@ -66,12 +63,12 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
+    pub fn rotate_deg(angle: f32, axis: Vec4) -> Mat4 {
         Mat4::rotate(angle * math::PI / 180.0, axis)
     }
 
     #[inline]
-    pub extern "vectorcall" fn rotate(angle: f32, axis: Vec4) -> Mat4 {
+    pub fn rotate(angle: f32, axis: Vec4) -> Mat4 {
         let mut temp = Mat4::identity();
 
         let (s, c) = math::sin_cos(angle);
@@ -107,7 +104,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn random_rotation(rng: &mut Rng) -> Mat4 {
+    pub fn random_rotation(rng: &mut Rng) -> Mat4 {
         let a = Vec4::xyz(
             rng.next_f32() - 0.5,
             rng.next_f32() - 0.5,
@@ -128,14 +125,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn frustum(
-        left: f32,
-        right: f32,
-        bottom: f32,
-        top: f32,
-        near: f32,
-        far: f32,
-    ) -> Mat4 {
+    pub fn frustum(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(2.0 * near / (right - left), 0.0, 0.0, 0.0),
             m_1: Vec4::xyzw(0.0, 2.0 * near / (top - bottom), 0.0, 0.0),
@@ -150,19 +140,14 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn perspective(
-        horizontal_fov: f32,
-        aspect_ratio: f32,
-        near: f32,
-        far: f32,
-    ) -> Mat4 {
+    pub fn perspective(horizontal_fov: f32, aspect_ratio: f32, near: f32, far: f32) -> Mat4 {
         let height = near * math::tan(horizontal_fov * math::PI / 360.0);
         let width = height * aspect_ratio;
         Mat4::frustum(-width, width, -height, height, near, far)
     }
 
     #[inline]
-    pub extern "vectorcall" fn transposed(&self) -> Mat4 {
+    pub fn transposed(&self) -> Mat4 {
         Mat4 {
             m_0: Vec4::xyzw(self.m_0.x(), self.m_1.x(), self.m_2.x(), self.m_3.x()),
             m_1: Vec4::xyzw(self.m_0.y(), self.m_1.y(), self.m_2.y(), self.m_3.y()),
@@ -172,7 +157,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn inverted(&self) -> Mat4 {
+    pub fn inverted(&self) -> Mat4 {
         // Based on: https://lxjk.github.io/2017/09/03/Fast-4x4-Matrix-Inverse-with-SSE-SIMD-Explained.html
 
         #[inline(always)]
@@ -259,27 +244,27 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn as_array(&self) -> &[f32; 16] {
+    pub fn as_array(&self) -> &[f32; 16] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    pub extern "vectorcall" fn as_array_mut(&mut self) -> &mut [f32; 16] {
+    pub fn as_array_mut(&mut self) -> &mut [f32; 16] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    pub extern "vectorcall" fn as_vec4_array(&self) -> &[Vec4; 4] {
+    pub fn as_vec4_array(&self) -> &[Vec4; 4] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    pub extern "vectorcall" fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
+    pub fn as_vec4_array_mut(&mut self) -> &mut [Vec4; 4] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    pub extern "vectorcall" fn as_tuples(
+    pub fn as_tuples(
         &self,
     ) -> &(
         (f32, f32, f32, f32),
@@ -291,7 +276,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn transform(self, rhs: Vec4) -> Vec4 {
+    pub fn transform(self, rhs: Vec4) -> Vec4 {
         let col1 = self.m_0;
         let col2 = self.m_1;
         let col3 = self.m_2;
@@ -307,7 +292,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub extern "vectorcall" fn mul(self, rhs: Mat4) -> Mat4 {
+    pub fn mul(self, rhs: Mat4) -> Mat4 {
         let mut res: Mat4 = Mat4 {
             m_0: Vec4::zero(),
             m_1: Vec4::zero(),

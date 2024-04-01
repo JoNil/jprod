@@ -7,9 +7,6 @@ build = "build.rs"
 
 [dependencies]
 
-[features]
-use_std = []
-
 [profile.release]
 opt-level = 3
 debug-assertions = false

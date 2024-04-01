@@ -1,5 +1,4 @@
 use core::{
-    default::Default,
     mem::{self, MaybeUninit},
     ptr,
 };

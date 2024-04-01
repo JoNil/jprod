@@ -1,11 +1,5 @@
-#![feature(abi_vectorcall)]
 #![feature(core_intrinsics)]
-#![cfg_attr(not(feature = "use_std"), no_std)]
-
-#[cfg(feature = "use_std")]
-mod core {
-    pub use std::*;
-}
+#![no_std]
 
 pub mod c_types;
 pub mod camera;
