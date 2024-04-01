@@ -1,8 +1,6 @@
 use super::{gl, pso::Pso, shader::Shader, ssbo::Ssbo, target::Target, texture::Texture, Context};
-use c_types::c_void;
+use crate::{c_types::c_void, gfx, utils};
 use core::{marker::PhantomData, mem, ptr};
-use gfx;
-use utils;
 
 #[allow(dead_code)]
 #[derive(Copy, Clone, Eq, PartialEq)]

@@ -1,6 +1,8 @@
+use crate::{
+    math::{self, Vec4},
+    random::Rng,
+};
 use core::{arch::x86_64::*, mem};
-use math::{self, Vec4};
-use random::Rng;
 
 #[derive(Copy, Clone)]
 #[repr(C)]

@@ -1,5 +1,5 @@
+use crate::math::Vec4;
 use core::{arch::asm, mem::MaybeUninit};
-use math::Vec4;
 
 pub use core::f32::{consts::*, *};
 

@@ -1,4 +1,4 @@
-use c_types::c_void;
+use crate::c_types::c_void;
 
 pub type Atom = u16;
 pub type BrushHandle = *mut c_void;
@@ -13,7 +13,8 @@ pub type MenuHandle = *mut c_void;
 pub type ModuleHandle = *mut c_void;
 pub type Proc = *mut c_void;
 pub type WindowHandle = *mut c_void;
-pub type WindowProc = extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
+pub type WindowProc =
+    extern "system" fn(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
 
 pub const CS_HREDRAW: u32 = 0x0002;
 pub const CS_OWNDC: u32 = 0x0020;
@@ -68,7 +69,8 @@ pub const WS_CAPTION: u32 = 0x00C00000;
 pub const WS_MAXIMIZEBOX: u32 = 0x00010000;
 pub const WS_MINIMIZEBOX: u32 = 0x00020000;
 pub const WS_OVERLAPPED: u32 = 0x00000000;
-pub const WS_OVERLAPPEDWINDOW: u32 = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+pub const WS_OVERLAPPEDWINDOW: u32 =
+    WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 pub const WS_SYSMENU: u32 = 0x00080000;
 pub const WS_THICKFRAME: u32 = 0x00040000;
 pub const WS_VISIBLE: u32 = 0x10000000;

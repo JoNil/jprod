@@ -2,23 +2,7 @@
 name = "jprod"
 version = "0.1.0"
 authors = ["Jonathan"]
+edition = "2021"
 
 [dependencies]
 jprod_core = { path = "../jprod_core" }
-
-[profile.release]
-debug-assertions = false
-panic = "abort"
-debug = false
-lto = true
-
-[profile.dev]
-debug-assertions = true
-panic = "abort"
-debug = true
-lto = true
-
-[profile.test]
-opt-level = 3
-debug = true
-lto = true

@@ -1,10 +1,11 @@
+use crate::{
+    gfx, utils,
+    win32::{self, types::*},
+};
 use core::{
     mem::{self, MaybeUninit},
     ptr,
 };
-use gfx;
-use utils;
-use win32::{self, types::*};
 
 static WINDOW_NAME: &[u8] = b"JProd\n\0";
 static WINDOW_CLASS: &[u8] = b"C\0";

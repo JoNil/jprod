@@ -1,9 +1,8 @@
 use super::gl;
 use super::Context;
+use crate::{utils, win32};
 use core::marker::PhantomData;
 use core::ptr;
-use utils;
-use win32;
 
 struct RawProgram {
     handle: u32,

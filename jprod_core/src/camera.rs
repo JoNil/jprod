@@ -1,7 +1,5 @@
-use math::Mat4;
-use math::Vec4;
-use math;
-use window::Window;
+use super::window::Window;
+use crate::math::{self, Mat4, Vec4};
 
 const NEAR: f32 = 0.01;
 const FAR: f32 = 1000.0;
@@ -42,7 +40,6 @@ impl Camera {
 
     #[inline]
     pub fn update(&mut self, window: &Window, dt: f32) {
-
         {
             let size = window.get_size();
 
@@ -70,7 +67,7 @@ impl Camera {
             self.pos = self.pos.add(self.up.mul(dt));
         }
 
-        if actions.reset_camera.active || actions.reset_camera.half_transition_count > 1  {
+        if actions.reset_camera.active || actions.reset_camera.half_transition_count > 1 {
             self.pos = Vec4::xyz(0.0, 0.0, 1.0);
             self.x_angle = 0.0;
             self.y_angle = 0.0;
@@ -84,16 +81,23 @@ impl Camera {
                 self.y_angle += self.previus_mouse_offset.1 - mouse_offset.1;
             }
 
-            self.y_angle = math::clamp(self.y_angle, -math::FRAC_PI_2 + 0.01, math::FRAC_PI_2 - 0.01);
+            self.y_angle = math::clamp(
+                self.y_angle,
+                -math::FRAC_PI_2 + 0.01,
+                math::FRAC_PI_2 - 0.01,
+            );
             //self.x_angle = self.x_angle % 2.0*math::consts::PI;
 
             let y_axis = Vec4::xyz(0.0, 1.0, 0.0);
             let neg_z_axis = Vec4::xyz(0.0, 0.0, -1.0);
 
-            let rotated_dir_x = Mat4::rotate(self.x_angle, y_axis).transform(neg_z_axis.with_w(1.0));
+            let rotated_dir_x =
+                Mat4::rotate(self.x_angle, y_axis).transform(neg_z_axis.with_w(1.0));
 
             self.right = rotated_dir_x.cross(y_axis).normalized();
-            self.forward = Mat4::rotate(self.y_angle, self.right).transform(rotated_dir_x.with_w(1.0)).normalized();
+            self.forward = Mat4::rotate(self.y_angle, self.right)
+                .transform(rotated_dir_x.with_w(1.0))
+                .normalized();
             self.up = self.right.cross(self.forward).normalized();
 
             self.previus_mouse_offset = mouse_offset;
@@ -102,7 +106,6 @@ impl Camera {
 
     #[inline]
     pub fn get_view_projection(&self) -> Mat4 {
-
         let pos = Mat4::translate(self.pos.neg());
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 
@@ -127,7 +130,6 @@ impl Camera {
 
 #[inline]
 fn get_mouse_offset(window: &Window) -> (f32, f32) {
-    
     let mouse = window.get_mouse_pos();
     let size = window.get_size();
 
@@ -136,8 +138,5 @@ fn get_mouse_offset(window: &Window) -> (f32, f32) {
     let width = size.0 as f32;
     let height = size.1 as f32;
 
-    (
-        2.0 * mouse_x / width - 1.0,
-        2.0 * mouse_y / height + 1.0,
-    )
+    (2.0 * mouse_x / width - 1.0, 2.0 * mouse_y / height + 1.0)
 }

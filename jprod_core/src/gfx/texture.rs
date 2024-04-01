@@ -1,9 +1,6 @@
-use super::gl;
-use super::Context;
-use c_types::c_void;
-use core::marker::PhantomData;
-use core::ptr;
-use utils;
+use super::{gl, Context};
+use crate::{c_types::c_void, utils};
+use core::{marker::PhantomData, ptr};
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum Format {

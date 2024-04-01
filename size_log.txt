@@ -15,3 +15,4 @@ Opt
 13312 - Don't have two copies of generator code
 13312 - Remove ntdll sin/cos in asm
 12800 - Use sqishy
+12055 - Less wierd intrinsics

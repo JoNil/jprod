@@ -1,11 +1,10 @@
-#![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 
-use c_types::*;
+use crate::c_types::*;
+use crate::win32;
 use core::mem;
-use win32;
 
 // Common types from OpenGL 1.1
 pub type GLenum = c_uint;

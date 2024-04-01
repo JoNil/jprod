@@ -1,4 +1,4 @@
-use win32;
+use crate::win32;
 
 static mut FREQUENCY: i64 = 0;
 

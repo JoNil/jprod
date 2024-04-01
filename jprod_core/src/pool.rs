@@ -1,7 +1,5 @@
-use c_types::c_void;
+use crate::{c_types::c_void, utils, win32};
 use core::{cell::Cell, mem, slice};
-use utils;
-use win32;
 
 pub struct Pool {
     memory: *mut u8,

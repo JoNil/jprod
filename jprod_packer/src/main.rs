@@ -31,9 +31,9 @@ fn run() -> Result<(), Box<dyn Error>> {
         return Err(From::from(PackerError::BuildFailed));
     }
 
-    let output = Command::new("../tools/squishy-x64.exe")
+    let output = Command::new("tools/squishy-x64.exe")
         .args(["-o", "jprod.exe"])
-        .args(["-i", "../jprod/target/release/jprod.exe"])
+        .args(["-i", "target/release/jprod.exe"])
         .status()?;
 
     if !output.success() {

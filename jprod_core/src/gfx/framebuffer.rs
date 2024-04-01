@@ -1,9 +1,10 @@
-use super::gl;
-use super::texture::Format;
-use super::texture::Texture;
-use super::Context;
+use super::{
+    gl,
+    texture::{Format, Texture},
+    Context,
+};
+use crate::utils;
 use core::marker::PhantomData;
-use utils;
 
 #[derive(Copy, Clone)]
 pub enum Attachment {

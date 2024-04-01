@@ -7,9 +7,9 @@ pub mod ssbo;
 pub mod target;
 pub mod texture;
 
-use c_types;
+use crate::c_types;
+use crate::win32;
 use core::ptr;
-use win32;
 
 // TODO: Make into struct
 pub unsafe trait Context {}

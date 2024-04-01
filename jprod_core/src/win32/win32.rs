@@ -1,7 +1,5 @@
-use c_types::*;
+use crate::{c_types::*, utils, win32::types::*};
 use core::{mem, ptr};
-use utils;
-use win32::types::*;
 
 #[link(name = "kernel32")]
 #[allow(dead_code)]
@@ -55,7 +53,7 @@ extern "system" {
 #[inline]
 pub fn output_debug_string(string: &[u8]) {
     unsafe {
-        OutputDebugStringA(&*string.get_unchecked(0));
+        OutputDebugStringA(string.get_unchecked(0));
     }
 }
 

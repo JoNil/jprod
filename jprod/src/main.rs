@@ -37,7 +37,7 @@
 // Optimizations
 // Downsample every bloom blur pass
 
-#[link(name = "../lib/msvcrt-light-x64", kind = "static")]
+#[link(name = "lib/msvcrt-light-x64", kind = "static")]
 extern "C" {}
 
 extern crate jprod_core;

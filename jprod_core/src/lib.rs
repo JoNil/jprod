@@ -1,4 +1,3 @@
-#![feature(core_intrinsics)]
 #![no_std]
 
 pub mod c_types;
