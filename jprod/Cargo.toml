@@ -9,7 +9,7 @@ jprod_core = { path = "../jprod_core" }
 [profile.release]
 debug-assertions = false
 panic = "abort"
-debug = true
+debug = false
 lto = true
 
 [profile.dev]

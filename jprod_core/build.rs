@@ -44,58 +44,54 @@ fn main() {
 
     let shaders = Mutex::new(HashMap::new());
 
-    crossbeam::scope(|scope| {
-        let shaders = &shaders;
-        let out_dir = &out_dir;
+    let shaders = &shaders;
+    let out_dir = &out_dir;
 
-        if let Ok(rd) = fs::read_dir("src/shaders") {
-            for entry in rd
-                .filter_map(|e| e.ok())
-                .map(|e| e.path())
-                .filter(|p| p.is_file())
-            {
-                scope.spawn(move || {
-                    let name = entry.file_stem().unwrap().to_str().unwrap().to_uppercase();
-                    let extension = entry.extension().unwrap().to_str().unwrap();
+    if let Ok(rd) = fs::read_dir("src/shaders") {
+        for entry in rd
+            .filter_map(|e| e.ok())
+            .map(|e| e.path())
+            .filter(|p| p.is_file())
+        {
+            let name = entry.file_stem().unwrap().to_str().unwrap().to_uppercase();
+            let extension = entry.extension().unwrap().to_str().unwrap();
 
-                    if extension == "vert" || extension == "frag" {
-                        let minified_name = format!(
-                            "{}/{}_min.{}",
-                            out_dir,
-                            entry.file_stem().unwrap().to_str().unwrap(),
-                            extension
-                        );
+            if extension == "vert" || extension == "frag" {
+                let minified_name = format!(
+                    "{}/{}_min.{}",
+                    out_dir,
+                    entry.file_stem().unwrap().to_str().unwrap(),
+                    extension
+                );
 
-                        let minifier_output = Command::new("../tools/shader_minifier.exe")
-                            .arg(entry.to_str().unwrap())
-                            .arg("--format")
-                            .arg("none")
-                            .arg("--preserve-externals")
-                            .arg("-o")
-                            .arg(&minified_name)
-                            .status()
-                            .unwrap();
+                let minifier_output = Command::new("../tools/shader_minifier.exe")
+                    .arg(entry.to_str().unwrap())
+                    .arg("--format")
+                    .arg("none")
+                    .arg("--preserve-externals")
+                    .arg("-o")
+                    .arg(&minified_name)
+                    .status()
+                    .unwrap();
 
-                        if !minifier_output.success() {
-                            panic!();
-                        }
+                if !minifier_output.success() {
+                    panic!();
+                }
 
-                        {
-                            let mut shaders = shaders.lock().unwrap();
+                {
+                    let mut shaders = shaders.lock().unwrap();
 
-                            let shader = shaders.entry(name).or_insert(ShaderData::new());
+                    let shader = shaders.entry(name).or_insert(ShaderData::new());
 
-                            if extension == "vert" {
-                                shader.vertex_source = Some(read_file(&minified_name).unwrap());
-                            } else if extension == "frag" {
-                                shader.fragment_source = Some(read_file(&minified_name).unwrap());
-                            }
-                        }
+                    if extension == "vert" {
+                        shader.vertex_source = Some(read_file(&minified_name).unwrap());
+                    } else if extension == "frag" {
+                        shader.fragment_source = Some(read_file(&minified_name).unwrap());
                     }
-                });
+                }
             }
         }
-    });
+    }
 
     let shaders = &*shaders.lock().unwrap();
 

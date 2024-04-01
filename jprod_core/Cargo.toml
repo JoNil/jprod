@@ -7,9 +7,6 @@ build = "build.rs"
 
 [dependencies]
 
-[build-dependencies]
-crossbeam = "0.3"
-
 [features]
 use_std = []
 
@@ -17,7 +14,7 @@ use_std = []
 opt-level = 3
 debug-assertions = false
 panic = "abort"
-debug = true
+debug = false
 lto = true
 
 [profile.dev]

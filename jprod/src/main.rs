@@ -36,42 +36,30 @@
 // Optimizations
 // Downsample every bloom blur pass
 
-#[cfg_attr(
-    target_pointer_width = "64",
-    link(name = "../lib/msvcrt-light-x64", kind = "static")
-)]
-#[cfg_attr(
-    target_pointer_width = "32",
-    link(name = "/lib/msvcrt-light", kind = "static")
-)]
-//#[link(name = "libcmt", kind = "static")]
-//#[link(name = "vcruntime", kind = "static")]
+#[link(name = "../lib/msvcrt-light-x64", kind = "static")]
 extern "C" {}
 
 extern crate jprod_core;
 
 use core::panic::PanicInfo;
-use jprod_core::camera::Camera;
-use jprod_core::gen;
-use jprod_core::gfx;
-use jprod_core::gfx::mesh::Mesh;
-use jprod_core::gfx::mesh::Primitive;
-use jprod_core::gfx::pso::Pso;
-use jprod_core::gfx::shader::Shader;
-use jprod_core::gfx::ssbo::Ssbo;
-use jprod_core::gfx::target::Target;
-use jprod_core::gfx::texture::Format;
-use jprod_core::math;
-use jprod_core::math::Mat4;
-use jprod_core::math::Vec4;
-use jprod_core::pool::Pool;
-use jprod_core::pool::PoolAllocator;
-use jprod_core::random::Rng;
-use jprod_core::shaders;
-use jprod_core::time;
-use jprod_core::utils;
-use jprod_core::win32;
-use jprod_core::window::Window;
+use jprod_core::{
+    camera::Camera,
+    gen,
+    gfx::{
+        self,
+        mesh::{Mesh, Primitive},
+        pso::Pso,
+        shader::Shader,
+        ssbo::Ssbo,
+        target::Target,
+        texture::Format,
+    },
+    math::{self, Mat4, Vec4},
+    pool::{Pool, PoolAllocator},
+    random::Rng,
+    shaders, time, utils, win32,
+    window::Window,
+};
 
 const INSTANCE_COUNT: i32 = 40_000;
 
@@ -408,28 +396,18 @@ fn main() {
     }
 }
 
-#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "64"))]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
     main();
 }
 
-#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "64"))]
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn mainCRTStartup() {
     main();
 }
 
-#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "32"))]
-#[allow(non_snake_case)]
-#[no_mangle]
-pub extern "cdecl" fn WinMainCRTStartup() {
-    main();
-}
-
-#[cfg(all(not(test), not(feature = "use_std")))]
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     utils::debug_trap();

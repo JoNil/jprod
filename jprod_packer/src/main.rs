@@ -52,7 +52,7 @@ fn run() -> Result<(), Box<Error>> {
 
     let build_status = Command::new("cargo")
             .current_dir("../jprod/")
-            .args(&["build", "--release"])
+            .args(["build", "--release"])
             .status()?;
 
     if !build_status.success() {
@@ -68,7 +68,7 @@ fn run() -> Result<(), Box<Error>> {
             .arg("../lib/msvcrt-light.lib")
             .arg("/LIBPATH:C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.13.26128/lib/x86")
             .arg("/LIBPATH:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.16299.0/um/x86")
-            .args(&["kernel32.lib", "user32.lib", "opengl32.lib", "gdi32.lib"])
+            .args(["kernel32.lib", "user32.lib", "opengl32.lib", "gdi32.lib"])
             .status()?;
 
     if !crinkler_output.success() {
