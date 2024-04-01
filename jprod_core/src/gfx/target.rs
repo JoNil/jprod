@@ -18,7 +18,7 @@ pub struct Target {
 
 impl Target {
     #[inline]
-    pub fn new(ctx: &Context, size: (i32, i32), formats: &[Option<Format>; 3], use_depth: bool) -> Target {
+    pub fn new(ctx: &dyn Context, size: (i32, i32), formats: &[Option<Format>; 3], use_depth: bool) -> Target {
 
         let mut framebuffer = Framebuffer::new(ctx);
         let mut texture1 = None;

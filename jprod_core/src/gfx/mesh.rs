@@ -98,7 +98,7 @@ pub struct Mesh {
 
 impl Mesh {
     #[inline]
-    pub fn new(_: &Context) -> Mesh {
+    pub fn new(_: &dyn Context) -> Mesh {
         Mesh {
             vao: RawVao::new(),
             vbos: [None, None, None],
@@ -263,7 +263,7 @@ impl Mesh {
 
 #[inline]
 fn draw_internal<F: FnMut()>(
-    context: &Context,
+    context: &dyn Context,
     pso: &Pso,
     shader: &Shader,
     target: Option<&Target>,

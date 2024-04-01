@@ -55,7 +55,7 @@ pub struct Framebuffer {
 
 impl Framebuffer {
     #[inline]
-    pub fn new(_: &Context) -> Framebuffer {
+    pub fn new(_: &dyn Context) -> Framebuffer {
 
         let framebuffer = RawFramebuffer::new();
 

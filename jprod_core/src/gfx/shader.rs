@@ -131,7 +131,7 @@ pub struct Shader {
 
 impl Shader {
     #[inline]
-    pub fn from_source(_: &Context, vertex_source: &str, fragment_source: &str) -> Shader {
+    pub fn from_source(_: &dyn Context, vertex_source: &str, fragment_source: &str) -> Shader {
 
         if let Some((program, vertex, fragment)) = load_shader(vertex_source.as_bytes(), fragment_source.as_bytes()) {
             return Shader {

@@ -1,5 +1,4 @@
 use core::arch::asm;
-use core::arch::x86_64::_mm_set_ps1;
 use core::mem;
 use math::Vec4;
 

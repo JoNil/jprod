@@ -105,7 +105,7 @@ pub struct Texture {
 
 impl Texture {
     #[inline]
-    pub fn new(_: &Context) -> Texture {
+    pub fn new(_: &dyn Context) -> Texture {
         let texture = RawTexture::new();
 
         Texture {
