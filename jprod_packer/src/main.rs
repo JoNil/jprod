@@ -1,4 +1,4 @@
-use std::{convert::From, error::Error, fmt, fs, path::PathBuf, process::Command};
+use std::{error::Error, fmt, fs, path::PathBuf, process::Command};
 
 #[derive(Debug)]
 enum PackerError {
