@@ -8,14 +8,15 @@ pub use core::f32::*;
 #[inline(always)]
 pub fn sin(a: f32) -> f32 {
     let mut res: f32 = unsafe { mem::uninitialized() };
-    let mut res_ptr = &mut res as *mut f32;
+
     unsafe {
         asm!(
-            "fld {1}",
+            "fld dword ptr [{1}]",
             "fsin",
-            "fst {0}",
-            out(reg) res_ptr,
+            "fstp dword ptr [{0}]",
+            in(reg) &mut res as *mut f32,
             in(reg) &a,
+            options(nostack),
         );
     }
 
@@ -25,14 +26,15 @@ pub fn sin(a: f32) -> f32 {
 #[inline(always)]
 pub fn cos(a: f32) -> f32 {
     let mut res: f32 = unsafe { mem::uninitialized() };
-    let mut res_ptr = &mut res as *mut f32;
+
     unsafe {
         asm!(
-            "fld {1}",
+            "fld dword ptr [{1}]",
             "fcos",
-            "fstp {0}",
-            out(reg) res_ptr,
+            "fstp dword ptr [{0}]",
+            in(reg) &mut res as *mut f32,
             in(reg) &a,
+            options(nostack),
         );
     }
 
@@ -43,9 +45,6 @@ pub fn cos(a: f32) -> f32 {
 pub fn sin_cos(a: f32) -> (f32, f32) {
     let mut res_sin: f32 = unsafe { mem::uninitialized() };
     let mut res_cos: f32 = unsafe { mem::uninitialized() };
-
-    let mut res_sin_ptr = &mut res_sin as *mut f32;
-    let mut res_cos_ptr = &mut res_cos as *mut f32;
 
     unsafe {
         asm!(
