@@ -1,6 +1,5 @@
 #![feature(abi_vectorcall)]
 #![feature(core_intrinsics)]
-#![feature(stmt_expr_attributes)]
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
 #[cfg(feature = "use_std")]

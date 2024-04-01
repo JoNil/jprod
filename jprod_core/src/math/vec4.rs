@@ -7,46 +7,37 @@ use core::arch::x86_64::*;
 
 #[macro_export]
 macro_rules! vec4_swizzle {
-    ($v:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {
+    ($v:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {{
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
 
-        #[allow(unused_unsafe)]
-        unsafe {
-
-            #[cfg(target_arch = "x86")]
-            use core::arch::x86::*;
-            #[cfg(target_arch = "x86_64")]
-            use core::arch::x86_64::*;
-
-            $crate::math::Vec4(_mm_shuffle_ps($v.0, $v.0, $x | ($y << 2) | ($z << 4) | ($w << 6)))
-        }
-    }
+        $crate::math::Vec4(unsafe {
+            _mm_shuffle_ps($v.0, $v.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
+        })
+    }};
 }
-
 
 #[macro_export]
 macro_rules! vec4_shuffle {
-    ($lhs:expr, $rhs:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {
+    ($lhs:expr, $rhs:expr, $x:expr, $y:expr, $z:expr, $w:expr) => {{
+        #[cfg(target_arch = "x86")]
+        use core::arch::x86::*;
+        #[cfg(target_arch = "x86_64")]
+        use core::arch::x86_64::*;
 
-        #[allow(unused_unsafe)]
-        unsafe {
-
-            #[cfg(target_arch = "x86")]
-            use core::arch::x86::*;
-            #[cfg(target_arch = "x86_64")]
-            use core::arch::x86_64::*;
-
-            $crate::math::Vec4(_mm_shuffle_ps($lhs.0, $rhs.0, $x | ($y << 2) | ($z << 4) | ($w << 6)))
-        }
-    }
+        $crate::math::Vec4(unsafe {
+            _mm_shuffle_ps($lhs.0, $rhs.0, $x | ($y << 2) | ($z << 4) | ($w << 6))
+        })
+    }};
 }
 
-
-#[repr(C)]
+#[repr(transparent)]
 #[derive(Copy, Clone)]
 pub struct Vec4(pub __m128);
 
 impl Vec4 {
-
     #[inline]
     pub extern "vectorcall" fn zero() -> Vec4 {
         unsafe { Vec4(_mm_set_ps(0.0, 0.0, 0.0, 0.0)) }
@@ -69,13 +60,20 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn from_slice(slice: &[f32; 3]) -> Vec4 {
-        unsafe { Vec4::xyzw(*slice.get_unchecked(0), *slice.get_unchecked(1), *slice.get_unchecked(2), 0.0) }
+        unsafe {
+            Vec4::xyzw(
+                *slice.get_unchecked(0),
+                *slice.get_unchecked(1),
+                *slice.get_unchecked(2),
+                0.0,
+            )
+        }
     }
 
     #[inline]
     pub extern "vectorcall" fn to_slice(self) -> [f32; 3] {
-        [ self.x(), self.y(), self.z() ]
-    }    
+        [self.x(), self.y(), self.z()]
+    }
 
     #[inline]
     pub extern "vectorcall" fn x(self) -> f32 {
@@ -165,14 +163,12 @@ impl Vec4 {
 
     #[inline]
     pub extern "vectorcall" fn dot(self, rhs: Vec4) -> f32 {
-        
         let temp = self.pairwise_mul(rhs);
         temp.x() + temp.y() + temp.z() + temp.w()
     }
 
     #[inline]
     pub extern "vectorcall" fn cross(self, rhs: Vec4) -> Vec4 {
-
         let a = vec4_swizzle!(self, 1, 2, 0, 3);
         let b = vec4_swizzle!(rhs, 2, 0, 1, 3);
 
@@ -203,7 +199,6 @@ impl Vec4 {
 
 #[test]
 fn vec4_test_access() {
-
     let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
     assert_eq!(a.x(), 1.0);
     assert_eq!(a.y(), 2.0);
@@ -213,7 +208,6 @@ fn vec4_test_access() {
 
 #[test]
 fn vec4_test_cross() {
-
     let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
     let b = Vec4::xyzw(5.0, 6.0, 7.0, 8.0);
     let c = a.cross(b);
