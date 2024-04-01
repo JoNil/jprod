@@ -105,8 +105,6 @@ impl Framebuffer {
     #[inline]
     pub fn clear(&mut self, attachment: Attachment, value: &[f32; 4]) {
 
-        tm_zone!("Framebuffer:clear");
-
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);
 
@@ -118,8 +116,6 @@ impl Framebuffer {
 
     #[inline]
     pub fn clear_depth(&mut self, value: &[f32; 1]) {
-
-        tm_zone!("Framebuffer:clear_depth");
 
         unsafe {
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.framebuffer.handle);

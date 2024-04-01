@@ -4,23 +4,21 @@ version = "0.1.0"
 authors = ["Jonathan"]
 
 [dependencies]
-telemetry = { path = "../../telemetry-rs", optional = true }
-telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
 jprod_core = { path = "../jprod_core" }
-
-[features]
-use_telemetry = ["telemetry", "jprod_core/telemetry"]
 
 [profile.release]
 debug-assertions = false
 panic = "abort"
 debug = true
+lto = true
 
 [profile.dev]
 debug-assertions = true
 panic = "abort"
 debug = true
+lto = true
 
 [profile.test]
 opt-level = 3
 debug = true
+lto = true

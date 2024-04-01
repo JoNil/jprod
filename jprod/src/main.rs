@@ -1,10 +1,6 @@
-#![feature(lang_items)]
-#![feature(link_args)]
-#![feature(panic_implementation)]
-
+#![windows_subsystem = "windows"]
 #![no_main]
 #![no_std]
-
 // TODO:
 // Fix normal not being rotated
 // Defered rendering
@@ -25,7 +21,7 @@
 //   - http://http.developer.nvidia.com/GPUGems/gpugems_ch23.html
 //   - http://www.crytek.com/download/Sousa_Graphics_Gems_CryENGINE3.pdf
 //   - http://ivizlab.sfu.ca/papers/cgf2012.pdf
-//   - 
+//   -
 // AA
 //   - https://github.com/playdeadgames/temporal
 //   - https://timothylottes.github.io/20110403.html
@@ -34,43 +30,40 @@
 // More intressting dna snake :)
 // Camera path
 
-// Cleanup
-// Remove query_manager from all draw calls
-
 // Inspiration
 // Doom: http://www.adriancourreges.com/blog/2016/09/09/doom-2016-graphics-study/
 
 // Optimizations
 // Downsample every bloom blur pass
 
-
-#[cfg_attr(target_pointer_width = "64", link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light-x64.lib libcmt.lib vcruntime.lib")]
-#[cfg_attr(target_pointer_width = "32", link_args = "/SUBSYSTEM:WINDOWS /EXPORT:NvOptimusEnablement /FIXED ../lib/msvcrt-light.lib libcmt.lib vcruntime.lib")]
+#[cfg_attr(
+    target_pointer_width = "64",
+    link(name = "../lib/msvcrt-light-x64", kind = "static")
+)]
+#[cfg_attr(
+    target_pointer_width = "32",
+    link(name = "/lib/msvcrt-light", kind = "static")
+)]
+//#[link(name = "libcmt", kind = "static")]
+//#[link(name = "vcruntime", kind = "static")]
 extern "C" {}
-
-#[cfg(feature = "use_telemetry")]
-extern crate telemetry;
-
-#[macro_use]
-extern crate telemetry_macro;
 
 extern crate jprod_core;
 
 use core::panic::PanicInfo;
 use jprod_core::camera::Camera;
 use jprod_core::gen;
+use jprod_core::gfx;
 use jprod_core::gfx::mesh::Mesh;
 use jprod_core::gfx::mesh::Primitive;
 use jprod_core::gfx::pso::Pso;
-use jprod_core::gfx::querys::QueryManager;
 use jprod_core::gfx::shader::Shader;
 use jprod_core::gfx::ssbo::Ssbo;
 use jprod_core::gfx::target::Target;
 use jprod_core::gfx::texture::Format;
-use jprod_core::gfx;
+use jprod_core::math;
 use jprod_core::math::Mat4;
 use jprod_core::math::Vec4;
-use jprod_core::math;
 use jprod_core::pool::Pool;
 use jprod_core::pool::PoolAllocator;
 use jprod_core::random::Rng;
@@ -83,15 +76,12 @@ use jprod_core::window::Window;
 const INSTANCE_COUNT: i32 = 40_000;
 
 fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time: f32) {
-
-    tm_zone!("update_instance_data");
-
     let allocator = pool.get_sub_allocator();
 
     let mvps = allocator.allocate_slice::<Mat4>(INSTANCE_COUNT as usize);
 
     let mut rng = Rng::new_unseeded();
-    
+
     let b = 10.0;
     let a = 0.3;
     let f = 5.0 * b;
@@ -103,7 +93,6 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
     let mut offset = 0.0;
 
     for mvp in mvps.iter_mut() {
-
         if i == len {
             i = 0;
             offset = 180.0;
@@ -111,7 +100,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
 
         let t = i as f32 / len as f32;
 
-        let (sin_ft, cos_ft) = math::sin_cos(f*t);
+        let (sin_ft, cos_ft) = math::sin_cos(f * t);
 
         let x = a * cos_ft;
         let z = a * sin_ft;
@@ -121,14 +110,17 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time
         let offset_y = rng.next_f32() * rs;
         let offset_z = rng.next_f32() * rs;
 
-        *mvp =
-            Mat4::rotate_deg(offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0)).mul(
-            Mat4::translate(Vec4::xyz(x + offset_x, y + offset_y, z + offset_z))).mul(
-            Mat4::random_rotation(&mut rng)).mul(
-            Mat4::scale(s));
+        *mvp = Mat4::rotate_deg(offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
+            .mul(Mat4::translate(Vec4::xyz(
+                x + offset_x,
+                y + offset_y,
+                z + offset_z,
+            )))
+            .mul(Mat4::random_rotation(&mut rng))
+            .mul(Mat4::scale(s));
 
         i += 1;
-     }
+    }
 
     instance_data.upload_slice(mvps);
 }
@@ -158,43 +150,103 @@ struct DofUniforms {
 }
 
 fn main() {
-
     win32::init();
 
     let mut pool = Pool::new(256 * 1024 * 1024);
     let mut allocator = pool.get_allocator();
 
-    tm_init!(
-        b"JProd\0",
-        win32::load_library,
-        win32::get_proc_address,
-        allocator.allocate_slice(32 * 1024 * 1024));
-
     let mut window = Window::new();
     let mut camera = Camera::new(&window);
-    let mut query_manager = QueryManager::new(&window);
 
     let pso = Pso::new();
 
     let dna_shader = Shader::from_source(&window, shaders::DNA_VERT, shaders::DNA_FRAG);
     let light_shader = Shader::from_source(&window, shaders::LIGHT_VERT, shaders::LIGHT_FRAG);
-    let bloom_extraction_shader = Shader::from_source(&window, shaders::BLOOM_EXTRACTION_VERT, shaders::BLOOM_EXTRACTION_FRAG);
-    let bloom_resolv_shader = Shader::from_source(&window, shaders::BLOOM_RESOLV_VERT, shaders::BLOOM_RESOLV_FRAG);
-    let horizontal_blur = Shader::from_source(&window, shaders::HORIZONTAL_GAUSSIAN_BLUR_VERT, shaders::HORIZONTAL_GAUSSIAN_BLUR_FRAG);
-    let vertical_blur = Shader::from_source(&window, shaders::VERTICAL_GAUSSIAN_BLUR_VERT, shaders::VERTICAL_GAUSSIAN_BLUR_FRAG);
-    let dof_extraction_shader = Shader::from_source(&window, shaders::DOF_EXTRACTION_VERT, shaders::DOF_EXTRACTION_FRAG);
-    let dof_far_blur_shader = Shader::from_source(&window, shaders::DOF_FAR_BLUR_VERT, shaders::DOF_FAR_BLUR_FRAG);
-    let dof_far_blur_max_shader = Shader::from_source(&window, shaders::DOF_FAR_BLUR_MAX_VERT, shaders::DOF_FAR_BLUR_MAX_FRAG);
-    let dof_merge_shader = Shader::from_source(&window, shaders::DOF_MERGE_VERT, shaders::DOF_MERGE_FRAG);
+    let bloom_extraction_shader = Shader::from_source(
+        &window,
+        shaders::BLOOM_EXTRACTION_VERT,
+        shaders::BLOOM_EXTRACTION_FRAG,
+    );
+    let bloom_resolv_shader = Shader::from_source(
+        &window,
+        shaders::BLOOM_RESOLV_VERT,
+        shaders::BLOOM_RESOLV_FRAG,
+    );
+    let horizontal_blur = Shader::from_source(
+        &window,
+        shaders::HORIZONTAL_GAUSSIAN_BLUR_VERT,
+        shaders::HORIZONTAL_GAUSSIAN_BLUR_FRAG,
+    );
+    let vertical_blur = Shader::from_source(
+        &window,
+        shaders::VERTICAL_GAUSSIAN_BLUR_VERT,
+        shaders::VERTICAL_GAUSSIAN_BLUR_FRAG,
+    );
+    let dof_extraction_shader = Shader::from_source(
+        &window,
+        shaders::DOF_EXTRACTION_VERT,
+        shaders::DOF_EXTRACTION_FRAG,
+    );
+    let dof_far_blur_shader = Shader::from_source(
+        &window,
+        shaders::DOF_FAR_BLUR_VERT,
+        shaders::DOF_FAR_BLUR_FRAG,
+    );
+    let dof_far_blur_max_shader = Shader::from_source(
+        &window,
+        shaders::DOF_FAR_BLUR_MAX_VERT,
+        shaders::DOF_FAR_BLUR_MAX_FRAG,
+    );
+    let dof_merge_shader =
+        Shader::from_source(&window, shaders::DOF_MERGE_VERT, shaders::DOF_MERGE_FRAG);
 
     let window_size = window.get_size();
-    let mut g_buffer = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), Some(Format::RgbF16), Some(Format::RgbF16)], true);
-    let mut light_target = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), None, None], false);
-    let mut bloom_blur1 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbR11G11B10), None, None], false);
-    let mut bloom_blur2 = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbR11G11B10), None, None], false);
-    let mut bloom_merge_target = Target::new(&window, window_size, &[Some(Format::RgbR11G11B10), None, None], false);
-    let mut dof_extracted_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
-    let mut dof_far_blur_target = Target::new(&window, (window_size.0/2, window_size.1/2), &[Some(Format::RgbaF16), None, None], false);
+    let mut g_buffer = Target::new(
+        &window,
+        window_size,
+        &[
+            Some(Format::RgbR11G11B10),
+            Some(Format::RgbF16),
+            Some(Format::RgbF16),
+        ],
+        true,
+    );
+    let mut light_target = Target::new(
+        &window,
+        window_size,
+        &[Some(Format::RgbR11G11B10), None, None],
+        false,
+    );
+    let mut bloom_blur1 = Target::new(
+        &window,
+        (window_size.0 / 2, window_size.1 / 2),
+        &[Some(Format::RgbR11G11B10), None, None],
+        false,
+    );
+    let mut bloom_blur2 = Target::new(
+        &window,
+        (window_size.0 / 2, window_size.1 / 2),
+        &[Some(Format::RgbR11G11B10), None, None],
+        false,
+    );
+    let mut bloom_merge_target = Target::new(
+        &window,
+        window_size,
+        &[Some(Format::RgbR11G11B10), None, None],
+        false,
+    );
+    let mut dof_extracted_target = Target::new(
+        &window,
+        (window_size.0 / 2, window_size.1 / 2),
+        &[Some(Format::RgbaF16), None, None],
+        false,
+    );
+    let mut dof_far_blur_target = Target::new(
+        &window,
+        (window_size.0 / 2, window_size.1 / 2),
+        &[Some(Format::RgbaF16), None, None],
+        false,
+    );
 
     let mut instance_data = Ssbo::new(&window);
     let mut uniform_data = Ssbo::new(&window);
@@ -206,7 +258,7 @@ fn main() {
 
     {
         let sub_allocator = allocator.get_sub_allocator();
-        
+
         let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&sub_allocator);
         dna_mesh.upload(tetrahedron_pos, tetrahedron_normals, Primitive::Triangles);
 
@@ -241,12 +293,12 @@ fn main() {
         dna_mesh.draw_instanced(
             &pso,
             &dna_shader,
-            &query_manager,
             Some(&g_buffer),
             &[],
             Some(&uniform_data),
             Some(&instance_data),
-            INSTANCE_COUNT);
+            INSTANCE_COUNT,
+        );
 
         light_uniform_data.upload(&LightUniforms {
             eye_pos: camera.get_camera_pos(),
@@ -256,46 +308,50 @@ fn main() {
         quad_mesh.draw(
             &pso,
             &light_shader,
-            &query_manager,
             Some(&light_target),
-            &[g_buffer.get_texture(0), g_buffer.get_texture(1), g_buffer.get_texture(2)],
-            Some(&light_uniform_data));
+            &[
+                g_buffer.get_texture(0),
+                g_buffer.get_texture(1),
+                g_buffer.get_texture(2),
+            ],
+            Some(&light_uniform_data),
+        );
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
             &pso,
             &bloom_extraction_shader,
-            &query_manager,
             Some(&bloom_blur2),
             &[light_target.get_texture(0)],
-            None);
+            None,
+        );
 
         for _ in 0..5 {
             quad_mesh.draw(
                 &pso,
                 &horizontal_blur,
-                &query_manager,
                 Some(&bloom_blur1),
                 &[bloom_blur2.get_texture(0)],
-                None);
+                None,
+            );
             quad_mesh.draw(
                 &pso,
                 &vertical_blur,
-                &query_manager,
                 Some(&bloom_blur2),
                 &[bloom_blur1.get_texture(0)],
-                None);
+                None,
+            );
         }
 
         bloom_merge_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
             &pso,
             &bloom_resolv_shader,
-            &query_manager,
             Some(&bloom_merge_target),
             &[light_target.get_texture(0), bloom_blur2.get_texture(0)],
-            None);
+            None,
+        );
 
         dof_uniform_data.upload(&DofUniforms {
             z_near: camera.get_near(),
@@ -307,46 +363,48 @@ fn main() {
         quad_mesh.draw(
             &pso,
             &dof_extraction_shader,
-            &query_manager,
             Some(&dof_extracted_target),
-            &[bloom_merge_target.get_texture(0), g_buffer.get_depth_texture()],
-            Some(&dof_uniform_data));
-
+            &[
+                bloom_merge_target.get_texture(0),
+                g_buffer.get_depth_texture(),
+            ],
+            Some(&dof_uniform_data),
+        );
 
         dof_far_blur_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
             &pso,
             &dof_far_blur_shader,
-            &query_manager,
             Some(&dof_far_blur_target),
             &[dof_extracted_target.get_texture(0)],
-            None);
+            None,
+        );
 
         dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
             &pso,
             &dof_far_blur_max_shader,
-            &query_manager,
             Some(&dof_extracted_target),
             &[dof_far_blur_target.get_texture(0)],
-            None);
+            None,
+        );
 
         window.update_viewport();
-        window.clear(&[ 0.0, 0.0, 0.0, 1.0 ]);
+        window.clear(&[0.0, 0.0, 0.0, 1.0]);
         quad_mesh.draw(
             &pso,
             &dof_merge_shader,
-            &query_manager,
             None,
-            &[bloom_merge_target.get_texture(0), dof_extracted_target.get_texture(0), g_buffer.get_depth_texture()],
-            Some(&dof_uniform_data));
+            &[
+                bloom_merge_target.get_texture(0),
+                dof_extracted_target.get_texture(0),
+                g_buffer.get_depth_texture(),
+            ],
+            Some(&dof_uniform_data),
+        );
         window.swap();
 
-        query_manager.submit_zones();
-
         utils::assert(!gfx::is_error(&window));
-
-        tm_tick!();
     }
 }
 
@@ -354,6 +412,13 @@ fn main() {
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
+    main();
+}
+
+#[cfg(all(not(test), not(feature = "use_std"), target_pointer_width = "64"))]
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "system" fn mainCRTStartup() {
     main();
 }
 
@@ -365,12 +430,15 @@ pub extern "cdecl" fn WinMainCRTStartup() {
 }
 
 #[cfg(all(not(test), not(feature = "use_std")))]
-#[panic_implementation]
-#[no_mangle]
-pub extern fn panic_impl(_: &PanicInfo) -> ! {
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
     utils::debug_trap();
 }
 
 #[allow(non_upper_case_globals)]
 #[no_mangle]
 pub static NvOptimusEnablement: i32 = 1;
+
+#[allow(non_upper_case_globals)]
+#[no_mangle]
+pub static _fltused: i32 = 1;

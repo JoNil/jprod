@@ -6,28 +6,28 @@ authors = ["Jonathan"]
 build = "build.rs"
 
 [dependencies]
-telemetry = { path = "../../telemetry-rs", optional = true }
-telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
 
 [build-dependencies]
 crossbeam = "0.3"
 
 [features]
 use_std = []
-use_telemetry = ["telemetry"]
 
 [profile.release]
 opt-level = 3
 debug-assertions = false
 panic = "abort"
 debug = true
+lto = true
 
 [profile.dev]
 opt-level = 0
 debug-assertions = true
 panic = "abort"
 debug = true
+lto = true
 
 [profile.test]
 opt-level = 3
 debug = true
+lto = true

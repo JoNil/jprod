@@ -6,7 +6,6 @@ use gfx;
 use super::Context;
 use super::gl;
 use super::pso::Pso;
-use super::querys::QueryManager;
 use super::shader::Shader;
 use super::ssbo::Ssbo;
 use super::target::Target;
@@ -169,8 +168,6 @@ impl Mesh {
     #[inline]
     pub fn upload(&mut self, va1: &[[f32; 3]], va2: &[[f32; 3]], primitive: Primitive) {
 
-        tm_zone!("Mesh::upload");
-
         utils::assert(va1.len() == va2.len());
 
         let vertex_format = [Some(VertexFormat::Vec3), Some(VertexFormat::Vec3), None];
@@ -209,12 +206,9 @@ impl Mesh {
         &self,
         pso: &Pso,
         shader: &Shader,
-        query_manager: &QueryManager,
         target: Option<&Target>,
         textures: &[Option<&Texture>],
         uniform_data: Option<&Ssbo>) {
-
-        tm_zone!("Mesh::draw");
 
         utils::assert(self.length != 0);
 
@@ -222,7 +216,6 @@ impl Mesh {
             self,
             pso,
             shader,
-            query_manager,
             target,
             textures,
             uniform_data,
@@ -237,22 +230,18 @@ impl Mesh {
         &self,
         pso: &Pso,
         shader: &Shader,
-        query_manager: &QueryManager,
         target: Option<&Target>,
         textures: &[Option<&Texture>],
         uniform_data: Option<&Ssbo>,
         instance_data: Option<&Ssbo>,
         count: i32) 
     {
-        tm_zone!("Mesh::draw_instanced");
-
         utils::assert(self.length != 0 && count > 0);
 
         draw_internal(
             self,
             pso,
             shader,
-            query_manager,
             target,
             textures,
             uniform_data,
@@ -277,15 +266,12 @@ fn draw_internal<F: FnMut()>(
     context: &Context,
     pso: &Pso,
     shader: &Shader,
-    query_manager: &QueryManager,
     target: Option<&Target>,
     textures: &[Option<&Texture>],
     uniform_data: Option<&Ssbo>,
     vao: &RawVao,
     mut f: F)
 {
-    let _query = query_manager.query();
-
     unsafe {
 
         if let Some(render_target) = target {

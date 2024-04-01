@@ -3,26 +3,35 @@ use core::mem;
 use core::ptr;
 use gfx;
 use utils;
-use win32::types::*;
 use win32;
+use win32::types::*;
 
 static WINDOW_NAME: &'static [u8] = b"JProd\n\0";
 static WINDOW_CLASS: &'static [u8] = b"C\0";
 
 static WGL_ATTRIBS: &'static [i32] = &[
-    WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-    WGL_CONTEXT_MINOR_VERSION_ARB, 5,
-    WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
-    WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+    WGL_CONTEXT_MAJOR_VERSION_ARB,
+    4,
+    WGL_CONTEXT_MINOR_VERSION_ARB,
+    5,
+    WGL_CONTEXT_FLAGS_ARB,
+    WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
+    WGL_CONTEXT_PROFILE_MASK_ARB,
+    WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
     0,
 ];
 
 static WINDOW_ATTRIBS: &'static [i32] = &[
-    WGL_DRAW_TO_WINDOW_ARB, 1,
-    WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-    WGL_SUPPORT_OPENGL_ARB, 1,
-    WGL_DOUBLE_BUFFER_ARB, 1,
-    WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+    WGL_DRAW_TO_WINDOW_ARB,
+    1,
+    WGL_ACCELERATION_ARB,
+    WGL_FULL_ACCELERATION_ARB,
+    WGL_SUPPORT_OPENGL_ARB,
+    1,
+    WGL_DOUBLE_BUFFER_ARB,
+    1,
+    WGL_PIXEL_TYPE_ARB,
+    WGL_TYPE_RGBA_ARB,
     0,
 ];
 
@@ -42,7 +51,6 @@ impl RawWindow {
 
     #[inline]
     fn get_dc(self) -> RawDc {
-
         let dc = win32::get_dc(self.handle);
 
         utils::assert(!dc.is_null());
@@ -69,7 +77,6 @@ struct RawDc {
 impl RawDc {
     #[inline]
     fn create_context(self, inital: bool) -> RawContext {
-
         set_pixel_format(self.handle, inital);
 
         let context = if inital {
@@ -168,7 +175,6 @@ pub struct Window {
 impl Window {
     #[inline]
     pub fn new() -> Window {
-
         utils::assert(win32::register_class(WINDOW_CLASS, window_proc));
 
         {
@@ -187,7 +193,10 @@ impl Window {
 
         context.make_current();
 
-        let res = Window { context: context, actions: Default::default() };
+        let res = Window {
+            context: context,
+            actions: Default::default(),
+        };
 
         gfx::init(&res);
 
@@ -198,9 +207,6 @@ impl Window {
 
     #[inline]
     pub fn update(&mut self) {
-
-        tm_zone!("Window::update");
-
         self.actions.reset();
 
         {
@@ -209,11 +215,8 @@ impl Window {
         }
 
         while let Some(msg) = win32::get_message() {
-
             match msg.message {
-                
                 WM_SYSKEYDOWN | WM_SYSKEYUP | WM_KEYDOWN | WM_KEYUP => {
-                    
                     let key_code = msg.wparam as u8 as char;
 
                     let is_down = (msg.lparam & (1 << 31)) == 0;
@@ -230,7 +233,7 @@ impl Window {
                     }
                 }
 
-                _ => ()
+                _ => (),
             }
 
             win32::translate_and_dispatch_message(&msg);
@@ -245,7 +248,7 @@ impl Window {
     #[inline]
     pub fn get_size(&self) -> (i32, i32) {
         let rect = win32::get_window_client_rect(self.context.dc.window.handle);
-        
+
         (rect.2, rect.3)
     }
 
@@ -261,28 +264,27 @@ impl Window {
 
     #[inline]
     pub fn clear(&self, color: &[f32; 4]) {
-
-        tm_zone!("Window::clear");
-
         gfx::clear(self, color);
     }
 
     #[inline]
     pub fn swap(&self) {
-
-        tm_zone!("Window::swap");
-
         utils::assert(win32::swap_buffers(self.context.dc.handle));
     }
 }
 
 unsafe impl gfx::Context for Window {}
 
-extern "system" fn window_proc(handle: WindowHandle, msg: u32, wparam: usize, lparam: usize) -> usize {
-
+extern "system" fn window_proc(
+    handle: WindowHandle,
+    msg: u32,
+    wparam: usize,
+    lparam: usize,
+) -> usize {
     match msg {
-
-        WM_CLOSE => { win32::exit_process(0); }
+        WM_CLOSE => {
+            win32::exit_process(0);
+        }
 
         _ => {
             return win32::def_window_proc(handle, msg, wparam, lparam);
@@ -292,20 +294,22 @@ extern "system" fn window_proc(handle: WindowHandle, msg: u32, wparam: usize, lp
 
 #[inline]
 fn set_pixel_format(dc: DcHandle, initial: bool) {
-
     let mut suggested_pixel_format_index = 0;
     let mut extended_pick = 0;
 
     if !initial {
-        utils::assert(win32::wgl_choose_pixel_format(dc,
+        utils::assert(
+            win32::wgl_choose_pixel_format(
+                dc,
                 Some(WINDOW_ATTRIBS),
                 None,
                 &mut suggested_pixel_format_index,
-                &mut extended_pick) != 0);
+                &mut extended_pick,
+            ) != 0,
+        );
     }
 
     if extended_pick == 0 {
-
         let desired_pixel_format = PixelFormatDescriptor {
             size: mem::size_of::<PixelFormatDescriptor>() as u16,
             version: 1,
@@ -336,17 +340,21 @@ fn set_pixel_format(dc: DcHandle, initial: bool) {
         };
 
         suggested_pixel_format_index = win32::choose_pixel_format(dc, &desired_pixel_format);
-        
+
         utils::assert(suggested_pixel_format_index != 0);
     }
 
     let mut suggested_pixel_format = unsafe { mem::uninitialized() };
     utils::assert(
-            win32::describe_pixel_format(
-                    dc,
-                    suggested_pixel_format_index,
-                    mem::size_of::<PixelFormatDescriptor>() as u32,
-                    &mut suggested_pixel_format) != 0);
+        win32::describe_pixel_format(
+            dc,
+            suggested_pixel_format_index,
+            mem::size_of::<PixelFormatDescriptor>() as u32,
+            &mut suggested_pixel_format,
+        ) != 0,
+    );
 
-    utils::assert(win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) != 0);
+    utils::assert(
+        win32::set_pixel_format(dc, suggested_pixel_format_index, &suggested_pixel_format) != 0,
+    );
 }

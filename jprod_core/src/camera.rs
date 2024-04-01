@@ -43,8 +43,6 @@ impl Camera {
     #[inline]
     pub fn update(&mut self, window: &Window, dt: f32) {
 
-        tm_zone!("Camera::update");
-
         {
             let size = window.get_size();
 
@@ -104,8 +102,6 @@ impl Camera {
 
     #[inline]
     pub fn get_view_projection(&self) -> Mat4 {
-
-        tm_zone!("Camera::get_view_projection");
 
         let pos = Mat4::translate(self.pos.neg());
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());

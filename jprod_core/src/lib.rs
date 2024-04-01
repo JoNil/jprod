@@ -1,16 +1,7 @@
 #![feature(abi_vectorcall)]
-#![feature(asm)]
 #![feature(core_intrinsics)]
-#![feature(stdsimd)]
 #![feature(stmt_expr_attributes)]
-
 #![cfg_attr(not(feature = "use_std"), no_std)]
-
-#[cfg(feature = "use_telemetry")]
-extern crate telemetry;
-
-#[macro_use]
-extern crate telemetry_macro;
 
 #[cfg(feature = "use_std")]
 mod core {

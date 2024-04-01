@@ -6,11 +6,8 @@ authors = ["Jonathan"]
 [dependencies]
 imgui = { git = "https://github.com/Gekkio/imgui-rs" }
 jprod_core = { path = "../jprod_core" }
-telemetry = { path = "../../telemetry-rs", optional = true }
-telemetry_macro = { path = "../../telemetry-rs/telemetry_macro" }
 
 [features]
-use_telemetry = ["telemetry"]
 
 [profile.release]
 debug-assertions = false
