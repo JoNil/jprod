@@ -62,63 +62,14 @@ use jprod_core::{
     window::Window,
 };
 
-const INSTANCE_COUNT: i32 = 200_000;
-
-fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
-    let mut mvps = pool.allocate_array::<Mat4>(INSTANCE_COUNT as usize, Mat4::identity());
-    let mvps = pool.borrow_slice_mut(&mut mvps);
-
-    let mut rng = Rng::new_unseeded();
-
-    let b = 10.0;
-    let a = 0.3;
-    let f = 5.0 * b;
-    let s = 0.002;
-    let rs = 0.1;
-
-    let len = mvps.len() / 2;
-    let mut i = 0;
-    let mut offset = 0.0;
-
-    for mvp in mvps.iter_mut() {
-        if i == len {
-            i = 0;
-            offset = 180.0;
-        }
-
-        let t = i as f32 / len as f32;
-
-        let (sin_ft, cos_ft) = math::sin_cos(f * t);
-
-        let x = a * cos_ft;
-        let z = a * sin_ft;
-        let y = b * t - b / 2.0;
-
-        let offset_x = rng.next_f32() * rs;
-        let offset_y = rng.next_f32() * rs;
-        let offset_z = rng.next_f32() * rs;
-
-        *mvp = Mat4::rotate_deg(offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
-            .mul(Mat4::translate(Vec4::xyz(
-                x + offset_x,
-                y + offset_y,
-                z + offset_z,
-            )))
-            .mul(Mat4::random_rotation(&mut rng))
-            .mul(Mat4::scale(s));
-
-        i += 1;
-    }
-
-    instance_data.upload_slice(mvps);
-}
+const INSTANCE_COUNT: i32 = 10_000;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 struct Uniforms {
     vp: Mat4,
-    time: f32,
+    time: Vec4,
 }
 
 #[repr(C)]
@@ -275,11 +226,9 @@ fn main() {
 
         camera.update(&window, dt as f32);
 
-        update_instance_data(&mut instance_data, &mut pool, time);
-
         uniform_data.upload(&Uniforms {
             vp: camera.get_view_projection(),
-            time,
+            time: Vec4::xyz(time, INSTANCE_COUNT as f32, 0.0),
         });
 
         g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
