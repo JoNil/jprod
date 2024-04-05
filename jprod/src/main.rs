@@ -56,7 +56,7 @@ use jprod_core::{
         texture::Format,
     },
     math::{self, Mat4, Vec4},
-    pool::{Pool, PoolAllocator},
+    pool::Pool,
     random::Rng,
     shaders, time, utils, win32,
     window::Window,
@@ -64,10 +64,9 @@ use jprod_core::{
 
 const INSTANCE_COUNT: i32 = 40_000;
 
-fn update_instance_data(instance_data: &mut Ssbo, pool: &mut PoolAllocator, time: f32) {
-    let allocator = pool.get_sub_allocator();
-
-    let mvps = allocator.allocate_slice::<Mat4>(INSTANCE_COUNT as usize);
+fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
+    let mut mvps = pool.allocate_array::<Mat4>(INSTANCE_COUNT as usize, Mat4::identity());
+    let mvps = pool.borrow_slice_mut(&mut mvps);
 
     let mut rng = Rng::new_unseeded();
 
@@ -141,8 +140,7 @@ struct DofUniforms {
 fn main() {
     win32::init();
 
-    let mut pool = Pool::new(256 * 1024 * 1024);
-    let mut allocator = pool.get_allocator();
+    let mut pool = Pool::new(256 * 1024 * 1024, 0);
 
     let mut window = Window::new();
     let mut camera = Camera::new(&window);
@@ -246,12 +244,18 @@ fn main() {
     let mut quad_mesh = Mesh::new(&window);
 
     {
-        let sub_allocator = allocator.get_sub_allocator();
+        let (mut tetrahedron_pos, mut tetrahedron_normals) = gen::tetrahedron(&mut pool);
 
-        let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&sub_allocator);
+        let tetrahedron_pos = pool.borrow_slice(&mut tetrahedron_pos);
+        let tetrahedron_normals = pool.borrow_slice(&mut tetrahedron_normals);
+
         dna_mesh.upload(tetrahedron_pos, tetrahedron_normals, Primitive::Triangles);
 
-        let (quad_pos, quad_normals) = gen::quad(&sub_allocator);
+        let (mut quad_pos, mut quad_normals) = gen::quad(&mut pool);
+
+        let quad_pos = pool.borrow_slice(&mut quad_pos);
+        let quad_normals = pool.borrow_slice(&mut quad_normals);
+
         quad_mesh.upload(quad_pos, quad_normals, Primitive::TriangleStrip);
     }
 
@@ -271,11 +275,11 @@ fn main() {
 
         camera.update(&window, dt as f32);
 
-        update_instance_data(&mut instance_data, &mut allocator, time);
+        update_instance_data(&mut instance_data, &mut pool, time);
 
         uniform_data.upload(&Uniforms {
             vp: camera.get_view_projection(),
-            time: time,
+            time,
         });
 
         g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
@@ -394,30 +398,37 @@ fn main() {
         window.swap();
 
         utils::assert(!gfx::is_error(&window));
+
+        pool.clean();
     }
 }
 
 #[allow(non_snake_case)]
+#[cfg(not(test))]
 #[no_mangle]
 pub extern "system" fn WinMainCRTStartup() {
     main();
 }
 
 #[allow(non_snake_case)]
+#[cfg(not(test))]
 #[no_mangle]
 pub extern "system" fn mainCRTStartup() {
     main();
 }
 
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     utils::debug_trap();
 }
 
 #[allow(non_upper_case_globals)]
+#[cfg(not(test))]
 #[no_mangle]
 pub static NvOptimusEnablement: i32 = 1;
 
 #[allow(non_upper_case_globals)]
+#[cfg(not(test))]
 #[no_mangle]
 pub static _fltused: i32 = 1;

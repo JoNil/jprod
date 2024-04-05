@@ -1,12 +1,24 @@
-use crate::{math, pool::PoolAllocator, utils};
+use crate::{
+    math,
+    pool::{AllocationArrayToken, Pool},
+    utils,
+};
 use math::Vec4;
 
 #[inline]
-pub fn quad<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f32; 3]]) {
+pub fn quad(
+    pool: &mut Pool,
+) -> (
+    AllocationArrayToken<[f32; 3]>,
+    AllocationArrayToken<[f32; 3]>,
+) {
     let vertices = 4;
 
-    let quad = pool.allocate_slice(vertices);
-    let normals = pool.allocate_slice(vertices);
+    let mut quad_token = pool.allocate_array(vertices, [0.0, 0.0, 0.0]);
+    let mut normals_token = pool.allocate_array(vertices, [0.0, 0.0, 0.0]);
+
+    let quad = pool.borrow_slice_mut(&mut quad_token);
+    let normals = pool.borrow_slice_mut(&mut normals_token);
 
     let verts: [(i8, i8); 4] = [(1, 1), (-1, 1), (1, -1), (-1, -1)];
 
@@ -17,15 +29,23 @@ pub fn quad<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f32; 3]])
         *normal = [0.0, 0.0, 1.0];
     }
 
-    (quad, normals)
+    (quad_token, normals_token)
 }
 
 #[inline]
-pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f32; 3]]) {
+pub fn tetrahedron(
+    pool: &mut Pool,
+) -> (
+    AllocationArrayToken<[f32; 3]>,
+    AllocationArrayToken<[f32; 3]>,
+) {
     let vertices = 3 * 4;
 
-    let tetrahedron = pool.allocate_slice(vertices);
-    let normals = pool.allocate_slice(vertices);
+    let mut tetrahedron_token = pool.allocate_array(vertices, [0.0, 0.0, 0.0]);
+    let mut normals_token = pool.allocate_array(vertices, [0.0, 0.0, 0.0]);
+
+    let tetrahedron = pool.borrow_slice_mut(&mut tetrahedron_token);
+    let normals = pool.borrow_slice_mut(&mut normals_token);
 
     let verts: [(i8, i8, i8); 4] = [(1, 1, 1), (1, -1, -1), (-1, 1, -1), (-1, -1, 1)];
 
@@ -57,18 +77,19 @@ pub fn tetrahedron<'a>(pool: &'a PoolAllocator<'a>) -> (&'a [[f32; 3]], &'a [[f3
         unsafe { *normals.get_unchecked_mut(i3) = normal };
     }
 
-    (tetrahedron, normals)
+    (tetrahedron_token, normals_token)
 }
 
 #[inline]
-pub fn sphere<'a>(
-    pool: &'a PoolAllocator<'a>,
+pub fn sphere(
+    pool: &mut Pool,
     vertical_slices: i32,
     radial_slices: i32,
-) -> (&'a [[f32; 3]], &'a [[f32; 3]]) {
+) -> AllocationArrayToken<[f32; 3]> {
     let vertices = (vertical_slices * (2 + 2 * (radial_slices + 1))) as usize;
 
-    let sphere = pool.allocate_slice(vertices);
+    let mut sphere_token = pool.allocate_array(vertices, [0.0, 0.0, 0.0]);
+    let sphere = pool.borrow_slice_mut(&mut sphere_token);
 
     let vertical_slices_f32 = vertical_slices as f32;
     let radial_slices_f32 = radial_slices as f32;
@@ -115,5 +136,5 @@ pub fn sphere<'a>(
 
     utils::assert(sphere.len() != index);
 
-    (sphere, sphere)
+    sphere_token
 }

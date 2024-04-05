@@ -57,6 +57,9 @@ pub fn output_debug_string(string: &[u8]) {
     }
 }
 
+/// # Safety
+///
+/// string has to be a valid pointer to a null terminated c string.
 #[inline]
 pub unsafe fn output_debug_string_raw(string: *const u8) {
     OutputDebugStringA(string);
@@ -186,6 +189,9 @@ pub fn virtual_alloc(size: usize) -> *mut c_void {
     }
 }
 
+/// # Safety
+///
+/// address has to be a valid pointer
 #[inline]
 pub unsafe fn virtual_free(address: *mut c_void) {
     VirtualFree(address, 0, MEM_RELEASE);
