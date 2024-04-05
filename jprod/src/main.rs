@@ -62,7 +62,7 @@ use jprod_core::{
     window::Window,
 };
 
-const INSTANCE_COUNT: i32 = 40_000;
+const INSTANCE_COUNT: i32 = 200_000;
 
 fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     let mut mvps = pool.allocate_array::<Mat4>(INSTANCE_COUNT as usize, Mat4::identity());
@@ -73,7 +73,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     let b = 10.0;
     let a = 0.3;
     let f = 5.0 * b;
-    let s = 0.01;
+    let s = 0.002;
     let rs = 0.1;
 
     let len = mvps.len() / 2;
@@ -244,17 +244,17 @@ fn main() {
     let mut quad_mesh = Mesh::new(&window);
 
     {
-        let (mut tetrahedron_pos, mut tetrahedron_normals) = gen::tetrahedron(&mut pool);
+        let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&mut pool);
 
-        let tetrahedron_pos = pool.borrow_slice(&mut tetrahedron_pos);
-        let tetrahedron_normals = pool.borrow_slice(&mut tetrahedron_normals);
+        let tetrahedron_pos = pool.borrow_slice(&tetrahedron_pos);
+        let tetrahedron_normals = pool.borrow_slice(&tetrahedron_normals);
 
         dna_mesh.upload(tetrahedron_pos, tetrahedron_normals, Primitive::Triangles);
 
-        let (mut quad_pos, mut quad_normals) = gen::quad(&mut pool);
+        let (quad_pos, quad_normals) = gen::quad(&mut pool);
 
-        let quad_pos = pool.borrow_slice(&mut quad_pos);
-        let quad_normals = pool.borrow_slice(&mut quad_normals);
+        let quad_pos = pool.borrow_slice(&quad_pos);
+        let quad_normals = pool.borrow_slice(&quad_normals);
 
         quad_mesh.upload(quad_pos, quad_normals, Primitive::TriangleStrip);
     }

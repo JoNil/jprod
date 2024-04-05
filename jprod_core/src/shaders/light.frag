@@ -15,7 +15,7 @@ layout(std430, binding = 0) buffer uniforms
 
 void main()
 {
-    vec3 light_pos = vec3(0.0, 0.0, 0.0);
+    vec3 light_pos = vec3(0.0, 100.0, 100.0);
 
     vec3 material_color = texture(color_tex, frag_uv).rgb;
     vec3 pos = texture(pos_tex, frag_uv).xyz;
