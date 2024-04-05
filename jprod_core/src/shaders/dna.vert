@@ -49,6 +49,12 @@ mat4 random_rotation(int instanceID) {
     return rotate(angle, vec3(0.0, 1.0, 0.0));
 }
 
+vec3 randomDirection(int instanceID) {
+    float angle = 2.0 * 3.14159265 * fract(sin(dot(vec3(instanceID), vec3(12.9898, 78.233, 45.164))) * 43758.5453);
+    vec3 dir = normalize(vec3(cos(angle), fract(sin(float(instanceID) * 93.9898) * 43758.5453) * 2.0 - 1.0, sin(angle)));
+    return dir;
+}
+
 mat4 calculateInstanceMatrix(int instanceID) {
     float b = 10.0;
     float a = 0.3;
@@ -58,7 +64,8 @@ mat4 calculateInstanceMatrix(int instanceID) {
 
     int len = int(time_instance_count.y) / 2;
     int halfInstanceID = instanceID % len;
-    float offset = (instanceID >= len) ? 180.0 : 0.0;
+    float midY = b * 0.5 - b / 2.0;
+    float offset = step(len, instanceID) * 180.0;
     
     float t = float(halfInstanceID) / float(len);
 
@@ -74,9 +81,30 @@ mat4 calculateInstanceMatrix(int instanceID) {
     float offset_y = fract(sin(float(instanceID) * 92.993) * 43758.5453) * rs;
     float offset_z = fract(sin(float(instanceID) * 54.734) * 43758.5453) * rs;
 
+    // Compression effect over time
+    float timeEffect = (sin(time_instance_count.x) + 1.0) * 0.5; // Oscillate [0,1]
+    float yPosAdjustment;
+    if (timeEffect <= 0.5) {
+        // Before and at the peak of contraction
+        yPosAdjustment = (y - midY) * (2.0 * timeEffect); // Amplify effect towards 0.5
+    } else {
+        // After the peak, reduce the effect back to normal
+        yPosAdjustment = (y - midY) * (2.0 * (1.0 - timeEffect)); // Diminish effect after 0.5
+    }
+
+    mat4 trans = translate(vec3(x + offset_x, y + offset_y - yPosAdjustment, z + offset_z));
+    
+    // Apply a random direction based on timeEffect for explosion lasting until 1.0
+    if (timeEffect > 0.5) {
+        float explosionProgress = (timeEffect - 0.5) * 2.0; // Scale from 0.0 to 1.0 after the midpoint
+        vec3 direction = randomDirection(instanceID);
+        float forceMagnitude = max(0.0, 1.0 - explosionProgress); // Decreases after explosion
+        vec3 explosionOffset = direction * forceMagnitude * 0.5; // Adjust multiplier for effect intensity
+        trans *= translate(explosionOffset);
+    }
+
     // Basic transformation matrices
     mat4 rot = rotate(offset + 4.0 * time_instance_count.x, vec3(0.0, 1.0, 0.0));
-    mat4 trans = translate(vec3(x + offset_x, y + offset_y, z + offset_z));
     mat4 randRot = random_rotation(instanceID);
     mat4 scaleMat = scale(vec3(s, s, s));
 
