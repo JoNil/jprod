@@ -83,23 +83,42 @@ mat4 calculateInstanceMatrix(int instanceID) {
 
     // Compression effect over time
     float timeEffect = (sin(time_instance_count.x) + 1.0) * 0.5; // Oscillate [0,1]
-    float yPosAdjustment;
-    if (timeEffect <= 0.5) {
-        // Before and at the peak of contraction
-        yPosAdjustment = (y - midY) * (2.0 * timeEffect); // Amplify effect towards 0.5
-    } else {
-        // After the peak, reduce the effect back to normal
-        yPosAdjustment = (y - midY) * (2.0 * (1.0 - timeEffect)); // Diminish effect after 0.5
-    }
+    
+    mat4 trans;
+    if (time_instance_count.z < 1.0f)
+    {
+        float yPosAdjustment;
+        if (timeEffect <= 0.5) {
+            // Before and at the peak of contraction
+            yPosAdjustment = (y - midY) * (2.0 * timeEffect); // Amplify effect towards 0.5
+        } else {
+            // After the peak, reduce the effect back to normal
+            yPosAdjustment = (y - midY) * (2.0 * (1.0 - timeEffect)); // Diminish effect after 0.5 
+        }
 
-    mat4 trans = translate(vec3(x + offset_x, y + offset_y - yPosAdjustment, z + offset_z));
+        trans = translate(vec3(x + offset_x, y + offset_y - yPosAdjustment, z + offset_z));
+    }
     
     // Apply a random direction based on timeEffect for explosion lasting until 1.0
-    if (timeEffect > 0.5) {
+    else if (time_instance_count.z < 2.0f) {
+
+        float timeEffect = (sin(time_instance_count.w) + 1.0) * 0.5;
+
+        float yPosAdjustment;
+        if (timeEffect <= 0.5) {
+            // Before and at the peak of contraction
+            yPosAdjustment = (y - midY) * (2.0 * timeEffect); // Amplify effect towards 0.5
+        } else {
+            // After the peak, reduce the effect back to normal
+            yPosAdjustment = (y - midY) * (2.0 * (1.0 - timeEffect)); // Diminish effect after 0.5 
+        }
+
+        trans = translate(vec3(x + offset_x, y + offset_y - yPosAdjustment, z + offset_z));
+
         float explosionProgress = (timeEffect - 0.5) * 2.0; // Scale from 0.0 to 1.0 after the midpoint
         vec3 direction = randomDirection(instanceID);
         float forceMagnitude = max(0.0, 1.0 - explosionProgress); // Decreases after explosion
-        vec3 explosionOffset = direction * forceMagnitude * 0.5; // Adjust multiplier for effect intensity
+        vec3 explosionOffset = direction * forceMagnitude * 0.65; // Adjust multiplier for effect intensity
         trans *= translate(explosionOffset);
     }
 

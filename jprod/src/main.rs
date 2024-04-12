@@ -212,6 +212,8 @@ fn main() {
 
     let start = time::now_s();
     let mut last = start;
+    let explosion_time = 3.0;
+    let mut has_exploded = false;
 
     loop {
         window.update();
@@ -226,9 +228,16 @@ fn main() {
 
         camera.update(&window, dt as f32);
 
+        let mut cached_time = 0.0;
+        if (!has_exploded && time >= explosion_time) {
+            has_exploded = true;
+            cached_time = time;
+        }
+        let setting = if (has_exploded) { 1.0 } else { 0.0 };
+
         uniform_data.upload(&Uniforms {
             vp: camera.get_view_projection(),
-            time: Vec4::xyz(time, INSTANCE_COUNT as f32, 0.0),
+            time: Vec4::xyzw(time, INSTANCE_COUNT as f32, setting, cached_time),
         });
 
         g_buffer.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
