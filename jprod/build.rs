@@ -96,16 +96,51 @@ fn main() {
     {
         let mut shader_source = String::new();
 
+        let mut shader_name_vert = HashMap::new();
+        let mut shader_name_frag = HashMap::new();
+
         for (name, shader) in shaders {
             if let (Some(vertex), Some(fragment)) = (&shader.vertex_source, &shader.fragment_source)
             {
-                #[allow(clippy::format_in_format_args)]
-                shader_source.push_str(
-                        &format!("pub static {}_VERT: &'static str = {};\n\npub static {}_FRAG: &'static str = {};\n\n",
-                                name,
-                                format!(r###"r##"{}"##"###, vertex),
-                                name,
-                                format!(r###"r##"{}"##"###, fragment)));
+                if !shader_name_vert.contains_key(vertex) {
+                    shader_name_vert.insert(vertex.clone(), name.clone());
+                }
+
+                if !shader_name_frag.contains_key(fragment) {
+                    shader_name_frag.insert(fragment.clone(), name.clone());
+                }
+            }
+        }
+
+        for (shader, name) in &shader_name_vert {
+            #[allow(clippy::format_in_format_args)]
+            shader_source.push_str(&format!(
+                "pub static {name}_VERT_DATA: &'static str = {};\n\n",
+                format!(r###"r##"{}"##"###, shader)
+            ));
+        }
+
+        for (shader, name) in &shader_name_frag {
+            #[allow(clippy::format_in_format_args)]
+            shader_source.push_str(&format!(
+                "pub static {name}_FRAG_DATA: &'static str = {};\n\n",
+                format!(r###"r##"{}"##"###, shader)
+            ));
+        }
+
+        for (name, shader) in shaders {
+            if let (Some(vertex), Some(fragment)) = (&shader.vertex_source, &shader.fragment_source)
+            {
+                if let Some(data_name) = shader_name_vert.get(vertex) {
+                    shader_source.push_str(&format!(
+                        "pub const {name}_VERT: &'static &'static str = &{data_name}_VERT_DATA;\n"
+                    ));
+                }
+                if let Some(data_name) = shader_name_frag.get(fragment) {
+                    shader_source.push_str(&format!(
+                        "pub const {name}_FRAG: &'static &'static str = &{data_name}_FRAG_DATA;\n"
+                    ));
+                }
             }
         }
 
