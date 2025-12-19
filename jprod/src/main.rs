@@ -78,13 +78,22 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     let rs = 0.1;
 
     let len = mvps.len() / 2;
-    let total_len = mvps.len() as f32;
     let mut i = 0;
-    let mut global_i = 0;
     let mut offset = 0.0;
 
+    // Oscillate between 0.0 (Helix) and 1.0 (Galaxy)
     let morph = math::sin(time * 0.5) * 0.5 + 0.5;
-    let sphere_radius = 0.5;
+    
+    // Core parameters (Strand 1 -> Core)
+    let core_radius = 0.3;
+    
+    // Disk parameters (Strand 2 -> Disk)
+    let disk_radius_min = 0.0;
+    let disk_radius_max = 4.0;
+    let disk_height = 0.1;
+    let spiral_arms = 3.0;
+    let spiral_tightness = 2.0;
+    
     let golden_angle = math::PI * (3.0 - math::sqrt(5.0));
 
     for mvp in mvps.iter_mut() {
@@ -93,7 +102,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
             offset = 180.0;
         }
 
-        // Fade offset (180 degrees) towards 0 as we morph to sphere
+        // Fade offset (180 degrees) towards 0 as we morph to galaxy
         let current_offset = offset * (1.0 - morph);
 
         let t = i as f32 / len as f32;
@@ -105,25 +114,50 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
         let h_z = a * sin_ft;
         let h_y = b * t - b / 2.0;
 
-        // Sphere
-        let idx = global_i as f32;
-        let z_s = (2.0 * idx + 1.0) / total_len - 1.0;
-        let r_s = math::sqrt(1.0 - z_s * z_s);
-        let phi = idx * golden_angle;
+        // Galaxy
+        let idx = i as f32; // Reset index per strand
+        let strand_len = len as f32;
+        
+        let g_x;
+        let g_y;
+        let g_z;
 
-        let (sin_phi, cos_phi) = math::sin_cos(phi);
-        let s_x = cos_phi * r_s * sphere_radius;
-        let s_y = z_s * sphere_radius;
-        let s_z = sin_phi * r_s * sphere_radius;
+        if offset == 0.0 {
+            // First strand -> Spherical Core (Fibonacci Sphere)
+            // Reversed direction: starts at -1.0 (bottom) and goes to 1.0 (top)
+            let z_s = (2.0 * idx + 1.0) / strand_len - 1.0;
+            let r_s = math::sqrt(1.0 - z_s * z_s);
+            let phi = idx * golden_angle;
+
+            let (sin_phi, cos_phi) = math::sin_cos(phi);
+            g_x = cos_phi * r_s * core_radius;
+            g_y = z_s * core_radius;
+            g_z = sin_phi * r_s * core_radius;
+        } else {
+            // Second strand -> Flattened Disk (Spiral Galaxy)
+            let radius = disk_radius_min + (disk_radius_max - disk_radius_min) * rng.next_f32();
+            let angle = radius * spiral_tightness + (idx / strand_len) * math::PI * 2.0 * spiral_arms;
+            
+            // Add some thickness/height variation
+            let h = (rng.next_f32() - 0.5) * disk_height;
+            // Density falls off with radius
+            let falloff = 1.0 - (radius - disk_radius_min) / (disk_radius_max - disk_radius_min);
+            let height_scale = h * falloff;
+
+            let (sin_a, cos_a) = math::sin_cos(angle);
+            g_x = cos_a * radius;
+            g_y = height_scale;
+            g_z = sin_a * radius;
+        }
 
         // Center the random offset
         let offset_x = (rng.next_f32() - 0.5) * rs;
         let offset_y = (rng.next_f32() - 0.5) * rs;
         let offset_z = (rng.next_f32() - 0.5) * rs;
 
-        let x = h_x * (1.0 - morph) + s_x * morph + offset_x;
-        let y = h_y * (1.0 - morph) + s_y * morph + offset_y;
-        let z = h_z * (1.0 - morph) + s_z * morph + offset_z;
+        let x = h_x * (1.0 - morph) + g_x * morph + offset_x;
+        let y = h_y * (1.0 - morph) + g_y * morph + offset_y;
+        let z = h_z * (1.0 - morph) + g_z * morph + offset_z;
 
         *mvp = Mat4::rotate_deg(current_offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
             .mult(Mat4::translate(Vec4::xyz(
@@ -135,7 +169,6 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
             .mult(Mat4::scale(s));
 
         i += 1;
-        global_i += 1;
     }
 
     instance_data.upload_slice(mvps);
