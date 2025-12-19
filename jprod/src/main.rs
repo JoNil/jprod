@@ -233,7 +233,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
         let y = h_y * (1.0 - morph) + g_y * morph + offset_y;
         let z = h_z * (1.0 - morph) + g_z * morph + offset_z;
 
-        *mvp = Mat4::rotate_deg(current_offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
+        *mvp = Mat4::rotate_y((current_offset + 4.0 * time) * math::PI / 180.0)
             .mult(Mat4::translate(Vec4::xyz(x, y, z)))
             .mult(Mat4::random_rotation(&mut rng))
             .mult(Mat4::scale(s));
@@ -562,7 +562,7 @@ fn main() {
         );
         window.swap();
 
-        utils::assert(!gfx::is_error(&window));
+        debug_assert!(!gfx::is_error(&window));
 
         pool.clean();
     }

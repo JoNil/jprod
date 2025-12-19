@@ -106,6 +106,17 @@ impl Mat4 {
     }
 
     #[inline]
+    pub fn rotate_y(angle: f32) -> Mat4 {
+        let (s, c) = math::sin_cos(angle);
+        Mat4 {
+            m_0: Vec4::xyzw(c, 0.0, -s, 0.0),
+            m_1: Vec4::xyzw(0.0, 1.0, 0.0, 0.0),
+            m_2: Vec4::xyzw(s, 0.0, c, 0.0),
+            m_3: Vec4::xyzw(0.0, 0.0, 0.0, 1.0),
+        }
+    }
+
+    #[inline]
     pub fn random_rotation(rng: &mut Rng) -> Mat4 {
         let a = Vec4::xyz(
             rng.next_f32() - 0.5,

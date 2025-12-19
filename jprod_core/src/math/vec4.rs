@@ -1,4 +1,4 @@
-use core::{arch::x86_64::*, mem};
+use core::arch::x86_64::*;
 
 #[macro_export]
 macro_rules! vec4_swizzle {
@@ -72,34 +72,22 @@ impl Vec4 {
 
     #[inline(always)]
     pub fn x(self) -> f32 {
-        unsafe {
-            let temp: [f32; 4] = mem::transmute(self);
-            *temp.get_unchecked(0)
-        }
+        unsafe { _mm_cvtss_f32(self.0) }
     }
 
     #[inline(always)]
     pub fn y(self) -> f32 {
-        unsafe {
-            let temp: [f32; 4] = mem::transmute(self);
-            *temp.get_unchecked(1)
-        }
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 1)) }
     }
 
     #[inline(always)]
     pub fn z(self) -> f32 {
-        unsafe {
-            let temp: [f32; 4] = mem::transmute(self);
-            *temp.get_unchecked(2)
-        }
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 2)) }
     }
 
     #[inline(always)]
     pub fn w(self) -> f32 {
-        unsafe {
-            let temp: [f32; 4] = mem::transmute(self);
-            *temp.get_unchecked(3)
-        }
+        unsafe { _mm_cvtss_f32(_mm_shuffle_ps(self.0, self.0, 3)) }
     }
 
     #[inline(always)]
