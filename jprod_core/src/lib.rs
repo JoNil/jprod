@@ -2,7 +2,7 @@
 
 pub mod c_types;
 pub mod camera;
-pub mod gen;
+pub mod generate;
 pub mod gfx;
 pub mod math;
 pub mod pool;

@@ -38,14 +38,14 @@
 // Downsample every bloom blur pass
 
 #[link(name = "lib/msvcrt-light-x64", kind = "static")]
-extern "C" {}
+unsafe extern "C" {}
 
 extern crate jprod_core;
 
 use core::panic::PanicInfo;
 use jprod_core::{
     camera::Camera,
-    gen,
+    generate,
     gfx::{
         self,
         mesh::{Mesh, Primitive},
@@ -99,13 +99,13 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
         let offset_z = rng.next_f32() * rs;
 
         *mvp = Mat4::rotate_deg(offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
-            .mul(Mat4::translate(Vec4::xyz(
+            .mult(Mat4::translate(Vec4::xyz(
                 x + offset_x,
                 y + offset_y,
                 z + offset_z,
             )))
-            .mul(Mat4::random_rotation(&mut rng))
-            .mul(Mat4::scale(s));
+            .mult(Mat4::random_rotation(&mut rng))
+            .mult(Mat4::scale(s));
 
         i += 1;
     }
@@ -244,14 +244,14 @@ fn main() {
     let mut quad_mesh = Mesh::new(&window);
 
     {
-        let (tetrahedron_pos, tetrahedron_normals) = gen::tetrahedron(&mut pool);
+        let (tetrahedron_pos, tetrahedron_normals) = generate::tetrahedron(&mut pool);
 
         let tetrahedron_pos = pool.borrow_slice(&tetrahedron_pos);
         let tetrahedron_normals = pool.borrow_slice(&tetrahedron_normals);
 
         dna_mesh.upload(tetrahedron_pos, tetrahedron_normals, Primitive::Triangles);
 
-        let (quad_pos, quad_normals) = gen::quad(&mut pool);
+        let (quad_pos, quad_normals) = generate::quad(&mut pool);
 
         let quad_pos = pool.borrow_slice(&quad_pos);
         let quad_normals = pool.borrow_slice(&quad_normals);
@@ -405,14 +405,14 @@ fn main() {
 
 #[allow(non_snake_case)]
 #[cfg(not(test))]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "system" fn WinMainCRTStartup() {
     main();
 }
 
 #[allow(non_snake_case)]
 #[cfg(not(test))]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "system" fn mainCRTStartup() {
     main();
 }
@@ -425,10 +425,10 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[allow(non_upper_case_globals)]
 #[cfg(not(test))]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static NvOptimusEnablement: i32 = 1;
 
 #[allow(non_upper_case_globals)]
 #[cfg(not(test))]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub static _fltused: i32 = 1;

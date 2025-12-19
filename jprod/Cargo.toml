@@ -2,7 +2,7 @@
 name = "jprod"
 version = "0.1.0"
 authors = ["Jonathan"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 jprod_core = { path = "../jprod_core" }

@@ -109,7 +109,7 @@ impl Camera {
         let pos = Mat4::translate(self.pos.neg());
         let rot = Mat4::axis(self.right, self.up, self.forward.neg());
 
-        self.projection.mul(rot.transposed().mul(pos))
+        self.projection.mult(rot.transposed().mult(pos))
     }
 
     #[inline]

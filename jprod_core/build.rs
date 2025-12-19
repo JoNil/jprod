@@ -96,8 +96,7 @@ fn main() {
         let mut shader_source = String::new();
 
         for (name, shader) in shaders {
-            if let (Some(ref vertex), Some(ref fragment)) =
-                (&shader.vertex_source, &shader.fragment_source)
+            if let (Some(vertex), Some(fragment)) = (&shader.vertex_source, &shader.fragment_source)
             {
                 #[allow(clippy::format_in_format_args)]
                 shader_source.push_str(

@@ -164,35 +164,41 @@ impl Mat4 {
 
         #[inline(always)]
         unsafe fn mat_2_mul(vec1: __m128, vec2: __m128) -> __m128 {
-            _mm_add_ps(
-                _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 0, 3, 0, 3).0),
-                _mm_mul_ps(
-                    vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0,
-                    vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0,
-                ),
-            )
+            unsafe {
+                _mm_add_ps(
+                    _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 0, 3, 0, 3).0),
+                    _mm_mul_ps(
+                        vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0,
+                        vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0,
+                    ),
+                )
+            }
         }
 
         #[inline(always)]
         unsafe fn mat_2_adj_mul(vec1: __m128, vec2: __m128) -> __m128 {
-            _mm_sub_ps(
-                _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 3, 3, 0, 0).0, vec2),
-                _mm_mul_ps(
-                    vec4_swizzle!(Vec4(vec1), 1, 1, 2, 2).0,
-                    vec4_swizzle!(Vec4(vec2), 2, 3, 0, 1).0,
-                ),
-            )
+            unsafe {
+                _mm_sub_ps(
+                    _mm_mul_ps(vec4_swizzle!(Vec4(vec1), 3, 3, 0, 0).0, vec2),
+                    _mm_mul_ps(
+                        vec4_swizzle!(Vec4(vec1), 1, 1, 2, 2).0,
+                        vec4_swizzle!(Vec4(vec2), 2, 3, 0, 1).0,
+                    ),
+                )
+            }
         }
 
         #[inline(always)]
         unsafe fn mat_2_mul_adj(vec1: __m128, vec2: __m128) -> __m128 {
-            _mm_sub_ps(
-                _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 3, 0, 3, 0).0),
-                _mm_mul_ps(
-                    vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0,
-                    vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0,
-                ),
-            )
+            unsafe {
+                _mm_sub_ps(
+                    _mm_mul_ps(vec1, vec4_swizzle!(Vec4(vec2), 3, 0, 3, 0).0),
+                    _mm_mul_ps(
+                        vec4_swizzle!(Vec4(vec1), 1, 0, 3, 2).0,
+                        vec4_swizzle!(Vec4(vec2), 2, 1, 2, 1).0,
+                    ),
+                )
+            }
         }
 
         unsafe {
@@ -266,6 +272,7 @@ impl Mat4 {
     }
 
     #[inline]
+    #[allow(clippy::type_complexity)]
     pub fn as_tuples(
         &self,
     ) -> &(
@@ -294,7 +301,7 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn mul(self, rhs: Mat4) -> Mat4 {
+    pub fn mult(self, rhs: Mat4) -> Mat4 {
         let mut res: Mat4 = Mat4 {
             m_0: Vec4::zero(),
             m_1: Vec4::zero(),
@@ -307,7 +314,7 @@ impl Mat4 {
             let c = res.as_vec4_array_mut();
 
             for i in 0..4 {
-                let x = unsafe { *b.get_unchecked(4 * i + 0) };
+                let x = unsafe { *b.get_unchecked(4 * i) };
                 let y = unsafe { *b.get_unchecked(4 * i + 1) };
                 let z = unsafe { *b.get_unchecked(4 * i + 2) };
                 let w = unsafe { *b.get_unchecked(4 * i + 3) };

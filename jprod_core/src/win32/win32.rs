@@ -3,23 +3,23 @@ use core::{mem, ptr};
 
 #[link(name = "kernel32")]
 #[allow(dead_code)]
-extern "system" {
-    fn OutputDebugStringA(output_string: *const u8);
-    fn ExitProcess(exit_code: u32) -> !;
-    fn GetModuleHandleA(module_name: *const u8) -> ModuleHandle;
+unsafe extern "system" {
+    unsafe fn OutputDebugStringA(output_string: *const u8);
+    unsafe fn ExitProcess(exit_code: u32) -> !;
+    unsafe fn GetModuleHandleA(module_name: *const u8) -> ModuleHandle;
 
-    fn LoadLibraryA(file_name: *const u8) -> ModuleHandle;
-    fn FreeLibrary(module: ModuleHandle);
-    fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
+    unsafe fn LoadLibraryA(file_name: *const u8) -> ModuleHandle;
+    unsafe fn FreeLibrary(module: ModuleHandle);
+    unsafe fn GetProcAddress(module: ModuleHandle, proc_name: *const u8) -> Proc;
 
-    fn GetFileAttributesExA(
+    unsafe fn GetFileAttributesExA(
         file_name: *const u8,
         info_level_id: i32,
         file_information: *mut FileAttributeData,
     ) -> i32;
-    fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
+    unsafe fn CompareFileTime(file_time_1: *const Filetime, file_time_2: *const Filetime) -> isize;
 
-    fn CreateFileA(
+    unsafe fn CreateFileA(
         file_name: *const u8,
         desired_access: u32,
         share_mode: u32,
@@ -28,9 +28,9 @@ extern "system" {
         flags_and_attributes: u32,
         template_file: Handle,
     ) -> Handle;
-    fn CloseHandle(handle: Handle) -> i32;
-    fn GetFileSize(handle: Handle, file_size_high: *mut u32) -> u32;
-    fn ReadFile(
+    unsafe fn CloseHandle(handle: Handle) -> i32;
+    unsafe fn GetFileSize(handle: Handle, file_size_high: *mut u32) -> u32;
+    unsafe fn ReadFile(
         handle: Handle,
         buffer: *mut c_void,
         bytes_to_read: u32,
@@ -38,16 +38,16 @@ extern "system" {
         overlapped: *mut c_void,
     ) -> i32;
 
-    fn VirtualAlloc(
+    unsafe fn VirtualAlloc(
         base_address: *mut c_void,
         size: usize,
         allocation_type: u32,
         protect: u32,
     ) -> *mut c_void;
-    fn VirtualFree(address: *mut c_void, size: usize, free_type: u32) -> i32;
+    unsafe fn VirtualFree(address: *mut c_void, size: usize, free_type: u32) -> i32;
 
-    fn QueryPerformanceCounter(time: *mut i64) -> i32;
-    fn QueryPerformanceFrequency(frequency: *mut i64) -> i32;
+    unsafe fn QueryPerformanceCounter(time: *mut i64) -> i32;
+    unsafe fn QueryPerformanceFrequency(frequency: *mut i64) -> i32;
 }
 
 #[inline]
@@ -62,7 +62,7 @@ pub fn output_debug_string(string: &[u8]) {
 /// string has to be a valid pointer to a null terminated c string.
 #[inline]
 pub unsafe fn output_debug_string_raw(string: *const u8) {
-    OutputDebugStringA(string);
+    unsafe { OutputDebugStringA(string) };
 }
 
 #[inline]
@@ -194,7 +194,9 @@ pub fn virtual_alloc(size: usize) -> *mut c_void {
 /// address has to be a valid pointer
 #[inline]
 pub unsafe fn virtual_free(address: *mut c_void) {
-    VirtualFree(address, 0, MEM_RELEASE);
+    unsafe {
+        VirtualFree(address, 0, MEM_RELEASE);
+    }
 }
 
 #[inline]
@@ -221,15 +223,15 @@ pub fn query_performance_frequency() -> i64 {
 
 #[link(name = "user32")]
 #[allow(dead_code)]
-extern "system" {
-    fn MessageBoxA(
+unsafe extern "system" {
+    unsafe fn MessageBoxA(
         window_handle: WindowHandle,
         text: *const u8,
         caption: *const u8,
         message_type: u32,
     ) -> i32;
-    fn RegisterClassA(window_class: *const WindowClass) -> Atom;
-    fn CreateWindowExA(
+    unsafe fn RegisterClassA(window_class: *const WindowClass) -> Atom;
+    unsafe fn CreateWindowExA(
         ex_style: u32,
         class_name: *const u8,
         window_name: *const u8,
@@ -243,24 +245,29 @@ extern "system" {
         instance: InstanceHandle,
         param: *mut c_void,
     ) -> WindowHandle;
-    fn DestroyWindow(window_handle: WindowHandle) -> i32;
-    fn GetDC(window: WindowHandle) -> DcHandle;
-    fn ReleaseDC(window: WindowHandle, dc: DcHandle) -> i32;
-    fn PeekMessageA(
+    unsafe fn DestroyWindow(window_handle: WindowHandle) -> i32;
+    unsafe fn GetDC(window: WindowHandle) -> DcHandle;
+    unsafe fn ReleaseDC(window: WindowHandle, dc: DcHandle) -> i32;
+    unsafe fn PeekMessageA(
         msg: *mut Msg,
         window_handle: WindowHandle,
         msg_filter_min: u32,
         msg_filter_max: u32,
         remove_message: u32,
     ) -> i32;
-    fn TranslateMessage(msg: *const Msg) -> i32;
-    fn DispatchMessageA(msg: *const Msg) -> i32;
-    fn DefWindowProcA(window: WindowHandle, message: u32, wparam: usize, lparam: usize) -> usize;
-    fn LoadCursorA(instance: InstanceHandle, name: usize) -> CursorHandle;
-    fn GetClientRect(window: WindowHandle, rect: *mut Rect) -> i32;
-    fn GetCursorPos(point: *mut Point) -> i32;
-    fn ScreenToClient(window: WindowHandle, point: *mut Point) -> i32;
-    fn GetKeyState(key_code: i32) -> i16;
+    unsafe fn TranslateMessage(msg: *const Msg) -> i32;
+    unsafe fn DispatchMessageA(msg: *const Msg) -> i32;
+    unsafe fn DefWindowProcA(
+        window: WindowHandle,
+        message: u32,
+        wparam: usize,
+        lparam: usize,
+    ) -> usize;
+    unsafe fn LoadCursorA(instance: InstanceHandle, name: usize) -> CursorHandle;
+    unsafe fn GetClientRect(window: WindowHandle, rect: *mut Rect) -> i32;
+    unsafe fn GetCursorPos(point: *mut Point) -> i32;
+    unsafe fn ScreenToClient(window: WindowHandle, point: *mut Point) -> i32;
+    unsafe fn GetKeyState(key_code: i32) -> i16;
 }
 
 #[inline]
@@ -344,11 +351,7 @@ pub fn get_message() -> Option<Msg> {
 
     let msg_result = unsafe { PeekMessageA(&mut msg, ptr::null_mut(), 0, 0, 1) };
 
-    if msg_result != 0 {
-        Some(msg)
-    } else {
-        None
-    }
+    if msg_result != 0 { Some(msg) } else { None }
 }
 
 #[inline]
@@ -410,20 +413,20 @@ pub fn get_key_down(key_code: i32) -> bool {
 
 #[link(name = "gdi32")]
 #[allow(dead_code)]
-extern "system" {
-    fn ChoosePixelFormat(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
-    fn DescribePixelFormat(
+unsafe extern "system" {
+    unsafe fn ChoosePixelFormat(dc: DcHandle, descriptor: *const PixelFormatDescriptor) -> i32;
+    unsafe fn DescribePixelFormat(
         dc: DcHandle,
         pixel_format: i32,
         bytes: u32,
         descriptor: *mut PixelFormatDescriptor,
     ) -> i32;
-    fn SetPixelFormat(
+    unsafe fn SetPixelFormat(
         dc: DcHandle,
         pixel_format: i32,
         descriptor: *const PixelFormatDescriptor,
     ) -> i32;
-    fn SwapBuffers(dc: DcHandle) -> i32;
+    unsafe fn SwapBuffers(dc: DcHandle) -> i32;
 }
 
 #[inline]
@@ -461,11 +464,11 @@ pub fn swap_buffers(dc: DcHandle) -> bool {
 
 #[link(name = "opengl32")]
 #[allow(dead_code)]
-extern "system" {
-    fn wglCreateContext(dc: DcHandle) -> GlrcHandle;
-    fn wglDeleteContext(glrc: GlrcHandle) -> i32;
-    fn wglMakeCurrent(dc: DcHandle, context: GlrcHandle) -> i32;
-    fn wglGetProcAddress(name: *const u8) -> Proc;
+unsafe extern "system" {
+    unsafe fn wglCreateContext(dc: DcHandle) -> GlrcHandle;
+    unsafe fn wglDeleteContext(glrc: GlrcHandle) -> i32;
+    unsafe fn wglMakeCurrent(dc: DcHandle, context: GlrcHandle) -> i32;
+    unsafe fn wglGetProcAddress(name: *const u8) -> Proc;
 }
 
 #[inline]
