@@ -57,7 +57,7 @@ use jprod_core::{
     math::{self, Mat4, Vec4},
     pool::Pool,
     random::Rng,
-    time, utils, win32,
+    time, win32,
     window::Window,
 };
 
@@ -585,7 +585,7 @@ pub extern "system" fn mainCRTStartup() {
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    utils::debug_trap();
+    jprod_core::utils::debug_trap();
 }
 
 #[allow(non_upper_case_globals)]

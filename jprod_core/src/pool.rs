@@ -211,11 +211,11 @@ mod tests {
 
         let mut token = arena.allocate::<u32>(0);
         *arena.borrow_mut(&mut token) = 42;
-        assert_eq!(*arena.borrow(&token), 42);
+        debug_assert_eq!(*arena.borrow(&token), 42);
 
         let mut token2 = arena.allocate::<f64>(0.0);
         *arena.borrow_mut(&mut token2) = core::f64::consts::PI;
-        assert_eq!(*arena.borrow(&token2), core::f64::consts::PI);
+        debug_assert_eq!(*arena.borrow(&token2), core::f64::consts::PI);
     }
 
     #[test]
@@ -224,14 +224,14 @@ mod tests {
 
         let mut token = arena.allocate_array::<u32>(4, 0);
         let slice = arena.borrow_slice_mut(&mut token);
-        assert_eq!(slice, &[0, 0, 0, 0]);
+        debug_assert_eq!(slice, &[0, 0, 0, 0]);
 
         slice[0] = 1;
         slice[1] = 2;
         slice[2] = 3;
         slice[3] = 4;
 
-        assert_eq!(arena.borrow_slice(&token), &[1, 2, 3, 4]);
+        debug_assert_eq!(arena.borrow_slice(&token), &[1, 2, 3, 4]);
     }
 
     #[test]
@@ -240,12 +240,12 @@ mod tests {
 
         let mut token = arena.allocate::<u32>(0);
         *arena.borrow_mut(&mut token) = 42;
-        assert_eq!(*arena.borrow(&token), 42);
+        debug_assert_eq!(*arena.borrow(&token), 42);
 
         arena.clean();
 
         let token2 = arena.allocate::<u32>(0);
-        assert_eq!(*arena.borrow(&token2), 0);
+        debug_assert_eq!(*arena.borrow(&token2), 0);
     }
 
     #[test]

@@ -180,22 +180,27 @@ impl Vec4 {
     }
 }
 
-#[test]
-fn vec4_test_access() {
-    let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
-    assert_eq!(a.x(), 1.0);
-    assert_eq!(a.y(), 2.0);
-    assert_eq!(a.z(), 3.0);
-    assert_eq!(a.w(), 4.0);
-}
+#[cfg(test)]
+mod tests {
+    use super::Vec4;
 
-#[test]
-fn vec4_test_cross() {
-    let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
-    let b = Vec4::xyzw(5.0, 6.0, 7.0, 8.0);
-    let c = a.cross(b);
+    #[test]
+    fn vec4_test_access() {
+        let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(a.x(), 1.0);
+        assert_eq!(a.y(), 2.0);
+        assert_eq!(a.z(), 3.0);
+        assert_eq!(a.w(), 4.0);
+    }
 
-    assert_eq!(c.x(), -4.0);
-    assert_eq!(c.y(), 8.0);
-    assert_eq!(c.z(), -4.0);
+    #[test]
+    fn vec4_test_cross() {
+        let a = Vec4::xyzw(1.0, 2.0, 3.0, 4.0);
+        let b = Vec4::xyzw(5.0, 6.0, 7.0, 8.0);
+        let c = a.cross(b);
+
+        assert_eq!(c.x(), -4.0);
+        assert_eq!(c.y(), 8.0);
+        assert_eq!(c.z(), -4.0);
+    }
 }

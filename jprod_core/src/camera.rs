@@ -91,8 +91,7 @@ impl Camera {
             let y_axis = Vec4::xyz(0.0, 1.0, 0.0);
             let neg_z_axis = Vec4::xyz(0.0, 0.0, -1.0);
 
-            let rotated_dir_x =
-                Mat4::rotate_y(self.x_angle).transform(neg_z_axis.with_w(1.0));
+            let rotated_dir_x = Mat4::rotate_y(self.x_angle).transform(neg_z_axis.with_w(1.0));
 
             self.right = rotated_dir_x.cross(y_axis).normalized();
             self.forward = Mat4::rotate(self.y_angle, self.right)
