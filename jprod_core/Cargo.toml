@@ -4,6 +4,4 @@ version = "0.1.0"
 authors = ["Jonathan"]
 edition = "2024"
 
-build = "build.rs"
-
 [dependencies]

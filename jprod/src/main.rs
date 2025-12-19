@@ -42,7 +42,6 @@ unsafe extern "C" {}
 
 extern crate jprod_core;
 
-use core::panic::PanicInfo;
 use jprod_core::{
     camera::Camera,
     generate,
@@ -58,9 +57,11 @@ use jprod_core::{
     math::{self, Mat4, Vec4},
     pool::Pool,
     random::Rng,
-    shaders, time, utils, win32,
+    time, utils, win32,
     window::Window,
 };
+
+mod shaders;
 
 const INSTANCE_COUNT: i32 = 200_000;
 
