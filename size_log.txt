@@ -17,4 +17,4 @@ Opt
 12800 - Use sqishy
 12055 - Less wierd intrinsics
 12383 - Cargo opt-level=z, codegen-units=1
-11931 - Implement and use Mat4::rotate_y, Use extern powf, Optimize assert to debug_assert, Optimize Vec4 accessors with intrinsics
+11999 - Implement and use Mat4::rotate_y, Use extern powf, Optimize assert to debug_assert, Optimize Vec4 accessors with intrinsics, debug_assert
