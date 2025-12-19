@@ -65,7 +65,7 @@ mod shaders;
 
 const INSTANCE_COUNT: i32 = 200_000;
 
-fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
+fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) -> (Vec4, Vec4) {
     let mut mvps = pool.allocate_array::<Mat4>(INSTANCE_COUNT as usize, Mat4::identity());
     let mvps = pool.borrow_slice_mut(&mut mvps);
 
@@ -81,8 +81,41 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     let mut i = 0;
     let mut offset = 0.0;
 
-    // Oscillate between 0.0 (Helix) and 1.0 (Galaxy)
-    let morph = math::sin(time * 0.5) * 0.5 + 0.5;
+    // Sequence timeline:
+    // 0-10s: Double Helix
+    // 10-15s: Morph to Galaxy
+    // 15-30s: Galaxy Tour
+    
+    let morph_start = 5.0;
+    let morph_duration = 5.0;
+    let morph = math::clamp((time - morph_start) / morph_duration, 0.0, 1.0);
+    // Smoothstep for nicer transition
+    let morph = morph * morph * (3.0 - 2.0 * morph);
+
+    // Camera animation
+    let cam_start_pos = Vec4::xyz(0.0, 0.0, 1.0);
+    let cam_start_look = Vec4::xyz(0.0, 0.0, 0.0);
+
+    let tour_start = 12.0;
+    let tour_duration = 15.0;
+    let tour_t = math::clamp((time - tour_start) / tour_duration, 0.0, 1.0);
+    let tour_t = tour_t * tour_t * (3.0 - 2.0 * tour_t); // Smoothstep
+
+    let mut cam_pos = cam_start_pos;
+    let mut cam_look_at = cam_start_look;
+
+    if time > tour_start {
+         // Spiral path around the galaxy
+         let angle = tour_t * math::PI * 2.0;
+         let radius = 1.0 + tour_t * 2.0; 
+         let height = 2.0 * math::sin(tour_t * math::PI);
+
+         let (sin_a, cos_a) = math::sin_cos(angle);
+         cam_pos = Vec4::xyz(cos_a * radius, height, sin_a * radius);
+         
+         // Look slightly off center
+         cam_look_at = Vec4::xyz(0.0, 0.0, 0.0);
+    }
     
     // Core parameters (Strand 1 -> Core)
     let core_radius = 0.3;
@@ -172,6 +205,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     }
 
     instance_data.upload_slice(mvps);
+    (cam_pos, cam_look_at)
 }
 
 #[repr(C)]
@@ -348,7 +382,10 @@ fn main() {
 
         camera.update(&window, dt as f32);
 
-        update_instance_data(&mut instance_data, &mut pool, time);
+        let (cam_pos, cam_look_at) = update_instance_data(&mut instance_data, &mut pool, time);
+
+        camera.set_pos(cam_pos);
+        camera.look_at(cam_look_at);
 
         uniform_data.upload(&Uniforms {
             vp: camera.get_view_projection(),
@@ -440,7 +477,7 @@ fn main() {
         dof_uniform_data.upload(&DofUniforms {
             z_near: camera.get_near(),
             z_far: camera.get_far(),
-            plane_in_focus: 0.5,
+            plane_in_focus: camera.get_camera_pos().length() / 2.0,
         });
 
         dof_extracted_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));

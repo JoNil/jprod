@@ -126,6 +126,18 @@ impl Camera {
     pub fn get_camera_pos(&self) -> Vec4 {
         self.pos
     }
+
+    #[inline]
+    pub fn set_pos(&mut self, pos: Vec4) {
+        self.pos = pos;
+    }
+
+    #[inline]
+    pub fn look_at(&mut self, target: Vec4) {
+        self.forward = target.sub(self.pos).normalized();
+        self.right = self.forward.cross(Vec4::xyz(0.0, 1.0, 0.0)).normalized();
+        self.up = self.right.cross(self.forward).normalized();
+    }
 }
 
 #[inline]
