@@ -174,16 +174,38 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
         let g_z;
 
         if offset == 0.0 {
-            // First strand -> Spherical Core (Fibonacci Sphere)
-            // Reversed direction: starts at -1.0 (bottom) and goes to 1.0 (top)
+            // First strand -> Spherical Core (Volume)
+            // Generate random point in unit sphere
+            // Use rejection sampling for simplicity or uniform distribution
+            // Uniform distribution in sphere:
+            // r = cbrt(u) * R
+            // theta = 2 * PI * v
+            // phi = acos(2 * w - 1)
+
+            // To keep it deterministic per instance, use idx/strand_len to seed pseudo-random pos
+            // Re-using the Fibonacci sphere points but scaling radius by cbrt(random)
+
+            // Re-use existing Fibonacci distribution for direction
             let z_s = (2.0 * idx + 1.0) / strand_len - 1.0;
             let r_s = math::sqrt(1.0 - z_s * z_s);
             let phi = idx * golden_angle;
 
+            // Volume distribution factor
+            // Use idx to generate a pseudo-random radius factor
+            // We want it uniform in volume, so R ~ cbrt(U)
+            // Let's use a hash of index for 'U' to avoid patterns
+            let mut seed = idx as u32;
+            seed = seed.wrapping_mul(0x85ebca6b);
+            seed = seed ^ (seed >> 13);
+            seed = seed.wrapping_mul(0xc2b2ae35);
+            let u = (seed as f32) / (u32::MAX as f32);
+
+            let radius_factor = math::powf(u, 1.0 / 3.0);
+
             let (sin_phi, cos_phi) = math::sin_cos(phi);
-            g_x = cos_phi * r_s * core_radius;
-            g_y = z_s * core_radius;
-            g_z = sin_phi * r_s * core_radius;
+            g_x = cos_phi * r_s * core_radius * radius_factor;
+            g_y = z_s * core_radius * radius_factor;
+            g_z = sin_phi * r_s * core_radius * radius_factor;
         } else {
             // Second strand -> Flattened Disk (Spiral Galaxy)
             let radius = disk_radius_min + (disk_radius_max - disk_radius_min) * rng.next_f32();

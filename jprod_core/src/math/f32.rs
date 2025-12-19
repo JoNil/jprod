@@ -86,3 +86,46 @@ pub fn max(a: f32, b: f32) -> f32 {
 pub fn clamp(x: f32, lb: f32, ub: f32) -> f32 {
     min(max(x, lb), ub)
 }
+
+#[inline]
+pub fn powf(base: f32, exp: f32) -> f32 {
+    let mut res: MaybeUninit<f32> = MaybeUninit::uninit();
+
+    unsafe {
+        asm!(
+            "fld dword ptr [{1}]", // Load exp
+            "fld dword ptr [{0}]", // Load base
+            "fyl2x",               // ST(1) = exp * log2(base)
+            "fld st(0)",           // Duplicate
+            "frndint",             // Round to integer
+            "fsub st(1), st(0)",   // Get fractional part
+            "fxch st(1)",          // Swap
+            "f2xm1",               // 2^frac - 1
+            "fld1",
+            "faddp",               // 2^frac
+            "fscale",              // 2^frac * 2^int
+            "fstp st(1)",          // Pop one
+            "fstp dword ptr [{2}]", // Store result
+            in(reg) &base,
+            in(reg) &exp,
+            in(reg) res.as_mut_ptr(),
+            options(nostack),
+        );
+
+        res.assume_init()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_powf() {
+        assert!((powf(2.0, 3.0) - 8.0).abs() < 1e-4);
+        assert!((powf(4.0, 0.5) - 2.0).abs() < 1e-4);
+        assert!((powf(10.0, -1.0) - 0.1).abs() < 1e-4);
+        assert!((powf(2.0, 0.0) - 1.0).abs() < 1e-4);
+        assert!((powf(27.0, 1.0 / 3.0) - 3.0).abs() < 1e-4);
+    }
+}
