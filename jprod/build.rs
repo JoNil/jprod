@@ -38,6 +38,7 @@ impl ShaderData {
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
+    println!("cargo:rerun-if-changed=src/shaders");
 
     let shaders = Mutex::new(HashMap::new());
 

@@ -127,6 +127,8 @@ struct Uniforms {
 #[allow(dead_code)]
 struct LightUniforms {
     eye_pos: Vec4,
+    light_pos: Vec4,
+    light_color: Vec4,
 }
 
 #[repr(C)]
@@ -147,6 +149,8 @@ fn main() {
     let mut camera = Camera::new(&window);
 
     let pso = Pso::new();
+    let mut light_pso = Pso::new();
+    light_pso.blending = Some(jprod_core::gfx::pso::Blending::Additive);
 
     let dna_shader = Shader::from_source(&window, shaders::DNA_VERT, shaders::DNA_FRAG);
     let light_shader = Shader::from_source(&window, shaders::LIGHT_VERT, shaders::LIGHT_FRAG);
@@ -294,13 +298,36 @@ fn main() {
             INSTANCE_COUNT,
         );
 
+        light_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
+
+        // Original red light
         light_uniform_data.upload(&LightUniforms {
             eye_pos: camera.get_camera_pos(),
+            light_pos: Vec4::xyz(0.0, 100.0, 100.0),
+            light_color: Vec4::xyz(0.9, 0.1, 0.1),
         });
 
-        light_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         quad_mesh.draw(
-            &pso,
+            &light_pso,
+            &light_shader,
+            Some(&light_target),
+            &[
+                g_buffer.get_texture(0),
+                g_buffer.get_texture(1),
+                g_buffer.get_texture(2),
+            ],
+            Some(&light_uniform_data),
+        );
+
+        // Blue accent light
+        light_uniform_data.upload(&LightUniforms {
+            eye_pos: camera.get_camera_pos(),
+            light_pos: Vec4::xyz(-50.0, 50.0, 100.0),
+            light_color: Vec4::xyz(0.1, 0.1, 0.8),
+        });
+
+        quad_mesh.draw(
+            &light_pso,
             &light_shader,
             Some(&light_target),
             &[

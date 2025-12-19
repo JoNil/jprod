@@ -10602,6 +10602,8 @@ static LOAD_DESC: &[(u16, &[u8])] = &[
     (GetErrorIdx, b"glGetError\0"),
     (DebugMessageCallbackIdx, b"glDebugMessageCallback\0"),
     (ScissorIdx, b"glScissor\0"),
+    (BlendFuncIdx, b"glBlendFunc\0"),
+    (DisableIdx, b"glDisable\0"),
     // Get
     (GetInteger64vIdx, b"glGetInteger64v\0"),
     // Querys

@@ -301,6 +301,17 @@ fn draw_internal<F: FnMut()>(
             gl::Scissor(scissor.x, scissor.y, scissor.width, scissor.height);
         }
 
+        if let Some(ref blending) = pso.blending {
+            gl::Enable(gl::BLEND);
+
+            match blending {
+                super::pso::Blending::OneMinusSrcAlpha => {
+                    gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA)
+                }
+                super::pso::Blending::Additive => gl::BlendFunc(gl::ONE, gl::ONE),
+            }
+        }
+
         gl::UseProgram(shader.get_program_handle());
         gl::BindVertexArray(vao.handle);
 
@@ -332,6 +343,10 @@ fn draw_internal<F: FnMut()>(
 
         if pso.scissor.is_some() {
             gl::Disable(gl::SCISSOR_TEST);
+        }
+
+        if pso.blending.is_some() {
+            gl::Disable(gl::BLEND);
         }
 
         if target.is_some() {

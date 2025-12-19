@@ -7,6 +7,7 @@ pub struct Scissor {
 
 pub enum Blending {
     OneMinusSrcAlpha,
+    Additive,
 }
 
 pub struct Pso {
