@@ -107,7 +107,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
 
         // Sphere
         let idx = global_i as f32;
-        let z_s = 1.0 - (2.0 * idx + 1.0) / total_len;
+        let z_s = (2.0 * idx + 1.0) / total_len - 1.0;
         let r_s = math::sqrt(1.0 - z_s * z_s);
         let phi = idx * golden_angle;
 
