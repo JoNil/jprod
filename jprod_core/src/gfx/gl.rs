@@ -3,6 +3,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
+#![allow(static_mut_refs)]
 
 use crate::c_types::*;
 use crate::win32;

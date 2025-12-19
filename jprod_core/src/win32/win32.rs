@@ -1,3 +1,5 @@
+#![allow(static_mut_refs)]
+
 use crate::{c_types::*, utils, win32::types::*};
 use core::{mem, ptr};
 
