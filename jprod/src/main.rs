@@ -125,6 +125,14 @@ struct Uniforms {
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
+struct Light {
+    pos: Vec4,
+    color: Vec4,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
 struct LightUniforms {
     eye_pos: Vec4,
     light_pos: Vec4,
@@ -300,43 +308,38 @@ fn main() {
 
         light_target.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
 
-        // Original red light
-        light_uniform_data.upload(&LightUniforms {
-            eye_pos: camera.get_camera_pos(),
-            light_pos: Vec4::xyz(0.0, 100.0, 100.0),
-            light_color: Vec4::xyz(0.9, 0.1, 0.1),
-        });
+        let lights = [
+            // Original red light
+            Light {
+                pos: Vec4::xyz(0.0, 100.0, 100.0),
+                color: Vec4::xyz(0.9, 0.1, 0.1),
+            },
+            // Blue accent light
+            Light {
+                pos: Vec4::xyz(-50.0, 50.0, 100.0),
+                color: Vec4::xyz(0.1, 0.1, 0.8),
+            },
+        ];
 
-        quad_mesh.draw(
-            &light_pso,
-            &light_shader,
-            Some(&light_target),
-            &[
-                g_buffer.get_texture(0),
-                g_buffer.get_texture(1),
-                g_buffer.get_texture(2),
-            ],
-            Some(&light_uniform_data),
-        );
+        for light in lights.iter() {
+            light_uniform_data.upload(&LightUniforms {
+                eye_pos: camera.get_camera_pos(),
+                light_pos: light.pos,
+                light_color: light.color,
+            });
 
-        // Blue accent light
-        light_uniform_data.upload(&LightUniforms {
-            eye_pos: camera.get_camera_pos(),
-            light_pos: Vec4::xyz(-50.0, 50.0, 100.0),
-            light_color: Vec4::xyz(0.1, 0.1, 0.8),
-        });
-
-        quad_mesh.draw(
-            &light_pso,
-            &light_shader,
-            Some(&light_target),
-            &[
-                g_buffer.get_texture(0),
-                g_buffer.get_texture(1),
-                g_buffer.get_texture(2),
-            ],
-            Some(&light_uniform_data),
-        );
+            quad_mesh.draw(
+                &light_pso,
+                &light_shader,
+                Some(&light_target),
+                &[
+                    g_buffer.get_texture(0),
+                    g_buffer.get_texture(1),
+                    g_buffer.get_texture(2),
+                ],
+                Some(&light_uniform_data),
+            );
+        }
 
         bloom_blur1.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
         bloom_blur2.clear(Vec4::xyzw(0.0, 0.0, 0.0, 1.0));
