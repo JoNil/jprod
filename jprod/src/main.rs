@@ -78,8 +78,14 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
     let rs = 0.1;
 
     let len = mvps.len() / 2;
+    let total_len = mvps.len() as f32;
     let mut i = 0;
+    let mut global_i = 0;
     let mut offset = 0.0;
+
+    let morph = math::sin(time * 0.5) * 0.5 + 0.5;
+    let sphere_radius = 0.5;
+    let golden_angle = math::PI * (3.0 - math::sqrt(5.0));
 
     for mvp in mvps.iter_mut() {
         if i == len {
@@ -87,28 +93,49 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) {
             offset = 180.0;
         }
 
+        // Fade offset (180 degrees) towards 0 as we morph to sphere
+        let current_offset = offset * (1.0 - morph);
+
         let t = i as f32 / len as f32;
 
+        // Helix
         let (sin_ft, cos_ft) = math::sin_cos(f * t);
 
-        let x = a * cos_ft;
-        let z = a * sin_ft;
-        let y = b * t - b / 2.0;
+        let h_x = a * cos_ft;
+        let h_z = a * sin_ft;
+        let h_y = b * t - b / 2.0;
 
-        let offset_x = rng.next_f32() * rs;
-        let offset_y = rng.next_f32() * rs;
-        let offset_z = rng.next_f32() * rs;
+        // Sphere
+        let idx = global_i as f32;
+        let z_s = 1.0 - (2.0 * idx + 1.0) / total_len;
+        let r_s = math::sqrt(1.0 - z_s * z_s);
+        let phi = idx * golden_angle;
 
-        *mvp = Mat4::rotate_deg(offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
+        let (sin_phi, cos_phi) = math::sin_cos(phi);
+        let s_x = cos_phi * r_s * sphere_radius;
+        let s_y = z_s * sphere_radius;
+        let s_z = sin_phi * r_s * sphere_radius;
+
+        // Center the random offset
+        let offset_x = (rng.next_f32() - 0.5) * rs;
+        let offset_y = (rng.next_f32() - 0.5) * rs;
+        let offset_z = (rng.next_f32() - 0.5) * rs;
+
+        let x = h_x * (1.0 - morph) + s_x * morph + offset_x;
+        let y = h_y * (1.0 - morph) + s_y * morph + offset_y;
+        let z = h_z * (1.0 - morph) + s_z * morph + offset_z;
+
+        *mvp = Mat4::rotate_deg(current_offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
             .mult(Mat4::translate(Vec4::xyz(
-                x + offset_x,
-                y + offset_y,
-                z + offset_z,
+                x,
+                y,
+                z,
             )))
             .mult(Mat4::random_rotation(&mut rng))
             .mult(Mat4::scale(s));
 
         i += 1;
+        global_i += 1;
     }
 
     instance_data.upload_slice(mvps);
