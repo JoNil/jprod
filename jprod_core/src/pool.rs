@@ -56,7 +56,7 @@ impl Pool {
     pub fn new(size: u64, arena_id: u8) -> Pool {
         let base = win32::virtual_alloc(size as _) as *mut u8;
         utils::assert(!base.is_null());
-        assert!(size < OFFSET_MASK);
+        debug_assert!(size < OFFSET_MASK);
         Pool {
             base,
             size,
@@ -70,7 +70,7 @@ impl Pool {
         let size = mem::size_of::<T>() as u64;
         let align = mem::align_of::<T>() as u64;
         let aligned_offset = (self.used + align - 1) & !(align - 1);
-        assert!(aligned_offset + size <= self.size);
+        debug_assert!(aligned_offset + size <= self.size);
         self.used = aligned_offset + size;
 
         let result = unsafe { self.base.add(aligned_offset as usize) };
@@ -88,7 +88,7 @@ impl Pool {
         let byte_size = mem::size_of::<T>() as u64 * size as u64;
         let align = mem::align_of::<T>() as u64;
         let aligned_offset = (self.used + align - 1) & !(align - 1);
-        assert!(aligned_offset + byte_size <= self.size);
+        debug_assert!(aligned_offset + byte_size <= self.size);
         self.used = aligned_offset + byte_size;
 
         {
@@ -113,8 +113,8 @@ impl Pool {
     }
 
     pub fn borrow<'a, T>(&'a self, token: &'a AllocationToken<T>) -> &'a T {
-        assert_eq!(token.generation(), self.generation_id);
-        assert_eq!(token.arena_id(), self.arena_id);
+        debug_assert_eq!(token.generation(), self.generation_id);
+        debug_assert_eq!(token.arena_id(), self.arena_id);
 
         let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *const T;
         unsafe { &*ptr }
@@ -122,16 +122,16 @@ impl Pool {
 
     #[allow(clippy::mut_from_ref)]
     pub fn borrow_mut<'a, T>(&'a self, token: &'a mut AllocationToken<T>) -> &'a mut T {
-        assert_eq!(token.generation(), self.generation_id);
-        assert_eq!(token.arena_id(), self.arena_id);
+        debug_assert_eq!(token.generation(), self.generation_id);
+        debug_assert_eq!(token.arena_id(), self.arena_id);
 
         let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *mut T;
         unsafe { &mut *ptr }
     }
 
     pub fn borrow_slice<'a, T>(&'a self, token: &'a AllocationArrayToken<T>) -> &'a [T] {
-        assert_eq!(token.generation(), self.generation_id);
-        assert_eq!(token.arena_id(), self.arena_id);
+        debug_assert_eq!(token.generation(), self.generation_id);
+        debug_assert_eq!(token.arena_id(), self.arena_id);
 
         let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *const T;
         unsafe { slice::from_raw_parts(ptr, token.size) }
@@ -142,8 +142,8 @@ impl Pool {
         &'a self,
         token: &'a mut AllocationArrayToken<T>,
     ) -> &'a mut [T] {
-        assert_eq!(token.generation(), self.generation_id);
-        assert_eq!(token.arena_id(), self.arena_id);
+        debug_assert_eq!(token.generation(), self.generation_id);
+        debug_assert_eq!(token.arena_id(), self.arena_id);
 
         let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *mut T;
         unsafe { slice::from_raw_parts_mut(ptr, token.size) }
