@@ -138,7 +138,10 @@ impl Pool {
     }
 
     #[allow(clippy::mut_from_ref)]
-    pub fn borrow_slice_mut<'a, T>(&'a self, token: &'a mut AllocationArrayToken<T>) -> &'a mut [T] {
+    pub fn borrow_slice_mut<'a, T>(
+        &'a self,
+        token: &'a mut AllocationArrayToken<T>,
+    ) -> &'a mut [T] {
         assert_eq!(token.generation(), self.generation_id);
         assert_eq!(token.arena_id(), self.arena_id);
 
@@ -164,7 +167,10 @@ impl Pool {
         }
     }
 
-    pub fn try_borrow_slice<'a, T>(&'a self, token: &'a AllocationArrayToken<T>) -> Option<&'a [T]> {
+    pub fn try_borrow_slice<'a, T>(
+        &'a self,
+        token: &'a AllocationArrayToken<T>,
+    ) -> Option<&'a [T]> {
         if token.generation() == self.generation_id && token.arena_id() == self.arena_id {
             let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *const T;
             Some(unsafe { slice::from_raw_parts(ptr, token.size) })
@@ -173,7 +179,10 @@ impl Pool {
         }
     }
 
-    pub fn try_borrow_slice_mut<'a, T>(&'a self, token: &'a mut AllocationArrayToken<T>) -> Option<&'a mut [T]> {
+    pub fn try_borrow_slice_mut<'a, T>(
+        &'a self,
+        token: &'a mut AllocationArrayToken<T>,
+    ) -> Option<&'a mut [T]> {
         if token.generation() == self.generation_id && token.arena_id() == self.arena_id {
             let ptr = unsafe { self.base.add((token.token & OFFSET_MASK) as usize) } as *mut T;
             Some(unsafe { slice::from_raw_parts_mut(ptr, token.size) })

@@ -1,4 +1,4 @@
-use super::{gl, pso::Pso, shader::Shader, ssbo::Ssbo, target::Target, texture::Texture, Context};
+use super::{Context, gl, pso::Pso, shader::Shader, ssbo::Ssbo, target::Target, texture::Texture};
 use crate::{c_types::c_void, gfx, utils};
 use core::{marker::PhantomData, mem, ptr};
 

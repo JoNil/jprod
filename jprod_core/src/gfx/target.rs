@@ -1,8 +1,8 @@
 use super::{
+    Context,
     framebuffer::{Attachment, Framebuffer},
     gl,
     texture::{Format, Texture},
-    Context,
 };
 use crate::{math::Vec4, utils};
 

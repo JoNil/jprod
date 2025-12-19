@@ -1,4 +1,4 @@
-use super::{gl, Context};
+use super::{Context, gl};
 use crate::{c_types::c_void, utils};
 use core::{marker::PhantomData, ptr};
 

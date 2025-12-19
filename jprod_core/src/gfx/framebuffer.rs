@@ -1,7 +1,6 @@
 use super::{
-    gl,
+    Context, gl,
     texture::{Format, Texture},
-    Context,
 };
 use crate::utils;
 use core::marker::PhantomData;

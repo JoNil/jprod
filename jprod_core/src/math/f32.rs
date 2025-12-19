@@ -74,20 +74,12 @@ pub fn sqrt(a: f32) -> f32 {
 
 #[inline]
 pub fn min(a: f32, b: f32) -> f32 {
-    if a < b {
-        a
-    } else {
-        b
-    }
+    if a < b { a } else { b }
 }
 
 #[inline]
 pub fn max(a: f32, b: f32) -> f32 {
-    if a > b {
-        a
-    } else {
-        b
-    }
+    if a > b { a } else { b }
 }
 
 #[inline]

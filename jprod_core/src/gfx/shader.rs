@@ -1,5 +1,5 @@
-use super::gl;
 use super::Context;
+use super::gl;
 use crate::{utils, win32};
 use core::marker::PhantomData;
 use core::ptr;

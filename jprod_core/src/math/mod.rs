@@ -1,9 +1,9 @@
 #[macro_use]
 mod vec4;
 
-mod mat4;
 mod f32;
 mod f64;
+mod mat4;
 
 pub use self::f32::*;
 pub use self::f64::*;

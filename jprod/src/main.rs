@@ -85,7 +85,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
     // 0-10s: Double Helix
     // 10-15s: Morph to Galaxy
     // 15-30s: Galaxy Tour
-    
+
     let morph_start = 5.0;
     let morph_duration = 5.0;
     let morph = math::clamp((time - morph_start) / morph_duration, 0.0, 1.0);
@@ -105,28 +105,46 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
     let mut cam_look_at = cam_start_look;
 
     if time > tour_start {
-         // Spiral path around the galaxy
-         let angle = tour_t * math::PI * 2.0;
-         let radius = 1.0 + tour_t * 2.0; 
-         let height = 2.0 * math::sin(tour_t * math::PI);
+        // Spiral path around the galaxy
+        // Ensure integer number of rotations to end at same angle
+        // 2.0 * 2.0 * PI = 4.0 * PI = 2 full rotations
+        let angle = tour_t * math::PI * 4.0;
+        let start_radius = 1.5;
+        let end_radius = 2.0;
+        let radius = start_radius + tour_t * (end_radius - start_radius);
 
-         let (sin_a, cos_a) = math::sin_cos(angle);
-         cam_pos = Vec4::xyz(cos_a * radius, height, sin_a * radius);
-         
-         // Look slightly off center
-         cam_look_at = Vec4::xyz(0.0, 0.0, 0.0);
+        // Start height at 0 to align with initial pos, then oscillate
+        let height = 1.5 * math::sin(tour_t * math::PI);
+
+        // We want to start at angle 0 (cos=1, sin=0) to align with (0,0,1)
+        // Wait, (0,0,1) corresponds to angle PI/2 in sin/cos terms if mapped to Z/X?
+        // Let's check: Vec4::xyz(cos_a * radius, height, sin_a * radius);
+        // If we want result (0, 0, 1), we need cos=0, sin=1 => angle = PI/2
+
+        let start_angle = math::PI / 2.0;
+        let current_angle = start_angle + angle;
+
+        let (sin_a, cos_a) = math::sin_cos(current_angle);
+
+        // Note: Mapping to match Vec4::xyz(0,0,1) at start
+        // X = cos(PI/2) * 1 = 0
+        // Z = sin(PI/2) * 1 = 1
+        cam_pos = Vec4::xyz(cos_a * radius, height, sin_a * radius);
+
+        // Look slightly off center
+        cam_look_at = Vec4::xyz(0.0, 0.0, 0.0);
     }
-    
+
     // Core parameters (Strand 1 -> Core)
     let core_radius = 0.3;
-    
+
     // Disk parameters (Strand 2 -> Disk)
     let disk_radius_min = 0.0;
     let disk_radius_max = 4.0;
     let disk_height = 0.1;
     let spiral_arms = 3.0;
     let spiral_tightness = 2.0;
-    
+
     let golden_angle = math::PI * (3.0 - math::sqrt(5.0));
 
     for mvp in mvps.iter_mut() {
@@ -150,7 +168,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
         // Galaxy
         let idx = i as f32; // Reset index per strand
         let strand_len = len as f32;
-        
+
         let g_x;
         let g_y;
         let g_z;
@@ -169,8 +187,9 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
         } else {
             // Second strand -> Flattened Disk (Spiral Galaxy)
             let radius = disk_radius_min + (disk_radius_max - disk_radius_min) * rng.next_f32();
-            let angle = radius * spiral_tightness + (idx / strand_len) * math::PI * 2.0 * spiral_arms;
-            
+            let angle =
+                radius * spiral_tightness + (idx / strand_len) * math::PI * 2.0 * spiral_arms;
+
             // Add some thickness/height variation
             let h = (rng.next_f32() - 0.5) * disk_height;
             // Density falls off with radius
@@ -193,11 +212,7 @@ fn update_instance_data(instance_data: &mut Ssbo, pool: &mut Pool, time: f32) ->
         let z = h_z * (1.0 - morph) + g_z * morph + offset_z;
 
         *mvp = Mat4::rotate_deg(current_offset + 4.0 * time, Vec4::xyz(0.0, 1.0, 0.0))
-            .mult(Mat4::translate(Vec4::xyz(
-                x,
-                y,
-                z,
-            )))
+            .mult(Mat4::translate(Vec4::xyz(x, y, z)))
             .mult(Mat4::random_rotation(&mut rng))
             .mult(Mat4::scale(s));
 
